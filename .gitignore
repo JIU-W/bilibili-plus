@@ -2,7 +2,7 @@
 target/
 **/target/
 
-log/
+logs/
 **/test/
 temp/
 
