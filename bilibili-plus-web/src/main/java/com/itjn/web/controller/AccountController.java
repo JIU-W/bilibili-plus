@@ -2,6 +2,7 @@ package com.itjn.web.controller;
 
 import com.itjn.component.RedisComponent;
 import com.itjn.entity.constants.Constants;
+import com.itjn.entity.dto.TokenUserInfoDto;
 import com.itjn.entity.po.UserInfo;
 import com.itjn.entity.query.UserInfoQuery;
 import com.itjn.entity.vo.PaginationResultVO;
@@ -25,6 +26,12 @@ import javax.validation.constraints.Size;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @description 用户账号管理
+ * @author JIU-W
+ * @date 2024-12-12
+ * @version 1.0
+ */
 @RestController("accountController")
 @RequestMapping("/account")
 @Validated
@@ -80,7 +87,6 @@ public class AccountController extends ABaseController {
     }
 
 
-/*
     @RequestMapping(value = "/login")
     //@GlobalInterceptor
     public ResponseVO login(HttpServletRequest request, HttpServletResponse response, @NotEmpty @Email String email, @NotEmpty String password,
@@ -91,7 +97,7 @@ public class AccountController extends ABaseController {
             }
             String ip = getIpAddr();
             TokenUserInfoDto tokenUserInfoDto = userInfoService.login(email, password, ip);
-            saveToken2Cookie(response, tokenUserInfoDto.getToken());
+            //saveToken2Cookie(response, tokenUserInfoDto.getToken());
             return getSuccessResponseVO(tokenUserInfoDto);
         } finally {
             redisComponent.cleanCheckCode(checkCodeKey);
@@ -109,7 +115,7 @@ public class AccountController extends ABaseController {
             }
         }
     }
-
+/*
     @RequestMapping(value = "/autoLogin")
     //@GlobalInterceptor
     public ResponseVO autoLogin(HttpServletResponse response) {

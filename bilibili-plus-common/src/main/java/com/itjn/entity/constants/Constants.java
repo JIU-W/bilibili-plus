@@ -1,5 +1,11 @@
 package com.itjn.entity.constants;
 
+/**
+ * @description 常量类
+ * @author JIU-W
+ * @date 2024-12-12
+ * @version 1.0
+ */
 public class Constants {
 
     //密码的正则表达式格式
@@ -7,6 +13,7 @@ public class Constants {
 
     public static final Integer ZERO = 0;
     public static final Integer ONE = 1;
+
     public static final Integer LENGTH_10 = 10;
     public static final Integer LENGTH_15 = 15;
     public static final Integer LENGTH_12 = 12;

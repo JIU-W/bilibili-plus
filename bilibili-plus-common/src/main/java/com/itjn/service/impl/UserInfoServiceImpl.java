@@ -243,8 +243,11 @@ public class UserInfoServiceImpl implements UserInfoService {
         userInfo.setSex(UserSexEnum.SECRECY.getType());
         userInfo.setTheme(Constants.ONE);
 
+        // TODO
         SysSettingDto sysSettingDto = redisComponent.getSysSettingDto();
+        //初始硬币数量
         userInfo.setTotalCoinCount(sysSettingDto.getRegisterCoinCount());
+        //当前硬币数量
         userInfo.setCurrentCoinCount(sysSettingDto.getRegisterCoinCount());
 
         this.userInfoMapper.insert(userInfo);
