@@ -27,9 +27,10 @@ public class RedisComponent {
     private AppConfig appConfig;
 
     public String saveCheckCode(String code) {
+        //生成每个图片验证码对应的唯一的key
         String checkCodeKey = UUID.randomUUID().toString();
         redisUtils.setex(Constants.REDIS_KEY_CHECK_CODE + checkCodeKey, code,
-                Constants.REDIS_KEY_EXPIRES_ONE_MIN * 10);
+                Constants.REDIS_KEY_EXPIRES_ONE_MIN * 10);//过期时间给10分钟
         return checkCodeKey;
     }
 

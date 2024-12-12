@@ -2,7 +2,7 @@ package com.itjn.entity.constants;
 
 public class Constants {
 
-    //正则
+    //密码的正则表达式格式
     public static final String REGEX_PASSWORD = "^(?=.*\\d)(?=.*[a-zA-Z])[\\da-zA-Z~!@#$%^&*_]{8,18}$";
 
     public static final Integer ZERO = 0;
@@ -30,10 +30,8 @@ public class Constants {
 
     public static final Integer REDIS_KEY_EXPIRES_ONE_SECONDS = 1000;
 
-    /**
-     * 过期时间 1分钟  毫秒
-     */
-    public static final Integer REDIS_KEY_EXPIRES_ONE_MIN = 60000;
+    //过期时间设为1分钟
+    public static final Integer REDIS_KEY_EXPIRES_ONE_MIN = 60000;//单位为毫秒
     /**
      * 过期时间 1天
      */

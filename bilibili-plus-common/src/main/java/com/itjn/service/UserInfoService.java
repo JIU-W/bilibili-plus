@@ -109,6 +109,12 @@ public interface UserInfoService {
 
     TokenUserInfoDto login(String email, String password, String ip);
 
+    /**
+     * 注册
+     * @param email
+     * @param nickName
+     * @param password
+     */
     void register(String email, String nickName, String password);
 
 

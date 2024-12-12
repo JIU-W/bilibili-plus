@@ -1,6 +1,7 @@
 package com.itjn.web.controller;
 
 import com.itjn.component.RedisComponent;
+import com.itjn.entity.constants.Constants;
 import com.itjn.entity.po.UserInfo;
 import com.itjn.entity.query.UserInfoQuery;
 import com.itjn.entity.vo.PaginationResultVO;
@@ -43,23 +44,24 @@ public class AccountController extends ABaseController {
         return successResponseVO;
     }
 
-    /**
-     * 验证码
-     */
+    //生成验证码
     @RequestMapping(value = "/checkCode")
     //@GlobalInterceptor
     public ResponseVO checkCode() {
         ArithmeticCaptcha captcha = new ArithmeticCaptcha(100, 42);
+
         String code = captcha.text();
         String checkCodeKey = redisComponent.saveCheckCode(code);
-        String checkCodeBase64 = captcha.toBase64();
+
         Map<String, String> result = new HashMap<>();
+        String checkCodeBase64 = captcha.toBase64();
         result.put("checkCode", checkCodeBase64);
         result.put("checkCodeKey", checkCodeKey);
         return getSuccessResponseVO(result);
     }
 
-  /*  @RequestMapping(value = "/register")
+    //注册
+    @RequestMapping(value = "/register")
     //@GlobalInterceptor
     public ResponseVO register(@NotEmpty @Email @Size(max = 150) String email,
                                @NotEmpty @Size(max = 20) String nickName,
@@ -75,7 +77,7 @@ public class AccountController extends ABaseController {
         } finally {
             redisComponent.cleanCheckCode(checkCodeKey);
         }
-    }*/
+    }
 
 
 /*
