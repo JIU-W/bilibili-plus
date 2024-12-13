@@ -27,10 +27,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @description 用户账号管理
  * @author JIU-W
- * @date 2024-12-12
  * @version 1.0
+ * @description 用户账号管理
+ * @date 2024-12-12
  */
 @RestController("accountController")
 @RequestMapping("/account")
@@ -104,11 +104,15 @@ public class AccountController extends ABaseController {
             //TODO 设置粉丝数，关注数，硬币数
             return getSuccessResponseVO(tokenUserInfoDto);
         } finally {
-            //清理reids里面的验证码
+            //用过一次的验证码就要删除
             redisComponent.cleanCheckCode(checkCodeKey);
-            //清理token
-            Cookie[] cookies = request.getCookies();
-            if (cookies != null) {
+            //请求登录接口过来时，必定会响应一个新的token给前端存到cookie里，如果之前前端浏览器就登录过的话，
+            //那么之前的cookie里的token就失效了，会被新的替代。
+            //这样的话这个老的token就可以去redis里删除了(其实设置了过期时间我们可以不用手动删除的)
+            //因为在cookie里，所以每次请求的请求头里会有token，所以就能拿到去redis删掉。
+
+            /*Cookie[] cookies = request.getCookies();
+            if (cookies != null) {//请求体里的cookies也可能为null，也就是之前没有登录过，或者是之前的过期了。
                 String token = null;
                 for (Cookie cookie : cookies) {
                     if (Constants.TOKEN_WEB.equals(cookie.getName())) {
@@ -116,12 +120,30 @@ public class AccountController extends ABaseController {
                     }
                 }
                 if (!StringTools.isEmpty(token)) {
+                    //清除redis里的上一个登录的token
+                    redisComponent.cleanToken(token);
+                }
+            }*/
+
+            //TODO 方法二：不用去遍历请求头里的cookie了，直接从请求头里拿，效率更高。
+            //存在浏览器cookie的token的格式：token=2537aba2-c49c-49d9-b3a4-bc9f3af4ab38
+            String cookie = request.getHeader("Cookie");
+            if (!StringTools.isEmpty(cookie)) {
+                String token = null;
+                String[] split = cookie.split("=");
+                if (Constants.TOKEN_WEB.equals(split[0])) {
+                    token = split[1];
+                }
+                if (!StringTools.isEmpty(token)) {
                     redisComponent.cleanToken(token);
                 }
             }
+
         }
+
     }
-/*
+
+    //自动登录
     @RequestMapping(value = "/autoLogin")
     //@GlobalInterceptor
     public ResponseVO autoLogin(HttpServletResponse response) {
@@ -135,6 +157,10 @@ public class AccountController extends ABaseController {
         }
         return getSuccessResponseVO(tokenUserInfoDto);
     }
+
+
+
+/*
 
     @RequestMapping(value = "/logout")
     //@GlobalInterceptor

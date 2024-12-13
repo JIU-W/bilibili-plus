@@ -2,6 +2,7 @@ package com.itjn.web.controller;
 
 import com.itjn.component.RedisComponent;
 import com.itjn.entity.constants.Constants;
+import com.itjn.entity.dto.TokenUserInfoDto;
 import com.itjn.entity.enums.DateTimePatternEnum;
 import com.itjn.entity.enums.ResponseCodeEnum;
 import com.itjn.entity.vo.ResponseVO;
@@ -84,12 +85,6 @@ public class ABaseController {
         return month + "/" + file.getName();
     }
 
-    public TokenUserInfoDto getTokenUserInfoDto() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        String token = request.getHeader(Constants.TOKEN_WEB);
-        return redisComponent.getTokenInfo(token);
-    }
-
     public TokenUserInfoDto getTokenInfoFromCookie() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String token = getTokenFromCookie(request);
@@ -114,6 +109,13 @@ public class ABaseController {
     }
 
 */
+
+    public TokenUserInfoDto getTokenUserInfoDto() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String token = request.getHeader(Constants.TOKEN_WEB);
+        return redisComponent.getTokenInfo(token);
+    }
+
 
     /**
      * 保存token到cookie中
