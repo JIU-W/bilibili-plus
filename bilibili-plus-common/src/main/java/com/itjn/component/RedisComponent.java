@@ -42,9 +42,12 @@ public class RedisComponent {
         return (String) redisUtils.get(Constants.REDIS_KEY_CHECK_CODE + checkCodeKey);
     }
 
-
+    /**
+     * 将登录用户的用户信息以及token信息保存到redis中
+     * @param tokenUserInfoDto
+     */
     public void saveTokenInfo(TokenUserInfoDto tokenUserInfoDto) {
-        String token = UUID.randomUUID().toString();
+        String token = UUID.randomUUID().toString();                //token过期时间设置为7天
         tokenUserInfoDto.setExpireAt(System.currentTimeMillis() + Constants.REDIS_KEY_EXPIRES_DAY * 7);
         tokenUserInfoDto.setToken(token);
         redisUtils.setex(Constants.REDIS_KEY_TOKEN_WEB + token, tokenUserInfoDto, Constants.REDIS_KEY_EXPIRES_DAY * 7);

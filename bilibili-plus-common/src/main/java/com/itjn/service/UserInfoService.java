@@ -107,6 +107,13 @@ public interface UserInfoService {
      */
     Integer deleteUserInfoByNickName(String nickName);
 
+    /**
+     * 登录
+     * @param email
+     * @param password
+     * @param ip
+     * @return
+     */
     TokenUserInfoDto login(String email, String password, String ip);
 
     /**

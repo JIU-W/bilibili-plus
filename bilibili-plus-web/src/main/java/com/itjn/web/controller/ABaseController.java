@@ -1,5 +1,7 @@
 package com.itjn.web.controller;
 
+import com.itjn.component.RedisComponent;
+import com.itjn.entity.constants.Constants;
 import com.itjn.entity.enums.DateTimePatternEnum;
 import com.itjn.entity.enums.ResponseCodeEnum;
 import com.itjn.entity.vo.ResponseVO;
@@ -23,8 +25,8 @@ public class ABaseController {
     //@Resource
     //private AppConfig appConfig;
 
-    //@Resource
-    //private RedisComponent redisComponent;
+    @Resource
+    private RedisComponent redisComponent;
 
     protected static final String STATUC_SUCCESS = "success";
 
@@ -111,14 +113,28 @@ public class ABaseController {
         return null;
     }
 
+*/
+
+    /**
+     * 保存token到cookie中
+     * @param response
+     * @param token
+     */
     public void saveToken2Cookie(HttpServletResponse response, String token) {
         Cookie cookie = new Cookie(Constants.TOKEN_WEB, token);
-        //-1会话级别 单位秒
-        cookie.setMaxAge(Constants.TIME_SECONDS_DAY * 7);
+        //设置Cookie的最大存活时间   -1会话级别 单位：秒
+        cookie.setMaxAge(Constants.TIME_SECONDS_DAY * 7);//7天
+        //设置Cookie的路径.setPath("/")：表示这个Cookie在整个应用的根路径下都有效，即所有路径都可以访问这个Cookie。
         cookie.setPath("/");
+        //往HTTP响应里加上Cookie对象，当响应发送给客户端时，浏览器会保存这个Cookie。
         response.addCookie(cookie);
     }
 
+
+    /**
+     * 清理cookie
+     * @param response
+     */
     public void cleanCookie(HttpServletResponse response) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         Cookie[] cookies = request.getCookies();
@@ -135,8 +151,12 @@ public class ABaseController {
             }
         }
     }
-*/
 
+
+    /**
+     * 获取用户ip地址
+     * @return
+     */
     protected String getIpAddr() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String ip = request.getHeader("x-forwarded-for");

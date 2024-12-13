@@ -39,9 +39,9 @@ public class Constants {
 
     //过期时间设为1分钟
     public static final Integer REDIS_KEY_EXPIRES_ONE_MIN = 60000;//单位为毫秒
-    /**
-     * 过期时间 1天
-     */
+
+
+    //过期时间为1天
     public static final Integer REDIS_KEY_EXPIRES_DAY = REDIS_KEY_EXPIRES_ONE_MIN * 60 * 24;
 
     public static final Integer TIME_SECONDS_DAY = 60 * 60 * 24;
@@ -61,6 +61,7 @@ public class Constants {
 
     //存在redis的验证码的key前缀
     public static final String REDIS_KEY_CHECK_CODE = REDIS_KEY_PREFIX + "checkcode:";
+
     public static final String REDIS_KEY_TOKEN_WEB = REDIS_KEY_PREFIX + "token:web:";
 
     public static final String REDIS_KEY_TOKEN_ADMIN = REDIS_KEY_PREFIX + "token:admin:";

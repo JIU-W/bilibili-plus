@@ -86,21 +86,27 @@ public class AccountController extends ABaseController {
         }
     }
 
-
+    //登录
     @RequestMapping(value = "/login")
     //@GlobalInterceptor
-    public ResponseVO login(HttpServletRequest request, HttpServletResponse response, @NotEmpty @Email String email, @NotEmpty String password,
+    public ResponseVO login(HttpServletRequest request, HttpServletResponse response,
+                            @NotEmpty @Email String email, @NotEmpty String password,
                             @NotEmpty String checkCodeKey, @NotEmpty String checkCode) {
         try {
             if (!checkCode.equalsIgnoreCase(redisComponent.getCheckCode(checkCodeKey))) {
                 throw new BusinessException("图片验证码不正确");
             }
+            //记录最后一次登录时的ip
             String ip = getIpAddr();
             TokenUserInfoDto tokenUserInfoDto = userInfoService.login(email, password, ip);
-            //saveToken2Cookie(response, tokenUserInfoDto.getToken());
+            //保存token到cookie中
+            saveToken2Cookie(response, tokenUserInfoDto.getToken());
+            //TODO 设置粉丝数，关注数，硬币数
             return getSuccessResponseVO(tokenUserInfoDto);
         } finally {
+            //清理reids里面的验证码
             redisComponent.cleanCheckCode(checkCodeKey);
+            //清理token
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 String token = null;

@@ -203,25 +203,6 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public TokenUserInfoDto login(String email, String password, String ip) {
-        UserInfo userInfo = this.userInfoMapper.selectByEmail(email);
-        if (null == userInfo || !userInfo.getPassword().equals(password)) {
-            throw new BusinessException("账号或者密码错误");
-        }
-        if (UserStatusEnum.DISABLE.getStatus().equals(userInfo.getStatus())) {
-            throw new BusinessException("账号已禁用");
-        }
-        UserInfo updateInfo = new UserInfo();
-        updateInfo.setLastLoginTime(new Date());
-        updateInfo.setLastLoginIp(ip);
-        this.userInfoMapper.updateByUserId(updateInfo, userInfo.getUserId());
-
-        TokenUserInfoDto tokenUserInfoDto = CopyTools.copy(userInfo, TokenUserInfoDto.class);
-        redisComponent.saveTokenInfo(tokenUserInfoDto);
-        return tokenUserInfoDto;
-    }
-
-    @Override
     @Transactional(rollbackFor = Exception.class)
     public void register(String email, String nickName, String password) {
         UserInfo userInfo = this.userInfoMapper.selectByEmail(email);
@@ -252,6 +233,28 @@ public class UserInfoServiceImpl implements UserInfoService {
 
         this.userInfoMapper.insert(userInfo);
     }
+
+    @Override
+    public TokenUserInfoDto login(String email, String password, String ip) {
+        UserInfo userInfo = this.userInfoMapper.selectByEmail(email);
+        if (null == userInfo || !userInfo.getPassword().equals(password)) {
+            throw new BusinessException("账号或者密码错误");
+        }
+        if (UserStatusEnum.DISABLE.getStatus().equals(userInfo.getStatus())) {
+            throw new BusinessException("账号已禁用");
+        }
+        UserInfo updateInfo = new UserInfo();
+        updateInfo.setLastLoginTime(new Date());
+        //设置最后一次登录ip地址
+        updateInfo.setLastLoginIp(ip);
+        //更新数据库的用户信息
+        this.userInfoMapper.updateByUserId(updateInfo, userInfo.getUserId());
+        TokenUserInfoDto tokenUserInfoDto = CopyTools.copy(userInfo, TokenUserInfoDto.class);
+        //将登录用户的用户信息以及token信息保存到redis中
+        redisComponent.saveTokenInfo(tokenUserInfoDto);
+        return tokenUserInfoDto;
+    }
+
 
     @Override
     @Transactional
