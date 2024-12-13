@@ -110,12 +110,6 @@ public class ABaseController {
 
 */
 
-    public TokenUserInfoDto getTokenUserInfoDto() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        String token = request.getHeader(Constants.TOKEN_WEB);
-        return redisComponent.getTokenInfo(token);
-    }
-
 
     /**
      * 保存token到cookie中
@@ -134,7 +128,21 @@ public class ABaseController {
 
 
     /**
-     * 清理cookie
+     * 从redis中获取用户信息
+     * @return
+     */
+    public TokenUserInfoDto getTokenUserInfoDto() {
+        //从当前的请求上下文中获取 HttpServletRequest 对象
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String token = request.getHeader(Constants.TOKEN_WEB);
+        return redisComponent.getTokenInfo(token);
+    }
+
+
+
+    /**
+     * 清理服务端redis里的token
+     * 同时 清除浏览器端的cookie中的token
      * @param response
      */
     public void cleanCookie(HttpServletResponse response) {
@@ -145,6 +153,7 @@ public class ABaseController {
         }
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals(Constants.TOKEN_WEB)) {
+                //清理redis中的token
                 redisComponent.cleanToken(cookie.getValue());
                 cookie.setMaxAge(0);
                 cookie.setPath("/");
@@ -152,6 +161,7 @@ public class ABaseController {
                 break;
             }
         }
+
     }
 
 

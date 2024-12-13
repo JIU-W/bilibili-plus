@@ -3,6 +3,7 @@ package com.itjn.web.controller;
 import com.itjn.component.RedisComponent;
 import com.itjn.entity.constants.Constants;
 import com.itjn.entity.dto.TokenUserInfoDto;
+import com.itjn.entity.dto.UserCountInfoDto;
 import com.itjn.entity.po.UserInfo;
 import com.itjn.entity.query.UserInfoQuery;
 import com.itjn.entity.vo.PaginationResultVO;
@@ -111,7 +112,8 @@ public class AccountController extends ABaseController {
             //这样的话这个老的token就可以去redis里删除了(其实设置了过期时间我们可以不用手动删除的)
             //因为在cookie里，所以每次请求的请求头里会有token，所以就能拿到去redis删掉。
 
-            /*Cookie[] cookies = request.getCookies();
+            //方法一
+            Cookie[] cookies = request.getCookies();
             if (cookies != null) {//请求体里的cookies也可能为null，也就是之前没有登录过，或者是之前的过期了。
                 String token = null;
                 for (Cookie cookie : cookies) {
@@ -123,11 +125,11 @@ public class AccountController extends ABaseController {
                     //清除redis里的上一个登录的token
                     redisComponent.cleanToken(token);
                 }
-            }*/
+            }
 
-            //TODO 方法二：不用去遍历请求头里的cookie了，直接从请求头里拿，效率更高。
+            //TODO 方法二：不用像方法一那样去遍历cookies集合了，直接从请求头里拿，效率更高。
             //存在浏览器cookie的token的格式：token=2537aba2-c49c-49d9-b3a4-bc9f3af4ab38
-            String cookie = request.getHeader("Cookie");
+            /*String cookie = request.getHeader("Cookie");
             if (!StringTools.isEmpty(cookie)) {
                 String token = null;
                 String[] split = cookie.split("=");
@@ -137,37 +139,51 @@ public class AccountController extends ABaseController {
                 if (!StringTools.isEmpty(token)) {
                     redisComponent.cleanToken(token);
                 }
-            }
+            }*/
+
+            //TODO 方法三：前端往前端代码往请求头里手动塞了token，不用再从cookie里拿了，直接从请求头里拿，效率更高。
+
 
         }
 
     }
 
-    //自动登录
+
+    /**
+     * 自动登录
+     *
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "/autoLogin")
     //@GlobalInterceptor
     public ResponseVO autoLogin(HttpServletResponse response) {
+        //从redis中获取用户信息
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        //用户长时间没有登录，用户token过期了，也就是存在浏览器cookie里的token过期了，这时返回null前端就会提示用户重新登录。
         if (tokenUserInfoDto == null) {
             return getSuccessResponseVO(null);
         }
+        //如果用户登录网站时，token还没过期，但是token快要到期了(token还有不到1天过期)，我们要给用户做续期。
         if (tokenUserInfoDto.getExpireAt() - System.currentTimeMillis() < Constants.REDIS_KEY_EXPIRES_DAY) {
+            //重新设置一个token去给用户做自动登录续期
             redisComponent.saveTokenInfo(tokenUserInfoDto);
+            //保存新的token到cookie中
             saveToken2Cookie(response, tokenUserInfoDto.getToken());
         }
+        //TODO 设置粉丝数，关注数，硬币数
         return getSuccessResponseVO(tokenUserInfoDto);
     }
 
-
-
-/*
-
+    //退出登录
     @RequestMapping(value = "/logout")
     //@GlobalInterceptor
     public ResponseVO logout(HttpServletResponse response) {
+        //清除cookie:清理服务端redis里的token,同时清除浏览器端的cookie中的token
         cleanCookie(response);
         return getSuccessResponseVO(null);
     }
+
 
     @RequestMapping(value = "/getUserCountInfo")
     //@GlobalInterceptor(checkLogin = true)
@@ -176,6 +192,6 @@ public class AccountController extends ABaseController {
         UserCountInfoDto userCountInfoDto = userInfoService.getUserCountInfo(tokenUserInfoDto.getUserId());
         return getSuccessResponseVO(userCountInfoDto);
     }
-    */
+
 
 }
