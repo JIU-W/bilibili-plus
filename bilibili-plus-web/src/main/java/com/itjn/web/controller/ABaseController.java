@@ -155,6 +155,7 @@ public class ABaseController {
             if (cookie.getName().equals(Constants.TOKEN_WEB)) {
                 //清理redis中的token
                 redisComponent.cleanToken(cookie.getValue());
+                //当参数为0时，表示立即删除该Cookie。
                 cookie.setMaxAge(0);
                 cookie.setPath("/");
                 response.addCookie(cookie);

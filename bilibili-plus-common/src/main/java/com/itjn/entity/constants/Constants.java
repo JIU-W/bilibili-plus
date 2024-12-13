@@ -38,7 +38,7 @@ public class Constants {
     public static final Integer REDIS_KEY_EXPIRES_ONE_SECONDS = 1000;
 
     //过期时间设为1分钟
-    public static final Integer REDIS_KEY_EXPIRES_ONE_MIN = 60000;//单位为毫秒
+    public static final Integer REDIS_KEY_EXPIRES_ONE_MIN = 60000;
 
 
     //过期时间为1天

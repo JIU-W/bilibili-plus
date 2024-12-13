@@ -15,6 +15,8 @@ import com.wf.captcha.ArithmeticCaptcha;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
@@ -112,8 +114,8 @@ public class AccountController extends ABaseController {
             //这样的话这个老的token就可以去redis里删除了(其实设置了过期时间我们可以不用手动删除的)
             //因为在cookie里，所以每次请求的请求头里会有token，所以就能拿到去redis删掉。
 
-            //方法一
-            Cookie[] cookies = request.getCookies();
+            //方法一：
+            /*Cookie[] cookies = request.getCookies();
             if (cookies != null) {//请求体里的cookies也可能为null，也就是之前没有登录过，或者是之前的过期了。
                 String token = null;
                 for (Cookie cookie : cookies) {
@@ -125,10 +127,11 @@ public class AccountController extends ABaseController {
                     //清除redis里的上一个登录的token
                     redisComponent.cleanToken(token);
                 }
-            }
+            }*/
 
-            //TODO 方法二：不用像方法一那样去遍历cookies集合了，直接从请求头里拿，效率更高。
-            //存在浏览器cookie的token的格式：token=2537aba2-c49c-49d9-b3a4-bc9f3af4ab38
+            //方法二：不用像方法一那样去遍历cookies集合了，直接从请求头里拿，效率更高。
+            //浏览器发请求时请求头中自带的cookie中的token数据的格式：
+            //[Cookie:  token=2537aba2-c49c-49d9-b3a4-bc9f3af4ab38; ....; ....]//....代表Cookie里的其它数据
             /*String cookie = request.getHeader("Cookie");
             if (!StringTools.isEmpty(cookie)) {
                 String token = null;
@@ -140,9 +143,14 @@ public class AccountController extends ABaseController {
                     redisComponent.cleanToken(token);
                 }
             }*/
+            //方法一和方法二都是在“前端代码中没有手动塞token到请求头的情况下”获取请求头里的token数据的方法。
 
-            //TODO 方法三：前端往前端代码往请求头里手动塞了token，不用再从cookie里拿了，直接从请求头里拿，效率更高。
-
+            //方法三：前端代码里往请求头里手动塞了token，不用再从cookie里拿了，直接从请求头里拿。
+            String token = request.getHeader(Constants.TOKEN_WEB);
+            if (!StringTools.isEmpty(token)) {
+                //清除redis里的上一个登录的token
+                redisComponent.cleanToken(token);
+            }
 
         }
 

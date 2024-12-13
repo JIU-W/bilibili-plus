@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication(scanBasePackages = {"com.itjn"})
 @MapperScan("com.itjn.mappers")
+@EnableTransactionManagement
+@EnableScheduling
 public class EasyliveWebRunApplication {
     public static void main(String[] args) {
         SpringApplication.run(EasyliveWebRunApplication.class, args);
