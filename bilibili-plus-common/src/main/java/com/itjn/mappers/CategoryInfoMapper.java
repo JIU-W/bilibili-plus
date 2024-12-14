@@ -45,6 +45,11 @@ public interface CategoryInfoMapper<T, P> extends BaseMapper<T, P> {
      */
     T selectByCategoryCode(@Param("categoryCode") String categoryCode);
 
+    /**
+     * 获取当前分类下(父级分类相同)的最大排序号
+     * @param pCategoryId
+     * @return
+     */
     Integer selectMaxSort(@Param("pCategoryId") Integer pCategoryId);
 
     void updateSortBatch(@Param("categoryList") List<CategoryInfo> categoryList);

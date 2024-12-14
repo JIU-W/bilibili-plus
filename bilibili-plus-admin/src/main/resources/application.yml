@@ -37,6 +37,8 @@ spring:
     timeout: 2000
 #mybatis 大小写转驼峰
 mybatis:
+  # mapper配置文件(一定不能少)
+  mapper-locations: classpath:com.itjn.mappers/*.xml
   configuration:
     map-underscore-to-camel-case: true
 

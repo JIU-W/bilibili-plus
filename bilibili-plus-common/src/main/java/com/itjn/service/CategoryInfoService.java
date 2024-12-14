@@ -13,7 +13,7 @@ import java.util.List;
 public interface CategoryInfoService {
 
     /**
-     * 根据条件查询列表
+     * 根据条件查询列表(将查询结果转换为树形结构)
      */
     List<CategoryInfo> findListByParam(CategoryInfoQuery param);
 
@@ -87,6 +87,10 @@ public interface CategoryInfoService {
      */
     Integer deleteCategoryInfoByCategoryCode(String categoryCode);
 
+    /**
+     * 新增或修改分类信息
+     * @param bean
+     */
     void saveCategoryInfo(CategoryInfo bean);
 
     void delCategory(Integer categoryId);

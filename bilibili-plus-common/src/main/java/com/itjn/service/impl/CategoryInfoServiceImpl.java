@@ -37,21 +37,25 @@ public class CategoryInfoServiceImpl implements CategoryInfoService {
     private RedisComponent redisComponent;
 
     /**
-     * 根据条件查询列表
+     * 根据条件查询列表(将查询结果转换为树形结构)
+     *
      */
     @Override
     public List<CategoryInfo> findListByParam(CategoryInfoQuery param) {
         List<CategoryInfo> categoryInfoList = this.categoryInfoMapper.selectList(param);
         if (param.getConvert2Tree() != null && param.getConvert2Tree()) {
+            //将查询结果转换为树形结构
             categoryInfoList = convertLine2Tree(categoryInfoList, Constants.ZERO);
         }
         return categoryInfoList;
     }
 
+    //使用递归的方法：将查询结果转换为树形结构
     private List<CategoryInfo> convertLine2Tree(List<CategoryInfo> dataList, Integer pid) {
         List<CategoryInfo> children = new ArrayList();
         for (CategoryInfo m : dataList) {
-            if (m.getCategoryId() != null && m.getpCategoryId() != null && m.getpCategoryId().equals(pid)) {
+            if (m.getCategoryId() != null && m.getpCategoryId() != null
+                    && m.getpCategoryId().equals(pid)) {
                 m.setChildren(convertLine2Tree(dataList, m.getCategoryId()));
                 children.add(m);
             }
@@ -180,15 +184,24 @@ public class CategoryInfoServiceImpl implements CategoryInfoService {
 
     @Override
     public void saveCategoryInfo(CategoryInfo bean) {
+        //根据分类编号查询，因为数据库里给分类编号设置了唯一索引
         CategoryInfo dbBean = this.categoryInfoMapper.selectByCategoryCode(bean.getCategoryCode());
-        if (bean.getCategoryId() == null && dbBean != null || bean.getCategoryId() != null && dbBean != null && !bean.getCategoryId().equals(dbBean.getCategoryId())) {
+        //新增的特殊情况：新增的分类编号不能和数据库里的重复
+        if (bean.getCategoryId() == null && dbBean != null) {
+            throw new BusinessException("分类编号已经存在");
+        }
+        //修改的特殊情况：修改后的分类编号不能和数据库里的重复
+        if (bean.getCategoryId() != null && dbBean != null && !bean.getCategoryId().equals(dbBean.getCategoryId())) {
             throw new BusinessException("分类编号已经存在");
         }
         if (bean.getCategoryId() == null) {
+            //获取当前分类下(父级分类相同)的最大排序号
             Integer maxSort = this.categoryInfoMapper.selectMaxSort(bean.getpCategoryId());
             bean.setSort(maxSort + 1);
+            //新增
             this.categoryInfoMapper.insert(bean);
         } else {
+            //修改
             this.categoryInfoMapper.updateByCategoryId(bean, bean.getCategoryId());
         }
         //刷新缓存
@@ -197,15 +210,17 @@ public class CategoryInfoServiceImpl implements CategoryInfoService {
 
     @Override
     public void delCategory(Integer categoryId) {
-        VideoInfoQuery videoInfoQuery = new VideoInfoQuery();
+        //TODO 判断该分类下是否有视频信息
+        /*VideoInfoQuery videoInfoQuery = new VideoInfoQuery();
         videoInfoQuery.setCategoryIdOrPCategoryId(categoryId);
         Integer count = videoInfoService.findCountByParam(videoInfoQuery);
         if (count > 0) {
             throw new BusinessException("分类下有视频信息，无法删除");
-        }
+        }*/
 
         CategoryInfoQuery categoryInfoQuery = new CategoryInfoQuery();
         categoryInfoQuery.setCategoryIdOrPCategoryId(categoryId);
+        //根据分类id删除分类信息 以及 将其作为父级分类id删除该分类下的子分类
         categoryInfoMapper.deleteByParam(categoryInfoQuery);
 
         //刷新缓存
@@ -221,7 +236,7 @@ public class CategoryInfoServiceImpl implements CategoryInfoService {
         for (String categoryId : categoryIdArray) {
             CategoryInfo categoryInfo = new CategoryInfo();
             categoryInfo.setCategoryId(Integer.parseInt(categoryId));
-            categoryInfo.setpCategoryId(pCategoryId);
+            categoryInfo.setPCategoryId(pCategoryId);
             categoryInfo.setSort(++sort);
             categoryInfoList.add(categoryInfo);
         }
@@ -230,6 +245,7 @@ public class CategoryInfoServiceImpl implements CategoryInfoService {
         save2Redis();
     }
 
+    //刷新缓存
     private void save2Redis() {
         CategoryInfoQuery categoryInfoQuery = new CategoryInfoQuery();
         categoryInfoQuery.setOrderBy("sort asc");

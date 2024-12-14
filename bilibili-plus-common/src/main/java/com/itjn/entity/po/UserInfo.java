@@ -3,6 +3,7 @@ package com.itjn.entity.po;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.itjn.entity.enums.DateTimePatternEnum;
 import com.itjn.utils.DateUtil;
+import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -12,6 +13,7 @@ import java.util.Date;
 /**
  * 用户信息
  */
+@Data
 public class UserInfo implements Serializable {
 
 
@@ -115,181 +117,6 @@ public class UserInfo implements Serializable {
 
     private Boolean haveFocus;
 
-    public Integer getFansCount() {
-        return fansCount;
-    }
-
-    public void setFansCount(Integer fansCount) {
-        this.fansCount = fansCount;
-    }
-
-    public Integer getFocusCount() {
-        return focusCount;
-    }
-
-    public void setFocusCount(Integer focusCount) {
-        this.focusCount = focusCount;
-    }
-
-    public Integer getLikeCount() {
-        return likeCount;
-    }
-
-    public void setLikeCount(Integer likeCount) {
-        this.likeCount = likeCount;
-    }
-
-    public Integer getPlayCount() {
-        return playCount;
-    }
-
-    public void setPlayCount(Integer playCount) {
-        this.playCount = playCount;
-    }
-
-    public Boolean getHaveFocus() {
-        return haveFocus;
-    }
-
-    public void setHaveFocus(Boolean haveFocus) {
-        this.haveFocus = haveFocus;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getUserId() {
-        return this.userId;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
-    public String getNickName() {
-        return this.nickName;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getAvatar() {
-        return this.avatar;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getEmail() {
-        return this.email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPassword() {
-        return this.password;
-    }
-
-    public void setSex(Integer sex) {
-        this.sex = sex;
-    }
-
-    public Integer getSex() {
-        return this.sex;
-    }
-
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
-    }
-
-    public String getBirthday() {
-        return this.birthday;
-    }
-
-    public void setSchool(String school) {
-        this.school = school;
-    }
-
-    public String getSchool() {
-        return this.school;
-    }
-
-    public void setPersonIntroduction(String personIntroduction) {
-        this.personIntroduction = personIntroduction;
-    }
-
-    public String getPersonIntroduction() {
-        return this.personIntroduction;
-    }
-
-    public void setJoinTime(Date joinTime) {
-        this.joinTime = joinTime;
-    }
-
-    public Date getJoinTime() {
-        return this.joinTime;
-    }
-
-    public void setLastLoginTime(Date lastLoginTime) {
-        this.lastLoginTime = lastLoginTime;
-    }
-
-    public Date getLastLoginTime() {
-        return this.lastLoginTime;
-    }
-
-    public void setLastLoginIp(String lastLoginIp) {
-        this.lastLoginIp = lastLoginIp;
-    }
-
-    public String getLastLoginIp() {
-        return this.lastLoginIp;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Integer getStatus() {
-        return this.status;
-    }
-
-    public void setNoticeInfo(String noticeInfo) {
-        this.noticeInfo = noticeInfo;
-    }
-
-    public String getNoticeInfo() {
-        return this.noticeInfo;
-    }
-
-    public void setTotalCoinCount(Integer totalCoinCount) {
-        this.totalCoinCount = totalCoinCount;
-    }
-
-    public Integer getTotalCoinCount() {
-        return this.totalCoinCount;
-    }
-
-    public void setCurrentCoinCount(Integer currentCoinCount) {
-        this.currentCoinCount = currentCoinCount;
-    }
-
-    public Integer getCurrentCoinCount() {
-        return this.currentCoinCount;
-    }
-
-    public Integer getTheme() {
-        return theme;
-    }
-
-    public void setTheme(Integer theme) {
-        this.theme = theme;
-    }
 
     @Override
     public String toString() {
@@ -298,4 +125,5 @@ public class UserInfo implements Serializable {
                 DateTimePatternEnum.YYYY_MM_DD_HH_MM_SS.getPattern())) + "，最后登录时间:" + (lastLoginTime == null ? "空" : DateUtil.format(lastLoginTime,
                 DateTimePatternEnum.YYYY_MM_DD_HH_MM_SS.getPattern())) + "，最后登录IP:" + (lastLoginIp == null ? "空" : lastLoginIp) + "，0:禁用 1:正常:" + (status == null ? "空" : status) + "，空间公告:" + (noticeInfo == null ? "空" : noticeInfo) + "，硬币总数量:" + (totalCoinCount == null ? "空" : totalCoinCount) + "，当前硬币数:" + (currentCoinCount == null ? "空" : currentCoinCount) + "，主题:" + (theme == null ? "空" : theme);
     }
+
 }

@@ -1,6 +1,9 @@
 package com.itjn.entity.query;
 
+import lombok.Data;
+
 //分页基础参数
+@Data
 public class BaseParam {
 
 	//分页对象(后端创建)
@@ -12,38 +15,7 @@ public class BaseParam {
 	//每页记录数(前端传的)
 	private Integer pageSize;
 
-	//排序字段(前端传的)
+	//排序字段(后端设置或者前端传)
 	private String orderBy;
 
-	public SimplePage getSimplePage() {
-		return simplePage;
-	}
-
-	public void setSimplePage(SimplePage simplePage) {
-		this.simplePage = simplePage;
-	}
-
-	public Integer getPageNo() {
-		return pageNo;
-	}
-
-	public void setPageNo(Integer pageNo) {
-		this.pageNo = pageNo;
-	}
-
-	public Integer getPageSize() {
-		return pageSize;
-	}
-
-	public void setPageSize(Integer pageSize) {
-		this.pageSize = pageSize;
-	}
-
-	public void setOrderBy(String orderBy){
-		this.orderBy = orderBy;
-	}
-
-	public String getOrderBy(){
-		return this.orderBy;
-	}
 }
