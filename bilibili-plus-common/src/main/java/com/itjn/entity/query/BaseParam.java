@@ -3,9 +3,16 @@ package com.itjn.entity.query;
 //分页基础参数
 public class BaseParam {
 
+	//分页对象(后端创建)
 	private SimplePage simplePage;
+
+	//当前页码(前端传的)
 	private Integer pageNo;
+
+	//每页记录数(前端传的)
 	private Integer pageSize;
+
+	//排序字段(前端传的)
 	private String orderBy;
 
 	public SimplePage getSimplePage() {

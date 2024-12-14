@@ -86,8 +86,10 @@ public class UserInfoServiceImpl implements UserInfoService {
         //将分页对象设置到param中
         param.setSimplePage(page);
 
-        //结合前端传过来的页码和每页记录数以及分页对象中的start，end去进行最终的分页查询(实际上SQL用到的只有start和pageSize)(end等价于pageSize)
+        //结合前端传过来的页码和每页记录数以及分页对象中的start，end去进行最终的分页查询
+        //(实际上SQL中用到的只有start和pageSize)(end等价于pageSize)
         List<UserInfo> list = this.findListByParam(param);
+
         PaginationResultVO<UserInfo> result = new PaginationResultVO(count, pageSize, pageNo, page.getPageTotal(), list);
         return result;                                                                        //总页数
     }

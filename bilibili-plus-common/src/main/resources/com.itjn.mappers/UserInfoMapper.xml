@@ -109,10 +109,11 @@
             <include refid="base_condition_filed"/>
         </where>
     </sql>
-
+    <!---->
     <!-- 通用查询条件列-->
     <sql id="query_condition">
         <where>
+            <!--基础查询条件列-->
             <include refid="base_condition_filed"/>
             <if test="query.userIdFuzzy!= null  and query.userIdFuzzy!=''">
                 and u.user_id like concat('%', #{query.userIdFuzzy}, '%')
@@ -684,7 +685,9 @@
 
     <!-- 根据UserId删除-->
     <delete id="deleteByUserId">
-        delete from user_info where user_id=#{userId}
+        delete
+        from user_info
+        where user_id = #{userId}
     </delete>
 
     <!-- 根据PrimaryKey获取对象-->
@@ -752,7 +755,9 @@
 
     <!-- 根据Email删除-->
     <delete id="deleteByEmail">
-        delete from user_info where email=#{email}
+        delete
+        from user_info
+        where email = #{email}
     </delete>
 
     <!-- 根据PrimaryKey获取对象-->
@@ -820,7 +825,9 @@
 
     <!-- 根据NickName删除-->
     <delete id="deleteByNickName">
-        delete from user_info where nick_name=#{nickName}
+        delete
+        from user_info
+        where nick_name = #{nickName}
     </delete>
 
     <!-- 根据PrimaryKey获取对象-->
