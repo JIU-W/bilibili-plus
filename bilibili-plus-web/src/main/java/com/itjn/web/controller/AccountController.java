@@ -112,13 +112,16 @@ public class AccountController extends ABaseController {
             //请求登录接口过来时，必定会响应一个新的token给前端存到cookie里，如果之前前端浏览器就登录过的话，
             //那么之前的cookie里的token就失效了，会被新的替代。
             //这样的话这个老的token就可以去redis里删除了(其实设置了过期时间我们可以不用手动删除的)
-            //因为在cookie里，所以每次请求的请求头里会有token，所以就能拿到去redis删掉。
+            //其实这步有点不太能起到作用，因为在上一步的退出登录时我们就已经清理了redis和cookie里的token。
 
-            //方法一：
-            /*Cookie[] cookies = request.getCookies();
-            if (cookies != null) {//请求体里的cookies也可能为null，也就是之前没有登录过，或者是之前的过期了。
+            //方法一：是在“前端代码中没有手动塞token到请求头的情况下”获取请求头里的Cookie中的token数据的方法。
+            //浏览器发请求时请求头中自带的cookie中的数据的格式：
+            //[Cookie:  token=2537aba2-c49c-49d9-b3a4-bc9f3af4ab38; ....; ....]//....代表Cookie里的其它数据
+            Cookie[] cookies = request.getCookies();//String cookie = request.getHeader("Cookie");
+            if (cookies != null) {
                 String token = null;
                 for (Cookie cookie : cookies) {
+                    System.out.println("cookie:" + cookie.getName() + "=" + cookie.getValue());
                     if (Constants.TOKEN_WEB.equals(cookie.getName())) {
                         token = cookie.getValue();
                     }
@@ -127,30 +130,13 @@ public class AccountController extends ABaseController {
                     //清除redis里的上一个登录的token
                     redisComponent.cleanToken(token);
                 }
-            }*/
-
-            //方法二：不用像方法一那样去遍历cookies集合了，直接从请求头里拿，效率更高。
-            //浏览器发请求时请求头中自带的cookie中的token数据的格式：
-            //[Cookie:  token=2537aba2-c49c-49d9-b3a4-bc9f3af4ab38; ....; ....]//....代表Cookie里的其它数据
-            /*String cookie = request.getHeader("Cookie");
-            if (!StringTools.isEmpty(cookie)) {
-                String token = null;
-                String[] split = cookie.split("=");
-                if (Constants.TOKEN_WEB.equals(split[0])) {
-                    token = split[1];
-                }
-                if (!StringTools.isEmpty(token)) {
-                    redisComponent.cleanToken(token);
-                }
-            }*/
-            //方法一和方法二都是在“前端代码中没有手动塞token到请求头的情况下”获取请求头里的token数据的方法。
-
-            //方法三：前端代码里往请求头里手动塞了token，不用再从cookie里拿了，直接从请求头里拿。
-            String token = request.getHeader(Constants.TOKEN_WEB);
+            }
+            //方法二：前端代码里往请求头里手动塞了token，不用再从cookie里拿了，直接从请求头里拿。
+            /*String token = request.getHeader(Constants.TOKEN_WEB);
             if (!StringTools.isEmpty(token)) {
                 //清除redis里的上一个登录的token
                 redisComponent.cleanToken(token);
-            }
+            }*/
 
         }
 
