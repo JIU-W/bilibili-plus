@@ -14,6 +14,7 @@ public class UserInfoQuery extends BaseParam {
      */
     private String userId;
 
+    //用于模糊查询
     private String userIdFuzzy;
 
     /**
@@ -21,6 +22,7 @@ public class UserInfoQuery extends BaseParam {
      */
     private String nickName;
 
+    //用于模糊查询
     private String nickNameFuzzy;
 
     /**
@@ -28,6 +30,7 @@ public class UserInfoQuery extends BaseParam {
      */
     private String avatar;
 
+    //用于模糊查询
     private String avatarFuzzy;
 
     /**
