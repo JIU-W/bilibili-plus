@@ -54,7 +54,7 @@ public class ABaseController {
     public void saveToken2Cookie(HttpServletResponse response, String token) {
         Cookie cookie = new Cookie(Constants.TOKEN_ADMIN, token);
         //设置Cookie的最大存活时间
-        //当参数为-1时，表示Cookie是会话Cookie，即Cookie只在当前会话期间有效，浏览器关闭后Cookie将被自动删除。
+        //当参数为-1时，表示Cookie是会话Cookie，即Cookie只在当前会话期间有效，浏览器彻底关闭后Cookie将被自动删除。
         cookie.setMaxAge(-1);
         cookie.setPath("/");
         response.addCookie(cookie);
