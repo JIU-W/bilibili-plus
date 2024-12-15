@@ -46,7 +46,7 @@ public class FileController extends ABaseController {
     private VideoInfoFilePostService videoInfoFilePostService;
 
     /**
-     * 上传图片
+     * 上传图片(上传分类信息的图标和背景)
      * @param file
      * @param createThumbnail
      * @return
