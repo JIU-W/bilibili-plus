@@ -106,6 +106,10 @@ public interface CategoryInfoService {
      */
     void changeSort(Integer pCategoryId, String categoryIds);
 
+    /**
+     * 获取所有分类信息
+     * @return
+     */
     List<CategoryInfo> getAllCategoryList();
 
 }

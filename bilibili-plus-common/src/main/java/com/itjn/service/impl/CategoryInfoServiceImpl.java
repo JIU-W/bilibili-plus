@@ -26,7 +26,6 @@ import java.util.List;
 @Service("categoryInfoService")
 public class CategoryInfoServiceImpl implements CategoryInfoService {
 
-
     @Resource
     private CategoryInfoMapper<CategoryInfo, CategoryInfoQuery> categoryInfoMapper;
 
@@ -260,10 +259,11 @@ public class CategoryInfoServiceImpl implements CategoryInfoService {
     }
 
 
-    @Override
+    //从redis缓存中获取所有的分类(用于用户端的查询)
     public List<CategoryInfo> getAllCategoryList() {
         List<CategoryInfo> categoryInfoList = redisComponent.getCategoryList();
         if (categoryInfoList.isEmpty()) {
+            //刷新redis缓存
             save2Redis();
         }
         return redisComponent.getCategoryList();
