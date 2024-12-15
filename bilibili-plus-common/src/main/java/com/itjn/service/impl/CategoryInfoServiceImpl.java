@@ -55,8 +55,8 @@ public class CategoryInfoServiceImpl implements CategoryInfoService {
     private List<CategoryInfo> convertLine2Tree(List<CategoryInfo> dataList, Integer pid) {
         List<CategoryInfo> children = new ArrayList();                          //pid: 0
         for (CategoryInfo m : dataList) {
-            if (m.getCategoryId() != null && m.getpCategoryId() != null
-                    && m.getpCategoryId().equals(pid)) {
+            if (m.getCategoryId() != null && m.getPCategoryId() != null
+                    && m.getPCategoryId().equals(pid)) {
                 m.setChildren(convertLine2Tree(dataList, m.getCategoryId()));
                 children.add(m);
             }
@@ -197,7 +197,7 @@ public class CategoryInfoServiceImpl implements CategoryInfoService {
         }
         if (bean.getCategoryId() == null) {
             //获取当前分类下(父级分类相同)的最大排序号
-            Integer maxSort = this.categoryInfoMapper.selectMaxSort(bean.getpCategoryId());
+            Integer maxSort = this.categoryInfoMapper.selectMaxSort(bean.getPCategoryId());
             bean.setSort(maxSort + 1);
             //新增
             this.categoryInfoMapper.insert(bean);
@@ -205,7 +205,7 @@ public class CategoryInfoServiceImpl implements CategoryInfoService {
             //修改
             this.categoryInfoMapper.updateByCategoryId(bean, bean.getCategoryId());
         }
-        //刷新缓存
+        //刷新redis缓存
         save2Redis();
     }
 
@@ -224,7 +224,7 @@ public class CategoryInfoServiceImpl implements CategoryInfoService {
         //根据分类id删除分类信息 以及 将其作为父级分类id删除该分类下的子分类
         categoryInfoMapper.deleteByParam(categoryInfoQuery);
 
-        //刷新缓存
+        //刷新redis缓存
         save2Redis();
     }
 
@@ -243,16 +243,19 @@ public class CategoryInfoServiceImpl implements CategoryInfoService {
         }
         //批量修改(传集合到数据库一起更改而不是循环调用数据库)
         this.categoryInfoMapper.updateSortBatch(categoryInfoList);
-        //刷新缓存
+        //刷新redis缓存
         save2Redis();
     }
 
-    //刷新缓存
+    //刷新redis缓存：将数据库中的分类信息保存到redis缓存中
     private void save2Redis() {
         CategoryInfoQuery categoryInfoQuery = new CategoryInfoQuery();
         categoryInfoQuery.setOrderBy("sort asc");
+        //查询出所有的分类
         List<CategoryInfo> sourceCategoryInfoList = this.categoryInfoMapper.selectList(categoryInfoQuery);
+        //转换为树形结构
         List<CategoryInfo> categoryInfoList = convertLine2Tree(sourceCategoryInfoList, 0);
+        //保存到redis缓存中
         redisComponent.saveCategoryList(categoryInfoList);
     }
 
