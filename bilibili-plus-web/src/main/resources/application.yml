@@ -1,7 +1,5 @@
 server:
   port: 7090
-  servlet:
-    context-path: /web
 spring:
   servlet:
     multipart:
