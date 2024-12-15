@@ -74,6 +74,9 @@
             <if test="query.backgroundFuzzy!= null  and query.backgroundFuzzy!=''">
                 and c.background like concat('%', #{query.backgroundFuzzy}, '%')
             </if>
+            <if test="query.categoryIdOrPCategoryId != null">
+                and c.category_id = #{query.categoryIdOrPCategoryId} or c.p_category_id = #{query.categoryIdOrPCategoryId}
+            </if>
         </where>
     </sql>
 
@@ -379,7 +382,10 @@
 
     <update id="updateSortBatch">
         <foreach collection="categoryList" separator=";" item="item">
-            update category_info set sort = #{item.sort} where category_id = #{item.categoryId} and p_category_id=#{item.pCategoryId}
+            update category_info
+            set sort = #{item.sort}
+            where category_id = #{item.categoryId} and p_category_id = #{item.pCategoryId}
         </foreach>
     </update>
+
 </mapper>

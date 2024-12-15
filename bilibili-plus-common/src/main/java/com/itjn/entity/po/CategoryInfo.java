@@ -8,7 +8,7 @@ import java.util.List;
 
 
 /**
- * 分类信息:对应数据库表：category_info
+ * 分类信息
  */
 @Data
 public class CategoryInfo implements Serializable {
@@ -49,9 +49,10 @@ public class CategoryInfo implements Serializable {
      */
     private Integer sort;
 
+    /**
+     * 子分类
+     */
     public List<CategoryInfo> children = new ArrayList<>();
-
-
 
 
     public Integer getpCategoryId() {

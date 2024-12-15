@@ -51,4 +51,5 @@ interface BaseMapper<T, P> {
 	 * deleteByParam:(多条件删除)
 	 */
 	Integer deleteByParam(@Param("query") P p);
+
 }

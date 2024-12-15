@@ -52,5 +52,10 @@ public interface CategoryInfoMapper<T, P> extends BaseMapper<T, P> {
      */
     Integer selectMaxSort(@Param("pCategoryId") Integer pCategoryId);
 
+    /**
+     * 批量更新排序号
+     * @param categoryList
+     */
     void updateSortBatch(@Param("categoryList") List<CategoryInfo> categoryList);
+
 }

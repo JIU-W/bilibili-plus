@@ -37,8 +37,7 @@ public class CategoryInfoServiceImpl implements CategoryInfoService {
     private RedisComponent redisComponent;
 
     /**
-     * 根据条件查询列表(将查询结果转换为树形结构)
-     *
+     * 根据条件查询列表
      */
     @Override
     public List<CategoryInfo> findListByParam(CategoryInfoQuery param) {
@@ -50,9 +49,11 @@ public class CategoryInfoServiceImpl implements CategoryInfoService {
         return categoryInfoList;
     }
 
-    //使用递归的方法：将查询结果转换为树形结构
+    //使用递归的方法：将查询结果由线形结构转换为树形结构
+    //虽然我们项目的分类业务只有两级，但是下面这个递归算法适用于多级的情况。
+    //只是两级我们其实也可以使用数据库的表的自连接查询。
     private List<CategoryInfo> convertLine2Tree(List<CategoryInfo> dataList, Integer pid) {
-        List<CategoryInfo> children = new ArrayList();
+        List<CategoryInfo> children = new ArrayList();                          //pid: 0
         for (CategoryInfo m : dataList) {
             if (m.getCategoryId() != null && m.getpCategoryId() != null
                     && m.getpCategoryId().equals(pid)) {
@@ -228,20 +229,21 @@ public class CategoryInfoServiceImpl implements CategoryInfoService {
     }
 
 
-    @Override
-    public void changeSort(Integer pCategoryId, String categoryIds) {
-        String[] categoryIdArray = categoryIds.split(",");
+    @Override     //参数格式：举例(对14对应的分类点击下移)：  pCategoryId:0   categoryIds:21,14,22
+    public void changeSort(Integer pCategoryId, String categoryIds) {   //可以看出前端给的是移动后的该有的顺序
+        String[] categoryIdArray = categoryIds.split(",");//拿到21 14 22
         List<CategoryInfo> categoryInfoList = new ArrayList<>();
-        Integer sort = 1;
+        Integer sort = 0;
         for (String categoryId : categoryIdArray) {
             CategoryInfo categoryInfo = new CategoryInfo();
             categoryInfo.setCategoryId(Integer.parseInt(categoryId));
             categoryInfo.setPCategoryId(pCategoryId);
-            categoryInfo.setSort(++sort);
+            categoryInfo.setSort(++sort);//根据前端给的该有的顺序去进行重排序(也就是对sort进行重新赋值排序)
             categoryInfoList.add(categoryInfo);
         }
+        //批量修改(传集合到数据库一起更改而不是循环调用数据库)
         this.categoryInfoMapper.updateSortBatch(categoryInfoList);
-
+        //刷新缓存
         save2Redis();
     }
 
@@ -263,4 +265,6 @@ public class CategoryInfoServiceImpl implements CategoryInfoService {
         }
         return redisComponent.getCategoryList();
     }
+
+
 }

@@ -73,7 +73,16 @@ public class CategoryController extends ABaseController{
         return getSuccessResponseVO(null);
     }
 
-
-
+    /**
+     * 修改分类排序(上移或者下移)
+     * @param pCategoryId 点击上移或者下移的分类的父级id
+     * @param categoryIds 这个父级id对应的所有子分类的id集合
+     * @return
+     */
+    @RequestMapping("/changeSort")
+    public ResponseVO changeSort(@NotNull Integer pCategoryId, @NotEmpty String categoryIds) {
+        categoryInfoService.changeSort(pCategoryId, categoryIds);
+        return getSuccessResponseVO(null);
+    }
 
 }
