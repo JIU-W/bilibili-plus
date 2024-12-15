@@ -79,10 +79,12 @@ public class StringTools {
         return RandomStringUtils.random(count, false, true);
     }
 
+    //判断路径是否合法
     public static boolean pathIsOk(String path) {
         if (StringTools.isEmpty(path)) {
             return true;
         }
+        //路径中包含..的话则会访问到上一层目录的内容导致越权
         if (path.contains("../") || path.contains("..\\")) {
             return false;
         }
