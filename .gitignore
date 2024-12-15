@@ -2,6 +2,7 @@
 target/
 **/target/
 
+file/
 logs/
 **/test/
 temp/
