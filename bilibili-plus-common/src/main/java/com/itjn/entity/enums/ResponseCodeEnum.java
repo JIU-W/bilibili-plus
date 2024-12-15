@@ -27,4 +27,5 @@ public enum ResponseCodeEnum {
     public String getMsg() {
         return msg;
     }
+
 }

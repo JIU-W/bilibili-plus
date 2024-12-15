@@ -14,6 +14,13 @@ public class ProcessUtils {
 
     private static final String osName = System.getProperty("os.name").toLowerCase();
 
+    /**
+     * 执行命令
+     * @param cmd
+     * @param showLog
+     * @return
+     * @throws BusinessException
+     */
     public static String executeCommand(String cmd, Boolean showLog) throws BusinessException {
         if (StringTools.isEmpty(cmd)) {
             return null;

@@ -54,17 +54,23 @@ public class FileController extends ABaseController {
      */
     @RequestMapping("/uploadImage")
     public ResponseVO uploadCover(@NotNull MultipartFile file, @NotNull Boolean createThumbnail) throws IOException {
+        //获取当前年月
         String month = DateUtil.format(new Date(), DateTimePatternEnum.YYYYMM.getPattern());
+        //创建文件夹   /file/cover/yyyyMM
         String folder = appConfig.getProjectFolder() + Constants.FILE_FOLDER + Constants.FILE_COVER + month;
         File folderFile = new File(folder);
         if (!folderFile.exists()) {
             folderFile.mkdirs();
         }
         String fileName = file.getOriginalFilename();
+        //获取文件后缀
         String fileSuffix = fileName.substring(fileName.lastIndexOf("."));
+        //随机生成长度为30的文件名
         String realFileName = StringTools.getRandomString(Constants.LENGTH_30) + fileSuffix;
         String filePath = folder + "/" + realFileName;
+        //将临时文件转存到目标路径下
         file.transferTo(new File(filePath));
+        //如果createThumbnail为true则生成缩略图
         if (createThumbnail) {
             //生成缩略图
             fFmpegUtils.createImageThumbnail(filePath);

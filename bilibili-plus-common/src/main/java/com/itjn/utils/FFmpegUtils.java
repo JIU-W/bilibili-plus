@@ -23,7 +23,7 @@ public class FFmpegUtils {
     public void createImageThumbnail(String filePath) {
         final String CMD_CREATE_IMAGE_THUMBNAIL = "ffmpeg -i \"%s\" -vf scale=200:-1 \"%s\"";
         String cmd = String.format(CMD_CREATE_IMAGE_THUMBNAIL, filePath, filePath + Constants.IMAGE_THUMBNAIL_SUFFIX);
-        //
+        //执行命令
         ProcessUtils.executeCommand(cmd, appConfig.getShowFFmpegLog());
     }
 
