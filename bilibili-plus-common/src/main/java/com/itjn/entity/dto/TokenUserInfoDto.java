@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 
 /**
- * @description 登录返回给前端的用户信息
+ * @description 登录返回给前端的用户信息/当前登录用户信息
  * @author JIU-W
  * @date 2024-12-13
  * @version 1.0

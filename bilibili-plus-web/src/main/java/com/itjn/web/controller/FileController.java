@@ -58,11 +58,15 @@ public class FileController extends ABaseController {
     @RequestMapping("/getResource")
     //@GlobalInterceptor
     public void getResource(HttpServletResponse response, @NotEmpty String sourceName) {
+        //判断文件名是否合法(路径中包含 .. 的话则会访问到上一层目录的内容导致越权)
         if (!StringTools.pathIsOk(sourceName)) {
             throw new BusinessException(ResponseCodeEnum.CODE_600);
         }
+        //获取文件后缀
         String suffix = StringTools.getFileSuffix(sourceName);
+        //根据文件后缀判断文件类型
         FileTypeEnum fileTypeEnum = FileTypeEnum.getBySuffix(suffix);
+        //不支持的文件类型
         if (null == fileTypeEnum) {
             throw new BusinessException(ResponseCodeEnum.CODE_600);
         }
@@ -73,6 +77,7 @@ public class FileController extends ABaseController {
                 response.setContentType("image/" + suffix.replace(".", ""));
                 break;
         }
+        //读取文件
         readFile(response, sourceName);
     }
 
@@ -92,6 +97,65 @@ public class FileController extends ABaseController {
             log.error("读取文件异常", e);
         }
     }
+
+    /**
+     * 上传视频文件之前的接口
+     * @param fileName 文件名
+     * @param chunks 文件分片总数
+     * @return
+     */
+    @RequestMapping("/preUploadVideo")
+    //@GlobalInterceptor(checkLogin = true)
+    public ResponseVO preUploadVideo(@NotEmpty String fileName, @NotNull Integer chunks) {
+        //获取当前用户信息
+        TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        //保存上传文件信息到redis
+        String uploadId = redisComponent.savePreVideoFileInfo(tokenUserInfoDto.getUserId(), fileName, chunks);
+        //返回上传文件标识
+        return getSuccessResponseVO(uploadId);
+    }
+
+    /**
+     * 上传视频文件：分片上传
+     * @param chunkFile
+     * @param chunkIndex
+     * @param uploadId
+     * @return
+     * @throws IOException
+     */
+    // 1.上传文件分片 2.合并文件分片 3.生成视频文件 4.生成视频缩略图
+    // 5.生成视频封面 6.生成视频信息 7.生成视频播放地址 8.生成视频播放记录
+    @RequestMapping("/uploadVideo")
+    //@GlobalInterceptor(checkLogin = true)
+    public ResponseVO uploadVideo(@NotNull MultipartFile chunkFile, @NotNull Integer chunkIndex, @NotEmpty String uploadId) throws IOException {
+        //获取当前用户信息
+        TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        //从redis中获取上传文件时的临时信息
+        UploadingFileDto fileDto = redisComponent.getUploadingVideoFile(tokenUserInfoDto.getUserId(), uploadId);
+        if (fileDto == null) {
+            throw new BusinessException("文件不存在请重新上传");
+        }
+        //获取系统设置
+        SysSettingDto sysSettingDto = redisComponent.getSysSettingDto();
+        //判断文件大小
+        if (fileDto.getFileSize() > sysSettingDto.getVideoSize() * Constants.MB_SIZE) {
+            throw new BusinessException("文件超过最大文件限制");
+        }
+        //判断分片
+        if ((chunkIndex - 1) > fileDto.getChunkIndex() || chunkIndex > fileDto.getChunks() - 1) {
+            throw new BusinessException(ResponseCodeEnum.CODE_600);
+        }
+        String folder = appConfig.getProjectFolder() + Constants.FILE_FOLDER + Constants.FILE_FOLDER_TEMP + fileDto.getFilePath();
+        File targetFile = new File(folder + "/" + chunkIndex);
+        chunkFile.transferTo(targetFile);
+        //记录文件上传的分片数
+        fileDto.setChunkIndex(chunkIndex);
+        fileDto.setFileSize(fileDto.getFileSize() + chunkFile.getSize());
+        redisComponent.updateVideoFileInfo(tokenUserInfoDto.getUserId(), fileDto);
+        return getSuccessResponseVO(null);
+    }
+
+
 
 
 }

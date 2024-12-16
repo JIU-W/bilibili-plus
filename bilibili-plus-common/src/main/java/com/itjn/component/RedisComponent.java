@@ -92,37 +92,42 @@ public class RedisComponent {
     }
 
     /**
-     * 保存上传文件信息
-     *
+     * 保存上传文件时的临时信息到redis
      * @param fileName
      * @param chunks
      * @return
      */
     public String savePreVideoFileInfo(String userId, String fileName, Integer chunks) {
+        //生成每个上传文件的唯一标识
         String uploadId = StringTools.getRandomString(Constants.LENGTH_15);
+        //保存上传文件信息
         UploadingFileDto fileDto = new UploadingFileDto();
-        fileDto.setChunks(chunks);
-        fileDto.setFileName(fileName);
-        fileDto.setUploadId(uploadId);
-        fileDto.setChunkIndex(0);
+        fileDto.setChunks(chunks);//分片总数
+        fileDto.setFileName(fileName);//文件名
+        fileDto.setUploadId(uploadId);//上传文件标识
+        fileDto.setChunkIndex(0);//当前上传分片
 
         String day = DateUtil.format(new Date(), DateTimePatternEnum.YYYYMMDD.getPattern());
         String filePath = day + "/" + userId + uploadId;
-
+        //上传文件到的临时目录
         String folder = appConfig.getProjectFolder() + Constants.FILE_FOLDER + Constants.FILE_FOLDER_TEMP + filePath;
         File folderFile = new File(folder);
         if (!folderFile.exists()) {
             folderFile.mkdirs();
         }
-        fileDto.setFilePath(filePath);
-        redisUtils.setex(Constants.REDIS_KEY_UPLOADING_FILE + userId + uploadId, fileDto, Constants.REDIS_KEY_EXPIRES_DAY);
+        fileDto.setFilePath(filePath);//文件路径
+        //保存上传文件时的临时信息到redis
+        redisUtils.setex(Constants.REDIS_KEY_UPLOADING_FILE + userId + uploadId, fileDto,
+                Constants.REDIS_KEY_EXPIRES_DAY);
         return uploadId;
     }
 
     public void updateVideoFileInfo(String userId, UploadingFileDto fileDto) {
-        redisUtils.setex(Constants.REDIS_KEY_UPLOADING_FILE + userId + fileDto.getUploadId(), fileDto, Constants.REDIS_KEY_EXPIRES_DAY);
+        redisUtils.setex(Constants.REDIS_KEY_UPLOADING_FILE + userId + fileDto.getUploadId(), fileDto,
+                Constants.REDIS_KEY_EXPIRES_DAY);
     }
 
+    //获取上传文件时的临时信息
     public UploadingFileDto getUploadingVideoFile(String userId, String uploadId) {
         return (UploadingFileDto) redisUtils.get(Constants.REDIS_KEY_UPLOADING_FILE + userId + uploadId);
     }
@@ -133,17 +138,21 @@ public class RedisComponent {
 
     /**
      * 获取系统设置
-     *
      * @return
      */
     public SysSettingDto getSysSettingDto() {
         SysSettingDto sysSettingDto = (SysSettingDto) redisUtils.get(Constants.REDIS_KEY_SYS_SETTING);
         if (sysSettingDto == null) {
+            //取默认值
             sysSettingDto = new SysSettingDto();
         }
         return sysSettingDto;
     }
 
+    /**
+     * 保存系统设置
+     * @param sysSettingDto
+     */
     public void saveSettingDto(SysSettingDto sysSettingDto) {
         redisUtils.set(Constants.REDIS_KEY_SYS_SETTING, sysSettingDto);
     }
