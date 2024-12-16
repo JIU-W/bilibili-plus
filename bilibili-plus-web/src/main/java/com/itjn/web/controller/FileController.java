@@ -116,18 +116,17 @@ public class FileController extends ABaseController {
     }
 
     /**
-     * 上传视频文件：分片上传
+     * 上传视频文件：上传分片
      * @param chunkFile
      * @param chunkIndex
      * @param uploadId
      * @return
      * @throws IOException
      */
-    // 1.上传文件分片 2.合并文件分片 3.生成视频文件 4.生成视频缩略图
-    // 5.生成视频封面 6.生成视频信息 7.生成视频播放地址 8.生成视频播放记录
     @RequestMapping("/uploadVideo")
     //@GlobalInterceptor(checkLogin = true)
-    public ResponseVO uploadVideo(@NotNull MultipartFile chunkFile, @NotNull Integer chunkIndex, @NotEmpty String uploadId) throws IOException {
+    public ResponseVO uploadVideo(@NotNull MultipartFile chunkFile, @NotNull Integer chunkIndex,
+                                  @NotEmpty String uploadId) throws IOException {
         //获取当前用户信息
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         //从redis中获取上传文件时的临时信息
@@ -141,21 +140,46 @@ public class FileController extends ABaseController {
         if (fileDto.getFileSize() > sysSettingDto.getVideoSize() * Constants.MB_SIZE) {
             throw new BusinessException("文件超过最大文件限制");
         }
-        //判断分片
+        //判断分片：1.判断上传的分片是不是按照顺序一块一块来的：0->1->2->...    2.分片序号不能大于分片总数
         if ((chunkIndex - 1) > fileDto.getChunkIndex() || chunkIndex > fileDto.getChunks() - 1) {
             throw new BusinessException(ResponseCodeEnum.CODE_600);
         }
+
+        //保存分片文件到本地临时目录
         String folder = appConfig.getProjectFolder() + Constants.FILE_FOLDER + Constants.FILE_FOLDER_TEMP + fileDto.getFilePath();
-        File targetFile = new File(folder + "/" + chunkIndex);
-        chunkFile.transferTo(targetFile);
+        //将前端上传过来的临时文件(分片文件) 转存到 目标文件(本地临时文件)
+        chunkFile.transferTo(new File(folder + "/" + chunkIndex));
+
         //记录文件上传的分片数
         fileDto.setChunkIndex(chunkIndex);
+        //更新文件上传的大小
         fileDto.setFileSize(fileDto.getFileSize() + chunkFile.getSize());
+        //更新redis中的上传文件信息
         redisComponent.updateVideoFileInfo(tokenUserInfoDto.getUserId(), fileDto);
         return getSuccessResponseVO(null);
     }
 
-
+    /**
+     * 删除上传的视频文件
+     * @param uploadId
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping("/delUploadVideo")
+    public ResponseVO delUploadVideo(@NotEmpty String uploadId) throws IOException {
+        //获取当前用户信息
+        TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        UploadingFileDto fileDto = redisComponent.getUploadingVideoFile(tokenUserInfoDto.getUserId(), uploadId);
+        if (fileDto == null) {
+            throw new BusinessException("文件不存在请重新上传");
+        }
+        //删除redis中的上传文件信息
+        redisComponent.delVideoFileInfo(tokenUserInfoDto.getUserId(), uploadId);
+        //删除本地临时文件
+        FileUtils.deleteDirectory(new File(appConfig.getProjectFolder() + Constants.FILE_FOLDER +
+                Constants.FILE_FOLDER_TEMP + fileDto.getFilePath()));
+        return getSuccessResponseVO(uploadId);
+    }
 
 
 }

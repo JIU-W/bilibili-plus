@@ -12,12 +12,12 @@ import java.io.Serializable;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UploadingFileDto implements Serializable {
-    private String uploadId;
-    private String fileName;
-    private Integer chunkIndex;
-    private Integer chunks;
-    private Long fileSize = 0L;
-    private String filePath;
+    private String uploadId;//上传文件标识
+    private String fileName;//文件名
+    private Integer chunkIndex;//当前上传分片序号
+    private Integer chunks;//分片总数
+    private Long fileSize = 0L;//文件大小
+    private String filePath;//文件路径
 
     public Long getFileSize() {
         return fileSize;
