@@ -160,7 +160,7 @@ public class FileController extends ABaseController {
     }
 
     /**
-     * 删除上传的视频文件
+     * 删除上传的视频文件(此时视频作品还未发布，只是在服务端的临时文件目录处删除)
      * @param uploadId
      * @return
      * @throws IOException
@@ -179,6 +179,34 @@ public class FileController extends ABaseController {
         FileUtils.deleteDirectory(new File(appConfig.getProjectFolder() + Constants.FILE_FOLDER +
                 Constants.FILE_FOLDER_TEMP + fileDto.getFilePath()));
         return getSuccessResponseVO(uploadId);
+    }
+
+    /**
+     * 上传图片(上传视频作品的封面)
+     * @param file
+     * @param createThumbnail
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping("/uploadImage")
+    //@GlobalInterceptor(checkLogin = true)
+    public ResponseVO uploadCover(@NotNull MultipartFile file, @NotNull Boolean createThumbnail) throws IOException {
+        String day = DateUtil.format(new Date(), DateTimePatternEnum.YYYYMMDD.getPattern());
+        String folder = appConfig.getProjectFolder() + Constants.FILE_FOLDER + Constants.FILE_COVER + day;
+        File folderFile = new File(folder);
+        if (!folderFile.exists()) {
+            folderFile.mkdirs();
+        }
+        String fileName = file.getOriginalFilename();
+        String fileSuffix = fileName.substring(fileName.lastIndexOf("."));
+        String realFileName = StringTools.getRandomString(Constants.LENGTH_30) + fileSuffix;
+        String filePath = folder + "/" + realFileName;
+        file.transferTo(new File(filePath));
+        if (createThumbnail) {
+            //生成缩略图
+            fFmpegUtils.createImageThumbnail(filePath);
+        }
+        return getSuccessResponseVO(Constants.FILE_COVER + day + "/" + realFileName);
     }
 
 
