@@ -140,7 +140,9 @@ public class FileController extends ABaseController {
         if (fileDto.getFileSize() > sysSettingDto.getVideoSize() * Constants.MB_SIZE) {
             throw new BusinessException("文件超过最大文件限制");
         }
-        //判断分片：1.判断上传的分片是不是按照顺序一块一块来的：0->1->2->...    2.分片序号不能大于分片总数
+        //判断分片：
+        //1.判断上传的分片是不是按照顺序一块一块来的：0->1->2->3->...
+        //2.分片序号不能大于 分片总数 - 1
         if ((chunkIndex - 1) > fileDto.getChunkIndex() || chunkIndex > fileDto.getChunks() - 1) {
             throw new BusinessException(ResponseCodeEnum.CODE_600);
         }
