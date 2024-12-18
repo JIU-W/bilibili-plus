@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 
 /**
- * 视频文件信息
+ * 视频文件信息---发布表
  */
 public class VideoInfoFilePost implements Serializable {
 

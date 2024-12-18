@@ -67,6 +67,7 @@ public class UCenterVideoPostController extends ABaseController {
         //获取上传文件的集合
         List<VideoInfoFilePost> fileInfoList = JsonUtils.convertJsonArray2List(uploadFileList, VideoInfoFilePost.class);
 
+        //封装(视频信息---发布表)
         VideoInfoPost videoInfo = new VideoInfoPost();
         videoInfo.setVideoId(videoId);
         videoInfo.setVideoName(videoName);
@@ -77,9 +78,9 @@ public class UCenterVideoPostController extends ABaseController {
         videoInfo.setTags(tags);
         videoInfo.setIntroduction(introduction);
         videoInfo.setInteraction(interaction);
-
         videoInfo.setUserId(tokenUserInfoDto.getUserId());
 
+        //保存投稿信息、修改投稿信息
         videoInfoPostService.saveVideoInfo(videoInfo, fileInfoList);
         return getSuccessResponseVO(null);
     }
