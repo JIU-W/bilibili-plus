@@ -72,7 +72,7 @@ public interface VideoInfoPostService {
     Integer deleteVideoInfoPostByVideoId(String videoId);
 
     /**
-     *
+     * 发布投稿、修改已投稿的信息
      */
     void saveVideoInfo(VideoInfoPost videoInfoPost, List<VideoInfoFilePost> uploadFileList);
 

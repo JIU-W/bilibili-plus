@@ -80,7 +80,7 @@ public class UCenterVideoPostController extends ABaseController {
         videoInfo.setInteraction(interaction);
         videoInfo.setUserId(tokenUserInfoDto.getUserId());
 
-        //保存投稿信息、修改投稿信息
+        //发布投稿、修改已投稿的信息
         videoInfoPostService.saveVideoInfo(videoInfo, fileInfoList);
         return getSuccessResponseVO(null);
     }

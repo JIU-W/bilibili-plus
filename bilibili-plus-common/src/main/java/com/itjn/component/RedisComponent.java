@@ -157,12 +157,22 @@ public class RedisComponent {
         redisUtils.set(Constants.REDIS_KEY_SYS_SETTING, sysSettingDto);
     }
 
+    /**
+     * 添加待转码文件到消息队列
+     * @param fileList
+     */
     public void addFile2TransferQueue(List<VideoInfoFilePost> fileList) {
         redisUtils.lpushAll(Constants.REDIS_KEY_QUEUE_TRANSFER, fileList, 0);
     }
 
-    public void addFile2DelQueue(String videoId, List<String> fileIdList) {
-        redisUtils.lpushAll(Constants.REDIS_KEY_FILE_DEL + videoId, fileIdList, Constants.REDIS_KEY_EXPIRES_DAY * 7);
+    /**
+     * 添加待删除文件到消息队列
+     * @param videoId
+     * @param filePathList
+     */
+    public void addFile2DelQueue(String videoId, List<String> filePathList) {
+        redisUtils.lpushAll(Constants.REDIS_KEY_FILE_DEL + videoId, filePathList,
+                Constants.REDIS_KEY_EXPIRES_DAY * 7);
     }
 
     public List<String> getDelFileList(String videoId) {

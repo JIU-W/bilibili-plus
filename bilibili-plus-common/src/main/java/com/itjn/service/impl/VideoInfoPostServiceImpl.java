@@ -186,14 +186,14 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
         if (uploadFileList.size() > redisComponent.getSysSettingDto().getVideoPCount()) {
             throw new BusinessException(ResponseCodeEnum.CODE_600);
         }
-        //判断是 新增投稿 还是 修改投稿信息
-        if (!StringTools.isEmpty(videoInfoPost.getVideoId())) {//修改投稿信息
+        //判断是不是修改投稿信息
+        if (!StringTools.isEmpty(videoInfoPost.getVideoId())) {//修改投稿信息的特殊处理
             //判断投稿是否存在
             VideoInfoPost videoInfoPostDb = this.videoInfoPostMapper.selectByVideoId(videoInfoPost.getVideoId());
             if (videoInfoPostDb == null) {
                 throw new BusinessException(ResponseCodeEnum.CODE_600);
             }
-            //判断投稿状态 "待审核"时不允许修改投稿信息
+            //判断投稿状态 "转码中"和"待审核"时不允许修改投稿信息
             if (ArrayUtils.contains(new Integer[]{VideoStatusEnum.STATUS0.getStatus(), VideoStatusEnum.STATUS2.getStatus()}, videoInfoPostDb.getStatus())) {
                 throw new BusinessException(ResponseCodeEnum.CODE_600);
             }
@@ -201,10 +201,15 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
 
         Date curDate = new Date();
         String videoId = videoInfoPost.getVideoId();
+        //投稿里删除了的分p视频(指的是修改投稿信息时删除之前上传过的分p视频，因为这些分p视频的信息已经入数据库了，
+        //而增加投稿信息时删除的分p视频还没有入库，就影响不大)
         List<VideoInfoFilePost> deleteFileList = new ArrayList();
-        List<VideoInfoFilePost> addFileList = uploadFileList;
+        //投稿里新增了的分p视频
+        List<VideoInfoFilePost> addFileList = null;
 
+        //判断是要 新增投稿 还是 修改投稿信息
         if (StringTools.isEmpty(videoId)) {
+            //新增投稿
             videoId = StringTools.getRandomString(Constants.LENGTH_10);
             videoInfoPost.setVideoId(videoId);
             videoInfoPost.setCreateTime(curDate);
@@ -212,32 +217,45 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
             videoInfoPost.setStatus(VideoStatusEnum.STATUS0.getStatus());
             this.videoInfoPostMapper.insert(videoInfoPost);
         } else {
-            //查询已经存在的视频
+            //修改投稿信息
+
+            //查询已经存在的视频(之前存储了信息在数据库的分p视频)
             VideoInfoFilePostQuery fileQuery = new VideoInfoFilePostQuery();
             fileQuery.setVideoId(videoId);
             fileQuery.setUserId(videoInfoPost.getUserId());
             List<VideoInfoFilePost> dbInfoFileList = this.videoInfoFilePostMapper.selectList(fileQuery);
-            Map<String, VideoInfoFilePost> uploadFileMap = uploadFileList.stream().collect(Collectors.toMap(item -> item.getUploadId(), Function.identity(), (data1,
-                                                                                                                                                              data2) -> data2));
-            //删除的文件 -> 数据库中有，uploadFileList没有
-            Boolean updateFileName = false;
+
+            //uploadFileList：修改投稿信息时前端传过来的分p视频集合
+            //将其转换成Map，key是uploadId，value是VideoInfoFilePost对象
+            Map<String, VideoInfoFilePost> uploadFileMap = uploadFileList.stream()
+                    .collect(Collectors.toMap(item -> item.getUploadId(), Function.identity(),
+                            (data1, data2) -> data2));
+
+            //删除的文件(分p视频) -> 数据库中有，uploadFileList没有
+            Boolean updateFileName = false;//标记分p视频文件名有没有修改
             for (VideoInfoFilePost fileInfo : dbInfoFileList) {
                 VideoInfoFilePost updateFile = uploadFileMap.get(fileInfo.getUploadId());
                 if (updateFile == null) {
+                    //数据库中有，uploadFileList没有：在修改投稿信息时被删除了的分p视频
                     deleteFileList.add(fileInfo);
                 } else if (!updateFile.getFileName().equals(fileInfo.getFileName())) {
+                    //如果分p视频没有被删除，则看看分p视频文件名有没有修改
                     updateFileName = true;
                 }
             }
-            //新增的文件  没有fileId就是新增的文件
-            addFileList = uploadFileList.stream().filter(item -> item.getFileId() == null).collect(Collectors.toList());
-            videoInfoPost.setLastUpdateTime(curDate);
+            //新增的文件(分p视频)    没有fileId就是新增的文件
+            addFileList = uploadFileList.stream().filter(item -> item.getFileId() == null)
+                    .collect(Collectors.toList());
+            videoInfoPost.setLastUpdateTime(curDate);//设置最后更新时间
 
-            //判断视频信息是否有更改
+            //判断修改投稿信息时：视频信息是否有更改   (如果视频信息有更改，管理员下次审核该投稿时重点审核)
             Boolean changeVideoInfo = this.changeVideoInfo(videoInfoPost);
-            if (!addFileList.isEmpty()) {
+
+            if (addFileList != null && !addFileList.isEmpty()) {
+                //修改投稿信息时：没有加文件(分p视频文件)  那用户修改重新发布后，管理员不用再次审核了，投稿状态为转码中。
                 videoInfoPost.setStatus(VideoStatusEnum.STATUS0.getStatus());
             } else if (changeVideoInfo || updateFileName) {
+                //修改投稿信息时：如果 1.视频信息有更改，或者 2.分p视频文件名有更改，则投稿状态为待审核
                 videoInfoPost.setStatus(VideoStatusEnum.STATUS2.getStatus());
             }
             this.videoInfoPostMapper.updateByVideoId(videoInfoPost, videoInfoPost.getVideoId());
@@ -246,19 +264,22 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
         //清除已经删除的数据
         if (!deleteFileList.isEmpty()) {
             List<String> delFileIdList = deleteFileList.stream().map(item -> item.getFileId()).collect(Collectors.toList());
+            //删除"发布时的视频文件信息"的数据库记录
             this.videoInfoFilePostMapper.deleteBatchByFileId(delFileIdList, videoInfoPost.getUserId());
-            //将要删除的视频加入消息队列
+
+            //将要删除的视频的文件路径加入消息队列
             List<String> delFilePathList = deleteFileList.stream().map(item -> item.getFilePath()).collect(Collectors.toList());
             redisComponent.addFile2DelQueue(videoId, delFilePathList);
         }
 
-        //更新视频信息
-        Integer index = 1;
+        //更新数据库的 视频文件信息---发布表(发布时的视频文件信息)
+        //uploadFileList：前端传过来的分p视频集合
+        Integer index = 1;//分p视频文件序号
         for (VideoInfoFilePost videoInfoFile : uploadFileList) {
             videoInfoFile.setFileIndex(index++);
             videoInfoFile.setVideoId(videoId);
             videoInfoFile.setUserId(videoInfoPost.getUserId());
-            if (videoInfoFile.getFileId() == null) {
+            if (videoInfoFile.getFileId() == null) {//分p视频文件是新增的
                 videoInfoFile.setFileId(StringTools.getRandomString(Constants.LENGTH_20));
                 videoInfoFile.setUpdateType(VideoFileUpdateTypeEnum.UPDATE.getStatus());
                 videoInfoFile.setTransferResult(VideoFileTransferResultEnum.TRANSFER.getStatus());
@@ -268,20 +289,27 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
 
 
         //将需要转码的视频加入队列
-        if (!addFileList.isEmpty()) {
+        if (addFileList != null && !addFileList.isEmpty()) {
             for (VideoInfoFilePost file : addFileList) {
                 file.setUserId(videoInfoPost.getUserId());
                 file.setVideoId(videoId);
             }
             redisComponent.addFile2TransferQueue(addFileList);
         }
+
     }
 
+    /*
+    * 修改投稿信息时，判断视频信息(标题，封面，标签，简介)是否更改
+     */
     private boolean changeVideoInfo(VideoInfoPost videoInfoPost) {
         VideoInfoPost dbInfo = this.videoInfoPostMapper.selectByVideoId(videoInfoPost.getVideoId());
         //标题，封面，标签，简介
-        if (!videoInfoPost.getVideoCover().equals(dbInfo.getVideoCover()) || !videoInfoPost.getVideoName().equals(dbInfo.getVideoName()) || !videoInfoPost.getTags().equals(dbInfo.getTags()) || !videoInfoPost.getIntroduction().equals(
-                dbInfo.getIntroduction())) {
+        if (!videoInfoPost.getVideoCover().equals(dbInfo.getVideoCover()) ||
+                !videoInfoPost.getVideoName().equals(dbInfo.getVideoName()) ||
+                !videoInfoPost.getTags().equals(dbInfo.getTags()) ||
+                !videoInfoPost.getIntroduction().equals(dbInfo.getIntroduction())) {
+            //标题，封面，标签，简介有修改
             return true;
         }
         return false;
