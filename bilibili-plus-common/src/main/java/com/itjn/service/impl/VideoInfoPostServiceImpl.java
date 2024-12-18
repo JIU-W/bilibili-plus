@@ -205,7 +205,7 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
         //而增加投稿信息时删除的分p视频还没有入库，就影响不大)
         List<VideoInfoFilePost> deleteFileList = new ArrayList();
         //投稿里新增了的分p视频
-        List<VideoInfoFilePost> addFileList = null;
+        List<VideoInfoFilePost> addFileList = uploadFileList;
 
         //判断是要 新增投稿 还是 修改投稿信息
         if (StringTools.isEmpty(videoId)) {
@@ -251,7 +251,7 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
             //判断修改投稿信息时：视频信息是否有更改   (如果视频信息有更改，管理员下次审核该投稿时重点审核)
             Boolean changeVideoInfo = this.changeVideoInfo(videoInfoPost);
 
-            if (addFileList != null && !addFileList.isEmpty()) {
+            if (!addFileList.isEmpty()) {
                 //修改投稿信息时：没有加文件(分p视频文件)  那用户修改重新发布后，管理员不用再次审核了，投稿状态为转码中。
                 videoInfoPost.setStatus(VideoStatusEnum.STATUS0.getStatus());
             } else if (changeVideoInfo || updateFileName) {
@@ -289,7 +289,7 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
 
 
         //将需要转码的视频加入队列
-        if (addFileList != null && !addFileList.isEmpty()) {
+        if (!addFileList.isEmpty()) {
             for (VideoInfoFilePost file : addFileList) {
                 file.setUserId(videoInfoPost.getUserId());
                 file.setVideoId(videoId);
