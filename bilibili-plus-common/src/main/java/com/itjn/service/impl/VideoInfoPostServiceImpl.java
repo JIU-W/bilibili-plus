@@ -315,7 +315,6 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
         return false;
     }
 
-    @Override
     @Transactional(rollbackFor = Exception.class)
     public void transferVideoFile(VideoInfoFilePost videoInfoFile) {
         VideoInfoFilePost updateFilePost = new VideoInfoFilePost();
@@ -447,7 +446,7 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
         videoFile.delete();
     }
 
-    @Override
+
     @Transactional(rollbackFor = Exception.class)
     public void auditVideo(String videoId, Integer status, String reason) {
         VideoStatusEnum videoStatusEnum = VideoStatusEnum.getByStatus(status);
@@ -533,7 +532,7 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
         esSearchComponent.saveDoc(videoInfo);
     }
 
-    @Override
+
     public void recommendVideo(String videoId) {
         VideoInfo videoInfo = videoInfoMapper.selectByVideoId(videoId);
         if (videoInfo == null) {
@@ -549,4 +548,5 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
         updateInfo.setRecommendType(recommendType);
         videoInfoMapper.updateByVideoId(updateInfo, videoId);
     }
+
 }

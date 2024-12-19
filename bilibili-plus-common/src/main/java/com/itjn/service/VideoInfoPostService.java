@@ -78,7 +78,6 @@ public interface VideoInfoPostService {
 
     /**
      * 文件转码
-     *
      * @param videoInfoFilePost
      */
     void transferVideoFile(VideoInfoFilePost videoInfoFilePost) throws IOException;
