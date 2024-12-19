@@ -317,17 +317,20 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
 
     @Transactional(rollbackFor = Exception.class)
     public void transferVideoFile(VideoInfoFilePost videoInfoFile) {
+        //补充、修改数据库里 视频文件信息---发布表(发布时的视频文件信息) 的某些字段信息
         VideoInfoFilePost updateFilePost = new VideoInfoFilePost();
         try {
             UploadingFileDto fileDto = redisComponent.getUploadingVideoFile(videoInfoFile.getUserId(), videoInfoFile.getUploadId());
             /**
              * 拷贝文件到正式目录
              */
-            String tempFilePath = appConfig.getProjectFolder() + Constants.FILE_FOLDER + Constants.FILE_FOLDER_TEMP + fileDto.getFilePath();
-
+            //文件所在的临时目录
+            String tempFilePath = appConfig.getProjectFolder() + Constants.FILE_FOLDER +
+                    Constants.FILE_FOLDER_TEMP + fileDto.getFilePath();
             File tempFile = new File(tempFilePath);
-
-            String targetFilePath = appConfig.getProjectFolder() + Constants.FILE_FOLDER + Constants.FILE_VIDEO + fileDto.getFilePath();
+            //正式目录
+            String targetFilePath = appConfig.getProjectFolder() + Constants.FILE_FOLDER +
+                    Constants.FILE_VIDEO + fileDto.getFilePath();
             File taregetFile = new File(targetFilePath);
             if (!taregetFile.exists()) {
                 taregetFile.mkdirs();
@@ -338,6 +341,7 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
              * 删除临时目录
              */
             FileUtils.forceDelete(tempFile);
+            //删除redis中的上传文件临时信息
             redisComponent.delVideoFileInfo(videoInfoFile.getUserId(), videoInfoFile.getUploadId());
 
             /**
@@ -350,13 +354,14 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
              * 获取播放时长
              */
             Integer duration = fFmpegUtils.getVideoInfoDuration(completeVideo);
-            updateFilePost.setDuration(duration);
-            updateFilePost.setFileSize(new File(completeVideo).length());
+            updateFilePost.setDuration(duration);//视频时长
+            updateFilePost.setFileSize(new File(completeVideo).length());//视频大小
             updateFilePost.setFilePath(Constants.FILE_VIDEO + fileDto.getFilePath());
             updateFilePost.setTransferResult(VideoFileTransferResultEnum.SUCCESS.getStatus());
 
             /**
-             * ffmpeg切割文件
+             * 将视频转码(视频格式转成MP4格式)
+             * ffmpeg切割文件成ts格式
              */
             this.convertVideo2Ts(completeVideo);
         } catch (Exception e) {
@@ -388,6 +393,7 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
         }
     }
 
+    //合并文件
     public static void union(String dirPath, String toFilePath, boolean delSource) throws BusinessException {
         File dir = new File(dirPath);
         if (!dir.exists()) {
@@ -430,12 +436,17 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
         File videoFile = new File(videoFilePath);
         //创建同名切片目录
         File tsFolder = videoFile.getParentFile();
+        //获取视频编码
         String codec = fFmpegUtils.getVideoCodec(videoFilePath);
-        //转码
-        if (Constants.VIDEO_CODE_HEVC.equals(codec)) {
+        //视频转码                                      //Constants.VIDEO_CODE_HEVC.equals(codec)
+        if (!Constants.VIDEO_CODE_H264.equals(codec)) {//  hevc/mpeg4/.../... ---> h264
+            //转码视频文件时用到的"临时中间文件"
             String tempFileName = videoFilePath + Constants.VIDEO_CODE_TEMP_FILE_SUFFIX;
+            //把原始MP4文件复制一份到临时文件
             new File(videoFilePath).renameTo(new File(tempFileName));
+            //将 临时文件转码到原始文件并覆盖原始文件，也就完成了原始文件的mp4格式的转码
             fFmpegUtils.convertHevc2Mp4(tempFileName, videoFilePath);
+            //删除临时文件
             new File(tempFileName).delete();
         }
 

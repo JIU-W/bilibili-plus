@@ -108,5 +108,7 @@ public class Constants {
 
     public static final String  VIDEO_CODE_HEVC= "hevc";
 
+    public static final String  VIDEO_CODE_H264= "h264";
+
     public static final String  VIDEO_CODE_TEMP_FILE_SUFFIX= "_temp";
 }

@@ -29,21 +29,32 @@ public class FFmpegUtils {
 
 
     /**
-     * 获取视频编码
-     *
+     * 获取视频编码，视频编码为h264才说明是mp4格式，视频编码为其他类型的要将视频转成mp4格式。
      * @param videoFilePath
      * @return
      */
     public String getVideoCodec(String videoFilePath) {
         final String CMD_GET_CODE = "ffprobe -v error -select_streams v:0 -show_entries stream=codec_name \"%s\"";
+        //执行命令
         String cmd = String.format(CMD_GET_CODE, videoFilePath);
         String result = ProcessUtils.executeCommand(cmd, appConfig.getShowFFmpegLog());
+        //解析结果
+        //结果的形状为：
+        // [STREAM]
+        // codec_name=mpeg4
+        // [/STREAM]
         result = result.replace("\n", "");
         result = result.substring(result.indexOf("=") + 1);
+        //截取最后要的结果
         String codec = result.substring(0, result.indexOf("["));
         return codec;
     }
 
+    /**
+     * 转换视频编码为h264
+     * @param newFileName
+     * @param videoFilePath
+     */
     public void convertHevc2Mp4(String newFileName, String videoFilePath) {
         String CMD_HEVC_264 = "ffmpeg -i %s -c:v libx264 -crf 20 %s";
         String cmd = String.format(CMD_HEVC_264, newFileName, videoFilePath);
@@ -64,7 +75,11 @@ public class FFmpegUtils {
         new File(tsPath).delete();
     }
 
-
+    /**
+     * 获取视频时长
+     * @param completeVideo
+     * @return
+     */
     public Integer getVideoInfoDuration(String completeVideo) {
         final String CMD_GET_CODE = "ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 \"%s\"";
         String cmd = String.format(CMD_GET_CODE, completeVideo);
@@ -75,4 +90,5 @@ public class FFmpegUtils {
         result = result.replace("\n", "");
         return new BigDecimal(result).intValue();
     }
+
 }
