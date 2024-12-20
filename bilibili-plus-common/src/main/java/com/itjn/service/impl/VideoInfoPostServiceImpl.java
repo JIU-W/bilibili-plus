@@ -393,6 +393,7 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
                 videoUpdate.setDuration(duration);
                 videoInfoPostMapper.updateByVideoId(videoUpdate, videoInfoFile.getVideoId());
             }
+
         }
     }
 
