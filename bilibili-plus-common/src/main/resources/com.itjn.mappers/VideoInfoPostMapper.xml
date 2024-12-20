@@ -151,8 +151,8 @@
 
     <!-- 查询集合-->
     <select id="selectList" resultMap="base_result_map">
-        SELECT
-        <include refid="base_column_list"/>
+        SELECT  <include refid="base_column_list"/>
+        <!-- 如果queryCountInfo -->
         <if test="query.queryCountInfo">
             ,c.play_count,c.like_count,c.danmu_count,c.comment_count,c.coin_count,c.collect_count,c.recommend_type
         </if>
@@ -160,6 +160,7 @@
             ,u.nick_name,u.avatar
         </if>
         FROM video_info_post v
+
         <if test="query.queryCountInfo">
             left join video_info c on c.video_id = v.video_id
         </if>

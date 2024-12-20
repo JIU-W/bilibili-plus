@@ -25,7 +25,7 @@ public interface VideoInfoPostService {
     Integer findCountByParam(VideoInfoPostQuery param);
 
     /**
-     * 分页查询
+     * 分页查询投稿视频列表
      */
     PaginationResultVO<VideoInfoPost> findListByPage(VideoInfoPostQuery param);
 

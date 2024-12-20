@@ -86,9 +86,17 @@ public class UCenterVideoPostController extends ABaseController {
     }
 
 
+    /**
+     * 加载投稿列表
+     * @param status 前端传的投稿状态
+     * @param pageNo 分页页码
+     * @param videoNameFuzzy 根据视频名称(投稿名称)进行模糊查询
+     * @return
+     */
     @RequestMapping("/loadVideoList")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO loadVideoList(Integer status, Integer pageNo, String videoNameFuzzy) {
+        //获取当前登录用户信息
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         VideoInfoPostQuery videoInfoQuery = new VideoInfoPostQuery();
         videoInfoQuery.setUserId(tokenUserInfoDto.getUserId());
@@ -96,13 +104,18 @@ public class UCenterVideoPostController extends ABaseController {
         videoInfoQuery.setPageNo(pageNo);
         if (status != null) {
             if (status == -1) {
-                videoInfoQuery.setExcludeStatusArray(new Integer[]{VideoStatusEnum.STATUS3.getStatus(), VideoStatusEnum.STATUS4.getStatus()});
+                //显示“进行中”的投稿信息(除了审核通过和审核失败的)
+                videoInfoQuery.setExcludeStatusArray(new Integer[]{VideoStatusEnum.STATUS3.getStatus(),
+                        VideoStatusEnum.STATUS4.getStatus()});
             } else {
+                //显示指定状态的投稿信息
                 videoInfoQuery.setStatus(status);
             }
         }
-        videoInfoQuery.setVideoNameFuzzy(videoNameFuzzy);
+        videoInfoQuery.setVideoNameFuzzy(videoNameFuzzy);//投稿名称模糊查询
+        //查询投稿总数
         videoInfoQuery.setQueryCountInfo(true);
+        //查询投稿列表
         PaginationResultVO resultVO = videoInfoPostService.findListByPage(videoInfoQuery);
         return getSuccessResponseVO(resultVO);
     }
