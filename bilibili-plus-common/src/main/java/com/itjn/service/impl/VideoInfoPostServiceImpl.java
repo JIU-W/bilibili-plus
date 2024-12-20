@@ -320,6 +320,7 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
         //补充、修改数据库里 视频文件信息---发布表(发布时的视频文件信息) 的某些字段信息
         VideoInfoFilePost updateFilePost = new VideoInfoFilePost();
         try {
+            //从redis获取上传文件的临时信息
             UploadingFileDto fileDto = redisComponent.getUploadingVideoFile(videoInfoFile.getUserId(), videoInfoFile.getUploadId());
             /**
              * 拷贝文件到正式目录
