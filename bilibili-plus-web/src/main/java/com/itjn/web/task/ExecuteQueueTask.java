@@ -59,6 +59,7 @@ public class ExecuteQueueTask {
                             (VideoInfoFilePost) redisUtils.rpop(Constants.REDIS_KEY_QUEUE_TRANSFER);
                     if (videoInfoFile == null) {
                         Thread.sleep(1500);
+                        log.info("没有获取到转码文件队列信息");
                         continue;
                     }
                     //转码视频文件
