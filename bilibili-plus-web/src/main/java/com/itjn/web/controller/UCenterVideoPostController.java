@@ -108,7 +108,6 @@ public class UCenterVideoPostController extends ABaseController {
                 videoInfoQuery.setExcludeStatusArray(new Integer[]{VideoStatusEnum.STATUS3.getStatus(),
                         VideoStatusEnum.STATUS4.getStatus()});
             } else {
-                //显示指定状态的投稿信息
                 videoInfoQuery.setStatus(status);
             }
         }
@@ -120,20 +119,29 @@ public class UCenterVideoPostController extends ABaseController {
         return getSuccessResponseVO(resultVO);
     }
 
+    /**
+     * 获取三种类型投稿的总数(进行中，已通过，未通过)
+     * @return
+     */
     @RequestMapping("/getVideoCountInfo")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO getVideoCountInfo() {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+
         VideoInfoPostQuery videoInfoQuery = new VideoInfoPostQuery();
         videoInfoQuery.setUserId(tokenUserInfoDto.getUserId());
+        //查询“审核已通过”状态的投稿总数
         videoInfoQuery.setStatus(VideoStatusEnum.STATUS3.getStatus());
-
         Integer auditPassCount = videoInfoPostService.findCountByParam(videoInfoQuery);
+
+        //查询“审核未通过”状态的投稿总数
         videoInfoQuery.setStatus(VideoStatusEnum.STATUS4.getStatus());
         Integer auditFailCount = videoInfoPostService.findCountByParam(videoInfoQuery);
 
+        //查询“进行中”状态的投稿总数
         videoInfoQuery.setStatus(null);
-        videoInfoQuery.setExcludeStatusArray(new Integer[]{VideoStatusEnum.STATUS3.getStatus(), VideoStatusEnum.STATUS4.getStatus()});
+        videoInfoQuery.setExcludeStatusArray(new Integer[]{VideoStatusEnum.STATUS3.getStatus(),
+                VideoStatusEnum.STATUS4.getStatus()});
         Integer inProgress = videoInfoPostService.findCountByParam(videoInfoQuery);
 
         VideoStatusCountInfoVO countInfo = new VideoStatusCountInfoVO();
