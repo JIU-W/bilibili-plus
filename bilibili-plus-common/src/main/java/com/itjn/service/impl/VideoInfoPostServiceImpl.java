@@ -368,22 +368,25 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
             log.error("文件转码失败", e);
             updateFilePost.setTransferResult(VideoFileTransferResultEnum.FAIL.getStatus());
         } finally {
-            //更新文件状态
+            //更新(发布时的视频文件信息)的状态
             videoInfoFilePostMapper.updateByUploadIdAndUserId(updateFilePost, videoInfoFile.getUploadId(), videoInfoFile.getUserId());
-            //更新视频信息
+            //更新"视频信息---发布表"(发布时的投稿信息)数据
             VideoInfoFilePostQuery fileQuery = new VideoInfoFilePostQuery();
             fileQuery.setVideoId(videoInfoFile.getVideoId());
             fileQuery.setTransferResult(VideoFileTransferResultEnum.FAIL.getStatus());
             Integer failCount = videoInfoFilePostMapper.selectCount(fileQuery);
+            //如果有失败的文件，则更新(发布时的投稿信息)状态为失败
             if (failCount > 0) {
                 VideoInfoPost videoUpdate = new VideoInfoPost();
                 videoUpdate.setStatus(VideoStatusEnum.STATUS1.getStatus());
                 videoInfoPostMapper.updateByVideoId(videoUpdate, videoInfoFile.getVideoId());
                 return;
             }
+            //如果没有处于"转码中"状态的视频文件，则更新(发布时的投稿信息)状态为转码成功
             fileQuery.setTransferResult(VideoFileTransferResultEnum.TRANSFER.getStatus());
             Integer transferCount = videoInfoFilePostMapper.selectCount(fileQuery);
             if (transferCount == 0) {
+                //(发布时的投稿信息)的持续时间 等于 所有分p视频文件的持续时间之和
                 Integer duration = videoInfoFilePostMapper.sumDuration(videoInfoFile.getVideoId());
                 VideoInfoPost videoUpdate = new VideoInfoPost();
                 videoUpdate.setStatus(VideoStatusEnum.STATUS2.getStatus());

@@ -49,5 +49,8 @@ public interface VideoInfoFilePostMapper<T, P> extends BaseMapper<T, P> {
      */
     void deleteBatchByFileId(@Param("fileIdList") List<String> fileIdList, @Param("userId") String userId);
 
+    /**
+     * 根据videoId(发布时的投稿信息表的id)获取其对应的所有分p视频文件时间之和
+     */
     Integer sumDuration(@Param("videoId") String videoId);
 }
