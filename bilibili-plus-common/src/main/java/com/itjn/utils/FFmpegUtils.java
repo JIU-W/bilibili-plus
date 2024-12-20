@@ -61,8 +61,15 @@ public class FFmpegUtils {
         ProcessUtils.executeCommand(cmd, appConfig.getShowFFmpegLog());
     }
 
+    /**
+     * 将视频文件转换为ts文件
+     * @param tsFolder
+     * @param videoFilePath
+     */
     public void convertVideo2Ts(File tsFolder, String videoFilePath) {
+        //生成ts文件的指令
         final String CMD_TRANSFER_2TS = "ffmpeg -y -i \"%s\"  -vcodec copy -acodec copy -vbsf h264_mp4toannexb \"%s\"";
+        //切成多个小ts切片 以及 索引文件.m3u8文件 的指令
         final String CMD_CUT_TS = "ffmpeg -i \"%s\" -c copy -map 0 -f segment -segment_list \"%s\" -segment_time 10 %s/%%4d.ts";
         String tsPath = tsFolder + "/" + Constants.TS_NAME;
         //生成.ts
