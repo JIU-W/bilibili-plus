@@ -25,7 +25,11 @@ public interface VideoInfoMapper<T, P> extends BaseMapper<T, P> {
      */
     T selectByVideoId(@Param("videoId") String videoId);
 
-    void updateCountInfo(@Param("videoId") String videoId, @Param("field") String field, @Param("changeCount") Integer changeCount);
+    /**
+     * 更新统计信息
+     */
+    void updateCountInfo(@Param("videoId") String videoId, @Param("field") String field,
+                         @Param("changeCount") Integer changeCount);
 
     CountInfoDto selectSumCountInfo(@Param("userId") String userId);
 }
