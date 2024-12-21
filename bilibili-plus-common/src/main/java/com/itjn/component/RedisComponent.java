@@ -175,6 +175,11 @@ public class RedisComponent {
                 Constants.REDIS_KEY_EXPIRES_DAY * 7);
     }
 
+    /**
+     * 从消息队列中获取待删除文件列表
+     * @param videoId
+     * @return
+     */
     public List<String> getDelFileList(String videoId) {
         List<String> filePathList = redisUtils.getQueueList(Constants.REDIS_KEY_FILE_DEL + videoId);
         return filePathList;

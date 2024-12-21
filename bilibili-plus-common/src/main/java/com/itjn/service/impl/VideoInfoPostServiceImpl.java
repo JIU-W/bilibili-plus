@@ -496,6 +496,10 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
         filePostQuery.setVideoId(videoId);
         this.videoInfoFilePostMapper.updateByParam(videoInfoFilePost, filePostQuery);
 
+        //如果审核不通过，直接返回结束。
+        if(videoStatusEnum == VideoStatusEnum.STATUS4){
+            return;
+        }
 
         //查询 视频信息---发布表(发布时的投稿信息)
         VideoInfoPost infoPost = this.videoInfoPostMapper.selectByVideoId(videoId);
@@ -529,7 +533,18 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
         this.videoInfoFileMapper.insertBatch(videoInfoFileList);
 
         /**
-         * 删除文件
+         * 审核通过了，现在可以去删除对应的要删除的分p视频了。
+         * 监听要删除的视频文件队列，如果存在，则删除。
+         * 这里删除的是最终目录的视频文件。
+         */
+        /**
+         * 其实最好的做法应该是：再次编辑投稿发布且审核通过的，
+         * 我们要把这些作品对应的删除了的分p视频文件信息放到另一个消息队列里去，
+         * 那样的话那个消息队列的数据就可以无所顾忌的被监听然后删除了。
+         * 而没有审核通过的，不删除。
+         */
+        /**
+         * 这里并没有重新开一个新的队列的方式，而是简单一点，直接删除。
          */
         List<String> filePathList = redisComponent.getDelFileList(videoId);
         if (filePathList != null) {
@@ -544,6 +559,7 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
                 }
             }
         }
+        //清除消息队列里面对应的信息
         redisComponent.cleanDelFileList(videoId);
 
         /**
