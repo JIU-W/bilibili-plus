@@ -90,27 +90,42 @@ public class VideoController extends ABaseController {
         return getSuccessResponseVO(resultVO);
     }
 
-    /*
+
+    /**
+     * 获取分p视频播放列表
+     * @param videoId
+     * @return
+     */
     @RequestMapping("/loadVideoPList")
     //@GlobalInterceptor
     public ResponseVO loadVideoPList(@NotEmpty String videoId) {
         VideoInfoFileQuery videoInfoQuery = new VideoInfoFileQuery();
         videoInfoQuery.setVideoId(videoId);
         videoInfoQuery.setOrderBy("file_index asc");
+        //查询分p视频列表
         List<VideoInfoFile> fileList = videoInfoFileService.findListByParam(videoInfoQuery);
         return getSuccessResponseVO(fileList);
     }
 
+
+    /**
+     * 获取视频详情信息
+     * @param videoId
+     * @return
+     */
     @RequestMapping("/getVideoInfo")
     //@GlobalInterceptor
     public ResponseVO getVideoInfo(@NotEmpty String videoId) {
+        //查询视频信息
         VideoInfo videoInfo = videoInfoService.getVideoInfoByVideoId(videoId);
         if (null == videoInfo) {
             throw new BusinessException(ResponseCodeEnum.CODE_404);
         }
+        //查询用户是否登录
         TokenUserInfoDto userInfoDto = getTokenUserInfoDto();
 
-        List<UserAction> userActionList = new ArrayList<>();
+        //TODO 获取用户行为列表
+        /*List<UserAction> userActionList = new ArrayList<>();
         if (userInfoDto != null) {
             UserActionQuery actionQuery = new UserActionQuery();
             actionQuery.setVideoId(videoId);
@@ -118,12 +133,14 @@ public class VideoController extends ABaseController {
             actionQuery.setActionTypeArray(new Integer[]{UserActionTypeEnum.VIDEO_LIKE.getType(), UserActionTypeEnum.VIDEO_COLLECT.getType(),
                     UserActionTypeEnum.VIDEO_COIN.getType(),});
             userActionList = userActionService.findListByParam(actionQuery);
-        }
+        }*/
+
         VideoInfoResultVo resultVo = new VideoInfoResultVo();
         resultVo.setVideoInfo(CopyTools.copy(videoInfo, VideoInfoVo.class));
-        resultVo.setUserActionList(userActionList);
+        //resultVo.setUserActionList(userActionList);
         return getSuccessResponseVO(resultVo);
-    }*/
+    }
+
 
 
 }
