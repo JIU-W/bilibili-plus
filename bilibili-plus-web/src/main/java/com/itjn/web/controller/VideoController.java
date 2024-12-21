@@ -92,23 +92,6 @@ public class VideoController extends ABaseController {
 
 
     /**
-     * 获取分p视频播放列表
-     * @param videoId
-     * @return
-     */
-    @RequestMapping("/loadVideoPList")
-    //@GlobalInterceptor
-    public ResponseVO loadVideoPList(@NotEmpty String videoId) {
-        VideoInfoFileQuery videoInfoQuery = new VideoInfoFileQuery();
-        videoInfoQuery.setVideoId(videoId);
-        videoInfoQuery.setOrderBy("file_index asc");
-        //查询分p视频列表(不分页，因为数量不多)
-        List<VideoInfoFile> fileList = videoInfoFileService.findListByParam(videoInfoQuery);
-        return getSuccessResponseVO(fileList);
-    }
-
-
-    /**
      * 获取视频详情信息
      * @param videoId
      * @return
@@ -137,10 +120,26 @@ public class VideoController extends ABaseController {
 
         VideoInfoResultVo resultVo = new VideoInfoResultVo();
         resultVo.setVideoInfo(CopyTools.copy(videoInfo, VideoInfoVo.class));
-        //resultVo.setUserActionList(userActionList);
+        resultVo.setUserActionList(new ArrayList<>());
         return getSuccessResponseVO(resultVo);
     }
 
+
+    /**
+     * 获取分p视频播放列表
+     * @param videoId
+     * @return
+     */
+    @RequestMapping("/loadVideoPList")
+    //@GlobalInterceptor
+    public ResponseVO loadVideoPList(@NotEmpty String videoId) {
+        VideoInfoFileQuery videoInfoQuery = new VideoInfoFileQuery();
+        videoInfoQuery.setVideoId(videoId);
+        videoInfoQuery.setOrderBy("file_index asc");
+        //查询分p视频列表(不分页，因为数量不多)
+        List<VideoInfoFile> fileList = videoInfoFileService.findListByParam(videoInfoQuery);
+        return getSuccessResponseVO(fileList);
+    }
 
 
 }

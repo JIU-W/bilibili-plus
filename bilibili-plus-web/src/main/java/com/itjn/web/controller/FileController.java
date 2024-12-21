@@ -11,8 +11,10 @@ import com.itjn.entity.enums.DateTimePatternEnum;
 import com.itjn.entity.enums.FileTypeEnum;
 import com.itjn.entity.enums.ResponseCodeEnum;
 import com.itjn.entity.po.VideoInfoFile;
+import com.itjn.entity.po.VideoInfoFilePost;
 import com.itjn.entity.vo.ResponseVO;
 import com.itjn.exception.BusinessException;
+import com.itjn.service.VideoInfoFilePostService;
 import com.itjn.service.VideoInfoFileService;
 import com.itjn.utils.DateUtil;
 import com.itjn.utils.FFmpegUtils;
@@ -50,6 +52,9 @@ public class FileController extends ABaseController {
 
     @Resource
     private VideoInfoFileService videoInfoFileService;
+
+    @Resource
+    private VideoInfoFilePostService videoInfoFilePostService;
 
     @Resource
     private FFmpegUtils fFmpegUtils;
@@ -209,6 +214,31 @@ public class FileController extends ABaseController {
             fFmpegUtils.createImageThumbnail(filePath);
         }
         return getSuccessResponseVO(Constants.FILE_COVER + day + "/" + realFileName);
+    }
+
+    /**
+     * 获取视频文件资源(以流的形式将视频文件的.m3u8索引文件返回)
+     * @param response
+     * @param fileId
+     */
+    @RequestMapping("/videoResource/{fileId}")
+    public void getVideoResource(HttpServletResponse response, @PathVariable @NotEmpty String fileId) {
+        VideoInfoFilePost videoInfoFilePost = videoInfoFilePostService.getVideoInfoFilePostByFileId(fileId);
+        String filePath = videoInfoFilePost.getFilePath();
+        //读取视频文件的.m3u8索引文件
+        readFile(response, filePath + "/" + Constants.M3U8_NAME);
+        //TODO 更新视频的阅读记录
+    }
+
+    /**
+     * 获取视频文件资源(以流的形式将ts切片文件返回)
+     */
+    @RequestMapping("/videoResource/{fileId}/{ts}")
+    public void getVideoResourceTs(HttpServletResponse response, @PathVariable @NotEmpty String fileId,
+                                   @PathVariable @NotNull String ts) {
+        VideoInfoFilePost videoInfoFilePost = videoInfoFilePostService.getVideoInfoFilePostByFileId(fileId);
+        String filePath = videoInfoFilePost.getFilePath() + "";
+        readFile(response, filePath + "/" + ts);
     }
 
 
