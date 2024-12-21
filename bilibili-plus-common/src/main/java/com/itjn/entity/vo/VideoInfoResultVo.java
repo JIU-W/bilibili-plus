@@ -9,7 +9,7 @@ public class VideoInfoResultVo {
     //投稿视频信息
     private VideoInfoVo videoInfo;
 
-    //用户行为
+    //用户行为信息
     private List<UserAction> userActionList;
 
     public VideoInfoVo getVideoInfo() {
