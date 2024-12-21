@@ -8,7 +8,6 @@ import java.io.Serializable;
  */
 public class VideoInfoFilePost implements Serializable {
 
-
 	/**
 	 * 自增唯一ID
 	 */

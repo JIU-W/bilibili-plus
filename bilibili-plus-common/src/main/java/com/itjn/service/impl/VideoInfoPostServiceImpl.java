@@ -497,38 +497,34 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
         this.videoInfoFilePostMapper.updateByParam(videoInfoFilePost, filePostQuery);
 
 
-
+        //查询 视频信息---发布表(发布时的投稿信息)
         VideoInfoPost infoPost = this.videoInfoPostMapper.selectByVideoId(videoId);
-        /**
-         * 第一次发布增加用户积分
-         */
+
+        //第一次发布增加用户积分(积分)
         VideoInfo dbVideoInfo = this.videoInfoMapper.selectByVideoId(videoId);
         if (dbVideoInfo == null) {
             SysSettingDto sysSettingDto = redisComponent.getSysSettingDto();
+            //给用户加硬币
             userInfoMapper.updateCoinCountInfo(infoPost.getUserId(), sysSettingDto.getPostVideoCoinCount());
         }
 
-        /**
-         * 将发布信息复制到正式表信息
-         */
+        //将发布时的投稿信息复制到正式表：(VideoInfo)
         VideoInfo videoInfo = CopyTools.copy(infoPost, VideoInfo.class);
         this.videoInfoMapper.insertOrUpdate(videoInfo);
 
-        /**
-         * 更新视频信息 先删除再添加
-         */
+        //将 视频文件信息---发布表(发布时的视频文件信息) 信息更新到正式表：(VideoInfoFile)
+        //方式：先删除再添加(因为更改投稿信息之后再要审核时，投稿对应的视频可能会有增加有也可能减少了，也可能更改了，
+        // 先删后加就统一简化了操作)
         VideoInfoFileQuery videoInfoFileQuery = new VideoInfoFileQuery();
         videoInfoFileQuery.setVideoId(videoId);
+        //1.删除单个或者是批量删除(取决于这个投稿对应多少个分p视频)
         this.videoInfoFileMapper.deleteByParam(videoInfoFileQuery);
 
-
-        /**
-         * 查询发布表中的视频信息
-         */
+        //查询发布表中的视频信息
         VideoInfoFilePostQuery videoInfoFilePostQuery = new VideoInfoFilePostQuery();
         videoInfoFilePostQuery.setVideoId(videoId);
         List<VideoInfoFilePost> videoInfoFilePostList = this.videoInfoFilePostMapper.selectList(videoInfoFilePostQuery);
-
+        //2.单个插入或者是批量插入到正式表
         List<VideoInfoFile> videoInfoFileList = CopyTools.copyList(videoInfoFilePostList, VideoInfoFile.class);
         this.videoInfoFileMapper.insertBatch(videoInfoFileList);
 
