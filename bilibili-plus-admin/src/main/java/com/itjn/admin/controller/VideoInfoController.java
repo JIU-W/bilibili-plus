@@ -48,18 +48,27 @@ public class VideoInfoController extends ABaseController {
         return getSuccessResponseVO(resultVO);
     }
 
+    /**
+     * 审核投稿
+     * @param videoId
+     * @param status 审核结果
+     * @param reason 审核不通过的原因
+     * @return
+     */
+    @RequestMapping("/auditVideo")
+    //@RecordUserMessage(messageType = MessageTypeEnum.SYS)
+    public ResponseVO auditVideo(@NotEmpty String videoId, @NotNull Integer status, String reason) {
+        videoInfoPostService.auditVideo(videoId, status, reason);
+        return getSuccessResponseVO(null);
+    }
+
     /*@RequestMapping("/recommendVideo")
     public ResponseVO recommendVideo(@NotEmpty String videoId) {
         videoInfoPostService.recommendVideo(videoId);
         return getSuccessResponseVO(null);
     }
 
-    @RequestMapping("/auditVideo")
-    @RecordUserMessage(messageType = MessageTypeEnum.SYS)
-    public ResponseVO auditVideo(@NotEmpty String videoId, @NotNull Integer status, String reason) {
-        videoInfoPostService.auditVideo(videoId, status, reason);
-        return getSuccessResponseVO(null);
-    }
+
 
     @RequestMapping("/deleteVideo")
     public ResponseVO deleteVideo(@NotEmpty String videoId) {

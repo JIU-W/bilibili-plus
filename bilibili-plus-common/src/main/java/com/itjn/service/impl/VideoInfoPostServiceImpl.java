@@ -462,17 +462,24 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
         videoFile.delete();
     }
 
-
+    /**
+     * 审核投稿(审核视频)
+     * @param videoId
+     * @param status
+     * @param reason
+     */
     @Transactional(rollbackFor = Exception.class)
     public void auditVideo(String videoId, Integer status, String reason) {
         VideoStatusEnum videoStatusEnum = VideoStatusEnum.getByStatus(status);
         if (videoStatusEnum == null) {
             throw new BusinessException(ResponseCodeEnum.CODE_600);
         }
+        //更新 视频信息---发布表(发布时的投稿信息) 的状态为"审核通过"
+        //只有原本状态为"待审核"的视频才能被审核
         VideoInfoPost videoInfoPost = new VideoInfoPost();
         videoInfoPost.setStatus(status);
-
         VideoInfoPostQuery videoInfoPostQuery = new VideoInfoPostQuery();
+        //这里设置只有初始状态为"待审核"的才能被审核，被审核后就不能再次被审核。  这也就是“乐观锁”的思想。
         videoInfoPostQuery.setStatus(VideoStatusEnum.STATUS2.getStatus());
         videoInfoPostQuery.setVideoId(videoId);
         Integer audioCount = this.videoInfoPostMapper.updateByParam(videoInfoPost, videoInfoPostQuery);
@@ -480,15 +487,16 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
             throw new BusinessException("审核失败，请稍后重试");
         }
         /**
-         * 更新视频状态
+         * 更新 视频文件信息---发布表(发布时的视频文件信息) 的状态为"无更新"
          */
-
         VideoInfoFilePost videoInfoFilePost = new VideoInfoFilePost();
         videoInfoFilePost.setUpdateType(VideoFileUpdateTypeEnum.NO_UPDATE.getStatus());
-
+        //关联"对应的投稿信息"
         VideoInfoFilePostQuery filePostQuery = new VideoInfoFilePostQuery();
         filePostQuery.setVideoId(videoId);
         this.videoInfoFilePostMapper.updateByParam(videoInfoFilePost, filePostQuery);
+
+
 
         VideoInfoPost infoPost = this.videoInfoPostMapper.selectByVideoId(videoId);
         /**
@@ -564,5 +572,6 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
         updateInfo.setRecommendType(recommendType);
         videoInfoMapper.updateByVideoId(updateInfo, videoId);
     }
+
 
 }

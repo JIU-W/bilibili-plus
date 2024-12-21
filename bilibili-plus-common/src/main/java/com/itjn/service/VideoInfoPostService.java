@@ -82,6 +82,12 @@ public interface VideoInfoPostService {
      */
     void transferVideoFile(VideoInfoFilePost videoInfoFilePost) throws IOException;
 
+    /**
+     * 审核投稿(审核视频)
+     * @param videoId
+     * @param status
+     * @param reason
+     */
     void auditVideo(String videoId, Integer status, String reason);
 
     void recommendVideo(String videoId);
