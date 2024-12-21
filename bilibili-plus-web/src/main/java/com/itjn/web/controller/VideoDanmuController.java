@@ -46,6 +46,9 @@ public class VideoDanmuController extends ABaseController {
     public ResponseVO postDanmu(@NotEmpty String videoId, @NotEmpty String fileId,
                                 @NotEmpty @Size(max = 200) String text, @NotNull Integer mode,
                                 @NotEmpty String color, @NotNull Integer time) {
+
+        log.info(Thread.currentThread().getName(),"当前线程名称：{}");
+
         VideoDanmu videoDanmu = new VideoDanmu();
         videoDanmu.setVideoId(videoId);
         videoDanmu.setFileId(fileId);
@@ -63,20 +66,19 @@ public class VideoDanmuController extends ABaseController {
 
     /**
      * 加载弹幕
-     * @param fileId
-     * @param videoId
+     * @param fileId 弹幕属于这个投稿下的具体的分p视频
+     * @param videoId 弹幕属于的投稿(视频)
      * @return
      */
     @RequestMapping("/loadDanmu")
     //@GlobalInterceptor
     public ResponseVO loadDanmu(@NotEmpty String fileId, @NotEmpty String videoId) {
-
-        VideoInfo videoInfo = videoInfoService.getVideoInfoByVideoId(videoId);
-        if (videoInfo.getInteraction() != null && videoInfo.getInteraction().contains(Constants.ZERO.toString())) {
+        VideoInfo videoInfo = videoInfoService.getVideoInfoByVideoId(videoId);              //ZERO
+        //投稿是否关闭弹幕这个功能
+        if (videoInfo.getInteraction() != null && videoInfo.getInteraction().contains(Constants.ONE.toString())) {
             return getSuccessResponseVO(new ArrayList<>());
         }
-
-
+        //根据fileId(加了唯一索引)查询弹幕
         VideoDanmuQuery videoDanmuQuery = new VideoDanmuQuery();
         videoDanmuQuery.setFileId(fileId);
         videoDanmuQuery.setOrderBy("danmu_id asc");

@@ -870,8 +870,11 @@
         from video_info v where video_id=#{videoId}
     </select>
 
+    <!-- 这个update语句数据库底层会自动加锁 -->
     <update id="updateCountInfo">
-        update video_info set ${field} = ${field}+#{changeCount}
+        update video_info
+        set ${field} = ${field} + #{changeCount}
+        <!-- 如果是“视频播放数”的 -->
         <if test="field=='play_count'">
             ,last_play_time = now()
         </if>

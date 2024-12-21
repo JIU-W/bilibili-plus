@@ -155,12 +155,21 @@ public class VideoDanmuServiceImpl implements VideoDanmuService {
             throw new BusinessException("UP主已关闭弹幕");
         }
         this.videoDanmuMapper.insert(bean);
-        //更新视频弹幕数量
-        //
+        //更新视频弹幕数量：这里要考虑并发问题，两个人及以上同时发弹幕时要保证弹幕数量是正确的，所以需要加锁，使用数据库的乐观锁解决。
+        //注：不能先查询，再加一更新，因为这样的操作不是原子的，并发情况下会导致数据库数据不一致。
+        //方法一：而是要直接修改，这样数据库底层会有加上乐观锁保证并发安全。
+        //方法二：使用数据库的版本号的方式解决(也是乐观锁的思想)，需要在该表加上版本号字段，然后修改的时候先判断版本号是否一致，一致才进行修改，不一致就抛出异常。
+        //方法三：悲观锁解决：加了悲观锁就可以使用“先查询，再加一更新”的方式了，只要在查询的时候手动加上事务(悲观锁)：
+        //select ... from ... where ... for update;
         this.videoInfoMapper.updateCountInfo(bean.getVideoId(),
                 UserActionTypeEnum.VIDEO_DANMU.getField(), 1);
+
+        //小技巧：如果接口里既有写自己数据库的操作，又有调用别人的接口的操作，
+        //顺序最好是 1.先写自己的数据库 2.再调用别人的接口。
+
         //更新es弹幕数量
         //esSearchComponent.updateDocCount(bean.getVideoId(), SearchOrderTypeEnum.VIDEO_DANMU.getField(), 1);
+
     }
 
 
