@@ -162,6 +162,7 @@
             ,c.play_count,c.like_count,c.danmu_count,c.comment_count,c.coin_count,
             c.collect_count,c.recommend_type
         </if>
+        <!-- 设置要查询出投稿相关用户信息，则要和表user_info c 建立表连接从而查询出用户信息。-->
         <if test="query.queryUserInfo">
             ,u.nick_name,u.avatar
         </if>
