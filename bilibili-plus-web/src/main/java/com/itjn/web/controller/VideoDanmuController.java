@@ -73,8 +73,8 @@ public class VideoDanmuController extends ABaseController {
     @RequestMapping("/loadDanmu")
     //@GlobalInterceptor
     public ResponseVO loadDanmu(@NotEmpty String fileId, @NotEmpty String videoId) {
-        VideoInfo videoInfo = videoInfoService.getVideoInfoByVideoId(videoId);              //ZERO
-        //投稿是否关闭弹幕这个功能
+        VideoInfo videoInfo = videoInfoService.getVideoInfoByVideoId(videoId);
+        //投稿是否关闭弹幕这个功能                                                              //ZERO
         if (videoInfo.getInteraction() != null && videoInfo.getInteraction().contains(Constants.ONE.toString())) {
             return getSuccessResponseVO(new ArrayList<>());
         }
