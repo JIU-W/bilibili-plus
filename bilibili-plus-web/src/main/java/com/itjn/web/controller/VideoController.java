@@ -63,25 +63,34 @@ public class VideoController extends ABaseController {
         videoInfoQuery.setQueryUserInfo(true);//同时要关联查询出对应的用户信息(用户昵称和用户头像)
         videoInfoQuery.setOrderBy("create_time desc");
         videoInfoQuery.setRecommendType(VideoRecommendTypeEnum.RECOMMEND.getType());
-        //直接查询而不需要分页(因为推荐的投稿一般不会太多，就十来条)
+        //直接查询而不需要分页(因为推荐的投稿一般不会太多，不会超过5 + 6条)
         List<VideoInfo> recommendVideoList = videoInfoService.findListByParam(videoInfoQuery);
         return getSuccessResponseVO(recommendVideoList);
     }
 
-    /*@RequestMapping("/loadVideo")
+    /**
+     * 获取未推荐视频列表
+     * @param pCategoryId
+     * @param categoryId
+     * @param pageNo
+     * @return
+     */
+    @RequestMapping("/loadVideo")
     //@GlobalInterceptor
     public ResponseVO postVideo(Integer pCategoryId, Integer categoryId, Integer pageNo) {
         VideoInfoQuery videoInfoQuery = new VideoInfoQuery();
         videoInfoQuery.setCategoryId(categoryId);
         videoInfoQuery.setpCategoryId(pCategoryId);
-        videoInfoQuery.setPageNo(pageNo);
-        videoInfoQuery.setQueryUserInfo(true);
+        videoInfoQuery.setPageNo(pageNo);//要分页查询
+        videoInfoQuery.setQueryUserInfo(true);//同时要关联查询出对应的用户信息(用户昵称和用户头像)
         videoInfoQuery.setOrderBy("create_time desc");
         videoInfoQuery.setRecommendType(VideoRecommendTypeEnum.NO_RECOMMEND.getType());
+        //分页查询未推荐投稿视频列表
         PaginationResultVO resultVO = videoInfoService.findListByPage(videoInfoQuery);
         return getSuccessResponseVO(resultVO);
     }
 
+    /*
     @RequestMapping("/loadVideoPList")
     //@GlobalInterceptor
     public ResponseVO loadVideoPList(@NotEmpty String videoId) {
