@@ -95,6 +95,9 @@ public class VideoInfoPost extends VideoInfo implements Serializable {
      */
     private Integer duration;
 
+    /**
+     * 状态名称：便于传给前端显示
+     */
     private String statusName;
 
     public String getStatusName() {
