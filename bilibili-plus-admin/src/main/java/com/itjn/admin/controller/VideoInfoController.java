@@ -34,7 +34,7 @@ public class VideoInfoController extends ABaseController {
     private VideoInfoService videoInfoService;
 
     /**
-     * 加载投稿列表
+     * 加载所有用户的投稿列表
      * @return
      */
     @RequestMapping("/loadVideoList")
