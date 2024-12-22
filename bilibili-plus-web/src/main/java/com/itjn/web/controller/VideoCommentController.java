@@ -101,9 +101,11 @@ public class VideoCommentController extends ABaseController {
     }*/
 
     /**
-     * 发表评论   评论分为：  1.一级评论  2.二级评论(1.回复一级评论的二级评论  2.回复二级评论的二级评论)
+     * 发表评论   评论分为：  1.一级评论(p_comment_id为0，不传replyCommentId)
+     *                      2.二级评论(传replyCommentId)：  [1.回复一级评论的二级评论  2.回复二级评论的二级评论]
      * @param videoId 投稿(视频)ID
-     * @param replyCommentId
+     * @param replyCommentId 是被回复的评论ID，而不是父级评论ID.两者区别：
+     *                       1.回复一级评论的二级评论，父级评论ID为  2.回复二级评论的二级评论，父级评论ID为
      * @param content
      * @param imgPath
      * @return
