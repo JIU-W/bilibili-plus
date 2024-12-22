@@ -196,23 +196,28 @@ public class UserActionServiceImpl implements UserActionService {
         UserAction dbAction = userActionMapper.selectByVideoIdAndCommentIdAndActionTypeAndUserId(
                 bean.getVideoId(), bean.getCommentId(), bean.getActionType(), bean.getUserId());
         bean.setActionTime(new Date());
+        //分情况处理
         switch (actionTypeEnum) {
-            //点赞,收藏
+            //点赞和收藏逻辑一样
             case VIDEO_LIKE:
             case VIDEO_COLLECT:
                 if (dbAction != null) {
+                    //点击的时候都是：有则删(取消点赞或者收藏)
                     userActionMapper.deleteByActionId(dbAction.getActionId());
                 } else {
+                    //没有则加(点赞或者收藏)
                     userActionMapper.insert(bean);
                 }
+                //更新投稿(视频)的点赞和收藏数量
                 Integer changeCount = dbAction == null ? 1 : -1;
                 videoInfoMapper.updateCountInfo(bean.getVideoId(), actionTypeEnum.getField(), changeCount);
 
                 if (actionTypeEnum == UserActionTypeEnum.VIDEO_COLLECT) {
-                    //更新es收藏数量
-                    esSearchComponent.updateDocCount(videoInfo.getVideoId(), SearchOrderTypeEnum.VIDEO_COLLECT.getField(), changeCount);
+                    //TODO 更新es收藏数量
+                    //esSearchComponent.updateDocCount(videoInfo.getVideoId(), SearchOrderTypeEnum.VIDEO_COLLECT.getField(), changeCount);
                 }
                 break;
+            //投币的逻辑
             case VIDEO_COIN:
                 if (videoInfo.getUserId().equals(bean.getUserId())) {
                     throw new BusinessException("UP主不能给自己投币");

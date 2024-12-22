@@ -82,6 +82,14 @@
             <if test="query.actionTimeEnd!= null and query.actionTimeEnd!=''">
                 <![CDATA[ and  u.action_time< date_sub(str_to_date(#{query.actionTimeEnd},'%Y-%m-%d'),interval -1 day) ]]>
             </if>
+             <!-- 扩展的过滤条件 -->
+             <!-- 根据3种用户行为(视频点赞，视频收藏，视频投币)查  -->
+             <if test="query.actionTypeArray != null and query.actionTypeArray.length > 0">
+                and u.action_type in
+                <foreach collection="query.actionTypeArray" item="item" separator=",">
+                    #{item}
+                </foreach>
+            </if>
         </where>
     </sql>
 

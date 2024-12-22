@@ -28,7 +28,7 @@ public class UserActionController extends ABaseController {
      * 用户做出某种行为  [ 评论：(点赞，讨厌)      视频：(点赞，收藏，投币) ]
      * @param videoId 关联的投稿(视频)id
      * @param actionType 行为类型： 0:评论喜欢点赞 1:讨厌评论 2:视频点赞 3:视频收藏 4:视频投币
-     * @param actionCount 行为数量：只有投币数可能为2，其它全为1
+     * @param actionCount 行为数量：   用户的一次操作：“只有投币数可能为2，其它全为1”
      * @param commentId 如果行为类型为 0:评论喜欢点赞 或者 1:讨厌评论 则前端传评论id过来。
      * @return
      */

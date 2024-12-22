@@ -107,20 +107,21 @@ public class VideoController extends ABaseController {
         //查询用户是否登录
         TokenUserInfoDto userInfoDto = getTokenUserInfoDto();
 
-        //TODO 获取用户行为列表
-        /*List<UserAction> userActionList = new ArrayList<>();
+        //获取用户行为列表：  与视频有关的：(点赞，收藏，投币)
+        List<UserAction> userActionList = new ArrayList<>();
         if (userInfoDto != null) {
             UserActionQuery actionQuery = new UserActionQuery();
             actionQuery.setVideoId(videoId);
             actionQuery.setUserId(userInfoDto.getUserId());
-            actionQuery.setActionTypeArray(new Integer[]{UserActionTypeEnum.VIDEO_LIKE.getType(), UserActionTypeEnum.VIDEO_COLLECT.getType(),
+            actionQuery.setActionTypeArray(new Integer[]{UserActionTypeEnum.VIDEO_LIKE.getType(),
+                    UserActionTypeEnum.VIDEO_COLLECT.getType(),
                     UserActionTypeEnum.VIDEO_COIN.getType(),});
             userActionList = userActionService.findListByParam(actionQuery);
-        }*/
+        }
 
         VideoInfoResultVo resultVo = new VideoInfoResultVo();
         resultVo.setVideoInfo(CopyTools.copy(videoInfo, VideoInfoVo.class));
-        resultVo.setUserActionList(new ArrayList<>());
+        resultVo.setUserActionList(userActionList);
         return getSuccessResponseVO(resultVo);
     }
 
