@@ -78,7 +78,7 @@ public class VideoDanmuController extends ABaseController {
         if (videoInfo.getInteraction() != null && videoInfo.getInteraction().contains(Constants.ONE.toString())) {
             return getSuccessResponseVO(new ArrayList<>());
         }
-        //根据fileId(加了唯一索引)查询弹幕
+        //根据fileId(加了普通索引：用于加快查询)查询弹幕，也就是查询这个分p视频下的所有弹幕。
         VideoDanmuQuery videoDanmuQuery = new VideoDanmuQuery();
         videoDanmuQuery.setFileId(fileId);
         videoDanmuQuery.setOrderBy("danmu_id asc");

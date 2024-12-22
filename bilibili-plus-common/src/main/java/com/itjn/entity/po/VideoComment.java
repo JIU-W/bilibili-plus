@@ -80,12 +80,16 @@ public class VideoComment implements Serializable {
 
     private List<VideoComment> children;
 
+    //返回给前端的：用户昵称
     private String nickName;
 
+    //返回给前端的：用户头像
     private String avatar;
 
+    //发布二级评论时：前端要显示的回复人昵称
     private String replyNickName;
 
+    //回复人头像
     private String replyAvatar;
 
     private String videoName;
