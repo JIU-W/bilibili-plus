@@ -404,7 +404,8 @@
     <select id="selectByVideoIdAndCommentIdAndActionTypeAndUserId" resultMap="base_result_map">
         select
         <include refid="base_column_list"/>
-        from user_action u where video_id=#{videoId} and comment_id=#{commentId} and action_type=#{actionType} and user_id=#{userId}
+        from user_action u where video_id=#{videoId} and comment_id=#{commentId}
+                             and action_type=#{actionType} and user_id=#{userId}
     </select>
 
 </mapper>
