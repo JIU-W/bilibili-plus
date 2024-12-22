@@ -43,7 +43,7 @@ public class UserActionController extends ABaseController {
         userAction.setActionType(actionType);
         actionCount = actionCount == null ? Constants.ONE : actionCount;
         userAction.setActionCount(actionCount);
-        //评论id：0:表示对视频操作  非0：表示对评论操作
+        //评论id： 0:表示对视频操作  非0：表示对评论操作
         commentId = commentId == null ? 0 : commentId;
         userAction.setCommentId(commentId);
         userActionService.saveAction(userAction);

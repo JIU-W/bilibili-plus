@@ -126,6 +126,11 @@ public class VideoController extends ABaseController {
     }
 
 
+    @RequestMapping("/reportVideoPlayOnline")
+    public ResponseVO reportVideoPlayOnline(@NotEmpty String fileId, @NotEmpty String deviceId) {
+        return getSuccessResponseVO(null);
+    }
+
     /**
      * 获取分p视频播放列表
      * @param videoId

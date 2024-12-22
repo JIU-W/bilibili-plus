@@ -218,7 +218,7 @@ public class UserActionServiceImpl implements UserActionService {
                 }
                 break;
             //投币的逻辑
-            case VIDEO_COIN:
+            /*case VIDEO_COIN:
                 if (videoInfo.getUserId().equals(bean.getUserId())) {
                     throw new BusinessException("UP主不能给自己投币");
                 }
@@ -259,7 +259,7 @@ public class UserActionServiceImpl implements UserActionService {
                         changeCount,
                         opposeAction == null ? null : opposeTypeEnum.getField(),
                         opposeChangeCount);
-                break;
+                break;*/
         }
     }
 
