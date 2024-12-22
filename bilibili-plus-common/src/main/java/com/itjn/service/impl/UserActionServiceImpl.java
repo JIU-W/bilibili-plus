@@ -218,7 +218,7 @@ public class UserActionServiceImpl implements UserActionService {
                 }
                 break;
             //投币的逻辑
-            /*case VIDEO_COIN:
+            case VIDEO_COIN:
                 if (videoInfo.getUserId().equals(bean.getUserId())) {
                     throw new BusinessException("UP主不能给自己投币");
                 }
@@ -230,15 +230,17 @@ public class UserActionServiceImpl implements UserActionService {
                 if (updateCount == 0) {
                     throw new BusinessException("币不够");
                 }
+                //增加该投稿作品UP主的硬币
                 updateCount = userInfoMapper.updateCoinCountInfo(videoInfo.getUserId(), bean.getActionCount());
                 if (updateCount == 0) {
                     throw new BusinessException("投币失败");
                 }
                 userActionMapper.insert(bean);
+                //更新投稿作品硬币数量
                 videoInfoMapper.updateCountInfo(bean.getVideoId(), actionTypeEnum.getField(), bean.getActionCount());
                 break;
             //评论
-            case COMMENT_LIKE:
+            /*case COMMENT_LIKE:
             case COMMENT_HATE:
                 UserActionTypeEnum opposeTypeEnum = UserActionTypeEnum.COMMENT_LIKE == actionTypeEnum ? UserActionTypeEnum.COMMENT_HATE : UserActionTypeEnum.COMMENT_LIKE;
                 UserAction opposeAction = userActionMapper.selectByVideoIdAndCommentIdAndActionTypeAndUserId(bean.getVideoId(), bean.getCommentId(),
@@ -261,6 +263,7 @@ public class UserActionServiceImpl implements UserActionService {
                         opposeChangeCount);
                 break;*/
         }
+
     }
 
 }
