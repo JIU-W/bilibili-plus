@@ -43,4 +43,5 @@ public enum UserActionTypeEnum {
     public String getField() {
         return field;
     }
+
 }
