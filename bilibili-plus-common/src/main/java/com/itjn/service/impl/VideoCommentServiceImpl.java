@@ -251,18 +251,21 @@ public class VideoCommentServiceImpl implements VideoCommentService {
         if (null == videoInfo) {
             throw new BusinessException(ResponseCodeEnum.CODE_600);
         }
-
+        //删除评论的人既不是投稿UP主也不是评论发布者则抛异常
         if (userId != null && !videoInfo.getUserId().equals(userId) && !comment.getUserId().equals(userId)) {
             throw new BusinessException(ResponseCodeEnum.CODE_600);
         }
         videoCommentMapper.deleteByCommentId(commentId);
+        //如果删除的是一级评论
         if (comment.getpCommentId() == 0) {
-            videoInfoMapper.updateCountInfo(videoInfo.getVideoId(), UserActionTypeEnum.VIDEO_COMMENT.getField(), -1);
+            videoInfoMapper.updateCountInfo(videoInfo.getVideoId(), UserActionTypeEnum.VIDEO_COMMENT.getField(),
+                    -1);
             //删除二级评论
             VideoCommentQuery videoCommentQuery = new VideoCommentQuery();
             videoCommentQuery.setpCommentId(commentId);
             videoCommentMapper.deleteByParam(videoCommentQuery);
         }
+
     }
 
 
