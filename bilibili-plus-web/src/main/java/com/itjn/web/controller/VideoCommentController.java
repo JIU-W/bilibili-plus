@@ -104,8 +104,12 @@ public class VideoCommentController extends ABaseController {
      * 发表评论   评论分为：  1.一级评论(p_comment_id为0，不传replyCommentId)
      *                      2.二级评论(传replyCommentId)：  [1.回复一级评论的二级评论  2.回复二级评论的二级评论]
      * @param videoId 投稿(视频)ID
-     * @param replyCommentId 是被回复的评论ID，而不是父级评论ID.两者区别：
-     *                       1.回复一级评论的二级评论，父级评论ID为  2.回复二级评论的二级评论，父级评论ID为
+     * @param replyCommentId 是被回复的评论ID，而不是父级评论ID(p_comment_id)
+     *                       replyCommentId和p_comment_id的区别：
+     *                        1.回复一级评论的二级评论，replyCommentId为那个一级评论的id
+     *                        2.回复二级评论的二级评论，replyCommentId为被回复的二级评论的id
+     *     而回复一级评论的二级评论 以及 回复二级评论的二级评论的p_comment_id是一样的，
+     *     也就是说在同一个消息中，它之下的两种类型的回复的p_comment_id都是这个消息的id。
      * @param content
      * @param imgPath
      * @return
@@ -125,8 +129,6 @@ public class VideoCommentController extends ABaseController {
         comment.setImgPath(imgPath);
         //发布评论
         videoCommentService.postComment(comment, replyCommentId);
-        //comment.setReplyNickName();
-        //comment.setReplyAvatar(tokenUserInfoDto.getAvatar());
         return getSuccessResponseVO(comment);
     }
 

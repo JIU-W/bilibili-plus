@@ -86,7 +86,7 @@ public class VideoComment implements Serializable {
     //返回给前端的：用户头像
     private String avatar;
 
-    //发布二级评论时：前端要显示的回复人昵称
+    //发布"回复二级评论的二级评论"时：前端要显示的回复人昵称
     private String replyNickName;
 
     //回复人头像

@@ -168,31 +168,38 @@ public class VideoCommentServiceImpl implements VideoCommentService {
             throw new BusinessException("UP主已关闭评论区");
         }
         //判断是一级评论二级评论
-        if (replyCommentId != null) {
-            //
+        if (replyCommentId != null) {//二级评论：[1.回复一级评论的二级评论  2.回复二级评论的二级评论]
+            //查出被回复的评论对象
             VideoComment replyComment = getVideoCommentByCommentId(replyCommentId);
             if (replyComment == null || !replyComment.getVideoId().equals(comment.getVideoId())) {
                 throw new BusinessException(ResponseCodeEnum.CODE_600);
             }
+            //判断是二级评论中的哪一种
             if (replyComment.getpCommentId() == 0) {
+                //是回复一级评论的二级评论
                 comment.setpCommentId(replyComment.getCommentId());
             } else {
+                //是回复二级评论的二级评论
                 comment.setpCommentId(replyComment.getpCommentId());
+
+                //这种情况前端要“展示回复人昵称”，存replyUserId进去返回给前端再关联查出昵称。
                 comment.setReplyUserId(replyComment.getUserId());
             }
             UserInfo userInfo = userInfoMapper.selectByUserId(replyComment.getUserId());
-            comment.setReplyNickName(userInfo.getNickName());
-            comment.setReplyAvatar(userInfo.getAvatar());
-        } else {
-            //一级评论
+            comment.setReplyNickName(userInfo.getNickName());//用于显示回复人昵称
+
+            comment.setReplyAvatar(userInfo.getAvatar());//头像可塞可不塞，前端用不到
+        } else {//一级评论
             comment.setpCommentId(0);
         }
         comment.setPostTime(new Date());
         comment.setVideoUserId(videoInfo.getUserId());
+        //插入评论
         this.videoCommentMapper.insert(comment);
-        //增加评论数
+        //增加评论数：只有增加一级评论的时候才增加评论数。
         if (comment.getpCommentId() == 0) {
-            this.videoInfoMapper.updateCountInfo(comment.getVideoId(), UserActionTypeEnum.VIDEO_COMMENT.getField(), 1);
+            this.videoInfoMapper.updateCountInfo(comment.getVideoId(), UserActionTypeEnum.VIDEO_COMMENT.getField(),
+                    1);
         }
     }
 
