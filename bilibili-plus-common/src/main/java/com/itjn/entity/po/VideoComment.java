@@ -78,13 +78,18 @@ public class VideoComment implements Serializable {
      */
     private Integer hateCount;
 
+    /**
+     * 子评论
+     */
     private List<VideoComment> children;
+
 
     //返回给前端的：用户昵称
     private String nickName;
 
     //返回给前端的：用户头像
     private String avatar;
+
 
     //发布"回复二级评论的二级评论"时：前端要显示的回复人昵称
     private String replyNickName;

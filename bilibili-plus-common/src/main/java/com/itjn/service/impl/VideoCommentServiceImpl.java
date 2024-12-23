@@ -56,6 +56,7 @@ public class VideoCommentServiceImpl implements VideoCommentService {
     @Override
     public List<VideoComment> findListByParam(VideoCommentQuery param) {
         if (param.getLoadChildren() != null && param.getLoadChildren()) {
+            //查询一级评论时，同时查询其的所有子评论
             return this.videoCommentMapper.selectListWithChildren(param);
         }
         return this.videoCommentMapper.selectList(param);
