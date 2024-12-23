@@ -5,7 +5,6 @@ package com.itjn.entity.query;
  */
 public class VideoCommentQuery extends BaseParam {
 
-
     /**
      * 评论ID
      */

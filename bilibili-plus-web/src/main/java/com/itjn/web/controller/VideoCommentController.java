@@ -70,11 +70,12 @@ public class VideoCommentController extends ABaseController {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         VideoComment comment = new VideoComment();
         comment.setUserId(tokenUserInfoDto.getUserId());
-        comment.setAvatar(tokenUserInfoDto.getAvatar());
-        comment.setNickName(tokenUserInfoDto.getNickName());
         comment.setVideoId(videoId);
         comment.setContent(content);
         comment.setImgPath(imgPath);
+        //冗余的字段，用于发布评论后显示，不用再另外关联数据库查询。
+        comment.setAvatar(tokenUserInfoDto.getAvatar());
+        comment.setNickName(tokenUserInfoDto.getNickName());
         //发布评论
         videoCommentService.postComment(comment, replyCommentId);
         return getSuccessResponseVO(comment);
@@ -149,7 +150,7 @@ public class VideoCommentController extends ABaseController {
     }
 
 
-    @RequestMapping("/userDelComment")
+    /*@RequestMapping("/userDelComment")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO userDelComment(@NotNull Integer commentId) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
@@ -172,6 +173,6 @@ public class VideoCommentController extends ABaseController {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         videoCommentService.cancelTopComment(commentId, tokenUserInfoDto.getUserId());
         return getSuccessResponseVO(null);
-    }
+    }*/
 
 }

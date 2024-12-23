@@ -119,24 +119,32 @@
         </where>
     </sql>
 
-    <!--这里单独定义一个resultMap 如果放到 restMap中就会递归调用 -->
+    <!-- 这里单独定义一个resultMap 如果放到 restMap中就会递归调用 -->
+    <!-- 这个resultMap继承了base_result_map，同时扩展了children属性映射 -->
     <resultMap id="base_result_map_children" type="com.itjn.entity.po.VideoComment" extends="base_result_map">
+        <!-- 映射子评论，一对多映射用collection -->
         <collection property="children" column="comment_id" select="com.itjn.mappers.VideoCommentMapper.selectChildComment">
         </collection>
     </resultMap>
 
+    <!-- 根据父级评论id去关联查询这个父级评论下所有的子评论信息 -->
+    <!-- 这个SQL语句会执行多次，有多少个父级评论就会查询多少次 -->
     <select id="selectChildComment" resultMap="base_result_map">
         select v.*,u.nick_name nickName,u.avatar avatar,u2.nick_name replyNickName,u2.avatar replyAvatar
         from video_comment v
         inner join user_info u on v.user_id = u.user_id
         left join user_info u2 on u2.user_id = v.reply_user_id
-        where p_comment_id = #{commentId} order by v.comment_id asc
+        where p_comment_id = #{commentId}
+        order by v.comment_id asc
     </select>
 
+    <!-- 查询一级评论时，同时查询其的所有子评论 -->
+    <!-- 单独定义了一个resultMap映射进行一对多 查询一级评论的子评论 -->
     <select id="selectListWithChildren" resultMap="base_result_map_children">
         SELECT
         <include refid="base_column_list"/>,u.nick_name nickName,u.avatar avatar
-        FROM video_comment v left join user_info u on v.user_id = u.user_id
+        FROM video_comment v
+        left join user_info u on v.user_id = u.user_id
         <include refid="query_condition"/>
         <if test="query.orderBy!=null">
             order by ${query.orderBy}

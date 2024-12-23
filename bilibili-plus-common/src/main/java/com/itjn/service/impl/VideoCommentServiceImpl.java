@@ -59,6 +59,7 @@ public class VideoCommentServiceImpl implements VideoCommentService {
             //查询一级评论时，同时查询其的所有子评论
             return this.videoCommentMapper.selectListWithChildren(param);
         }
+        //查询一级评论时，不查询子评论
         return this.videoCommentMapper.selectList(param);
     }
 
@@ -183,12 +184,13 @@ public class VideoCommentServiceImpl implements VideoCommentService {
                 //是回复二级评论的二级评论
                 comment.setpCommentId(replyComment.getpCommentId());
 
-                //这种情况前端要“展示回复人昵称”，存replyUserId进去返回给前端再关联查出昵称。
+                //这种情况前端要“展示回复人昵称”，存replyUserId到数据库，
+                //后续前端走专门的查询接口(loadComment)来查询回复人数据时再关联查出昵称。
                 comment.setReplyUserId(replyComment.getUserId());
             }
             UserInfo userInfo = userInfoMapper.selectByUserId(replyComment.getUserId());
+            //冗余的字段，用于发布评论后显示，不用再另外关联数据库查询。
             comment.setReplyNickName(userInfo.getNickName());//用于显示回复人昵称
-
             comment.setReplyAvatar(userInfo.getAvatar());//头像可塞可不塞，前端用不到
         } else {//一级评论
             comment.setpCommentId(0);
@@ -261,4 +263,5 @@ public class VideoCommentServiceImpl implements VideoCommentService {
         videoCommentQuery.setTopType(CommentTopTypeEnum.TOP.getType());
         videoCommentMapper.updateByParam(videoComment, videoCommentQuery);
     }
+
 }
