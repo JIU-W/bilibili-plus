@@ -239,19 +239,25 @@ public class UserActionServiceImpl implements UserActionService {
                 //更新投稿作品硬币数量
                 videoInfoMapper.updateCountInfo(bean.getVideoId(), actionTypeEnum.getField(), bean.getActionCount());
                 break;
-            //评论
-            /*case COMMENT_LIKE:
+            //评论   评论：(点赞，讨厌)  两者是互斥的
+            case COMMENT_LIKE:
             case COMMENT_HATE:
-                UserActionTypeEnum opposeTypeEnum = UserActionTypeEnum.COMMENT_LIKE == actionTypeEnum ? UserActionTypeEnum.COMMENT_HATE : UserActionTypeEnum.COMMENT_LIKE;
-                UserAction opposeAction = userActionMapper.selectByVideoIdAndCommentIdAndActionTypeAndUserId(bean.getVideoId(), bean.getCommentId(),
+                //找到对立面的操作
+                UserActionTypeEnum opposeTypeEnum = UserActionTypeEnum.COMMENT_LIKE == actionTypeEnum ?
+                        UserActionTypeEnum.COMMENT_HATE : UserActionTypeEnum.COMMENT_LIKE;
+                //查询数据库有没有对立面的行为，有则删除。
+                UserAction opposeAction = userActionMapper
+                        .selectByVideoIdAndCommentIdAndActionTypeAndUserId(bean.getVideoId(), bean.getCommentId(),
                         opposeTypeEnum.getType(), bean.getUserId());
                 if (opposeAction != null) {
                     userActionMapper.deleteByActionId(opposeAction.getActionId());
                 }
-
+                //评论点赞和讨厌
                 if (dbAction != null) {
+                    //点击的时候都是：有则删(取消点赞或者讨厌)
                     userActionMapper.deleteByActionId(dbAction.getActionId());
                 } else {
+                    //没有则加(点赞或者讨厌)
                     userActionMapper.insert(bean);
                 }
                 changeCount = dbAction == null ? 1 : -1;
@@ -261,7 +267,7 @@ public class UserActionServiceImpl implements UserActionService {
                         changeCount,
                         opposeAction == null ? null : opposeTypeEnum.getField(),
                         opposeChangeCount);
-                break;*/
+                break;
         }
 
     }

@@ -557,11 +557,13 @@
         from video_comment v where comment_id=#{commentId}
     </select>
 
+    <!-- 因为field是项目内部的参数，不让外界传，所以不会有sql注入的情况发生，可以用 $ 符号 -->
     <update id="updateCountInfo">
-        update video_comment set ${field} = ${field}+#{changeCount}
+        update video_comment set ${field} = ${field} + #{changeCount}
         <if test="opposeField!=null">
-            ,${opposeField} = ${opposeField}+#{opposeChangeCount}
+            ,${opposeField} = ${opposeField} + #{opposeChangeCount}
         </if>
         where comment_id = #{commentId}
     </update>
+
 </mapper>
