@@ -83,8 +83,9 @@ public class VideoCommentController extends ABaseController {
 
     /**
      * 查询评论
-     * @param videoId 投稿(视频)ID
-     * @param pageNo 页码
+     *
+     * @param videoId   投稿(视频)ID
+     * @param pageNo    页码
      * @param orderType 排序类型
      * @return
      */
@@ -158,15 +159,11 @@ public class VideoCommentController extends ABaseController {
     }
 
 
-    /*@RequestMapping("/userDelComment")
-    //@GlobalInterceptor(checkLogin = true)
-    public ResponseVO userDelComment(@NotNull Integer commentId) {
-        TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
-        VideoComment comment = new VideoComment();
-        videoCommentService.deleteComment(commentId, tokenUserInfoDto.getUserId());
-        return getSuccessResponseVO(comment);
-    }
-
+    /**
+     * 置顶评论
+     * @param commentId
+     * @return
+     */
     @RequestMapping("/topComment")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO topComment(@NotNull Integer commentId) {
@@ -175,12 +172,33 @@ public class VideoCommentController extends ABaseController {
         return getSuccessResponseVO(null);
     }
 
+
+    /**
+     * 取消评论置顶
+     * @param commentId
+     * @return
+     */
     @RequestMapping("/cancelTopComment")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO cancelTopComment(@NotNull Integer commentId) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         videoCommentService.cancelTopComment(commentId, tokenUserInfoDto.getUserId());
         return getSuccessResponseVO(null);
-    }*/
+    }
+
+    /**
+     * 删除评论
+     * @param commentId
+     * @return
+     */
+    @RequestMapping("/userDelComment")
+    //@GlobalInterceptor(checkLogin = true)
+    public ResponseVO userDelComment(@NotNull Integer commentId) {
+        TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        VideoComment comment = new VideoComment();
+        videoCommentService.deleteComment(commentId, tokenUserInfoDto.getUserId());
+        return getSuccessResponseVO(comment);
+    }
+
 
 }

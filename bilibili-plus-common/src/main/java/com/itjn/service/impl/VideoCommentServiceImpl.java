@@ -206,7 +206,41 @@ public class VideoCommentServiceImpl implements VideoCommentService {
         }
     }
 
-    @Override
+
+    @Transactional(rollbackFor = Exception.class)
+    public void topComment(Integer commentId, String userId) {
+        //先清除之前的置顶
+        this.cancelTopComment(commentId, userId);
+        VideoComment videoComment = new VideoComment();
+        videoComment.setTopType(CommentTopTypeEnum.TOP.getType());
+        videoCommentMapper.updateByCommentId(videoComment, commentId);
+    }
+
+
+    public void cancelTopComment(Integer commentId, String userId) {
+        VideoComment dbVideoComment = videoCommentMapper.selectByCommentId(commentId);
+        if (dbVideoComment == null) {
+            throw new BusinessException(ResponseCodeEnum.CODE_600);
+        }
+        VideoInfo videoInfo = videoInfoMapper.selectByVideoId(dbVideoComment.getVideoId());
+        if (videoInfo == null) {
+            throw new BusinessException(ResponseCodeEnum.CODE_600);
+        }
+        if (!videoInfo.getUserId().equals(userId)) {
+            throw new BusinessException(ResponseCodeEnum.CODE_600);
+        }
+
+        VideoComment videoComment = new VideoComment();
+        videoComment.setTopType(CommentTopTypeEnum.NO_TOP.getType());
+
+        //修改的条件
+        VideoCommentQuery videoCommentQuery = new VideoCommentQuery();
+        videoCommentQuery.setVideoId(dbVideoComment.getVideoId());
+        videoCommentQuery.setTopType(CommentTopTypeEnum.TOP.getType());
+        videoCommentMapper.updateByParam(videoComment, videoCommentQuery);
+    }
+
+
     public void deleteComment(Integer commentId, String userId) {
         VideoComment comment = videoCommentMapper.selectByCommentId(commentId);
         if (null == comment) {
@@ -231,37 +265,5 @@ public class VideoCommentServiceImpl implements VideoCommentService {
         }
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void topComment(Integer commentId, String userId) {
-        this.cancelTopComment(commentId, userId);
-        VideoComment videoComment = new VideoComment();
-        videoComment.setTopType(CommentTopTypeEnum.TOP.getType());
-        videoCommentMapper.updateByCommentId(videoComment, commentId);
-    }
-
-    @Override
-    public void cancelTopComment(Integer commentId, String userId) {
-//现清除之前的指定
-        VideoComment dbVideoComment = videoCommentMapper.selectByCommentId(commentId);
-        if (dbVideoComment == null) {
-            throw new BusinessException(ResponseCodeEnum.CODE_600);
-        }
-        VideoInfo videoInfo = videoInfoMapper.selectByVideoId(dbVideoComment.getVideoId());
-        if (videoInfo == null) {
-            throw new BusinessException(ResponseCodeEnum.CODE_600);
-        }
-        if (!videoInfo.getUserId().equals(userId)) {
-            throw new BusinessException(ResponseCodeEnum.CODE_600);
-        }
-
-        VideoComment videoComment = new VideoComment();
-        videoComment.setTopType(CommentTopTypeEnum.NO_TOP.getType());
-
-        VideoCommentQuery videoCommentQuery = new VideoCommentQuery();
-        videoCommentQuery.setVideoId(dbVideoComment.getVideoId());
-        videoCommentQuery.setTopType(CommentTopTypeEnum.TOP.getType());
-        videoCommentMapper.updateByParam(videoComment, videoCommentQuery);
-    }
 
 }

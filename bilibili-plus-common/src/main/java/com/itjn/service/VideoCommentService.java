@@ -74,10 +74,19 @@ public interface VideoCommentService {
      */
     void postComment(VideoComment comment, Integer replyCommentId);
 
+    /**
+     * 删除评论
+     */
     void deleteComment(Integer commentId, String userId);
 
+    /**
+     * 置顶评论
+     */
     void topComment(Integer commentId, String userId);
 
+    /**
+     * 取消置顶评论
+     */
     void cancelTopComment(Integer commentId, String userId);
 
 }
