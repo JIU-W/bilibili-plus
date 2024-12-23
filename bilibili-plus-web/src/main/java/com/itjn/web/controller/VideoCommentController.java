@@ -64,7 +64,7 @@ public class VideoCommentController extends ABaseController {
      */
     @RequestMapping("/postComment")
     //@GlobalInterceptor(checkLogin = true)
-    @RecordUserMessage(messageType = MessageTypeEnum.COMMENT)
+    //@RecordUserMessage(messageType = MessageTypeEnum.COMMENT)
     public ResponseVO postComment(@NotEmpty String videoId, Integer replyCommentId,
                                   @NotEmpty @Size(max = 500) String content, @Size(max = 50) String imgPath) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
@@ -110,13 +110,19 @@ public class VideoCommentController extends ABaseController {
         commentQuery.setOrderBy(orderBy);
         PaginationResultVO<VideoComment> commentData = videoCommentService.findListByPage(commentQuery);
 
-        //置顶评论
+        //置顶评论     pageNo == null || pageNo == 1：第一页时才查询置顶评论
         if (pageNo == null || pageNo == 1) {
+            //查询置顶的评论：一条一级评论以及它的所用子评论
             List<VideoComment> topCommentList = topComment(videoId);
             if (!topCommentList.isEmpty()) {
+                //排除之前分页查询到的所有评论数据中的置顶评论
                 List<VideoComment> commentList =
-                        commentData.getList().stream().filter(item -> !item.getCommentId().equals(topCommentList.get(0).getCommentId())).collect(Collectors.toList());
+                        commentData.getList().stream()
+                                .filter(item -> !item.getCommentId().equals(topCommentList.get(0).getCommentId()))
+                                .collect(Collectors.toList());
+                //将置顶评论放到最前面
                 commentList.addAll(0, topCommentList);
+                //重新设置分页查询的结果，也就是重新塞值。
                 commentData.setList(commentList);
             }
         }
@@ -140,11 +146,13 @@ public class VideoCommentController extends ABaseController {
         return getSuccessResponseVO(resultVO);
     }
 
+    //查询置顶的评论：一条一级评论以及它的所用子评论
     private List<VideoComment> topComment(String videoId) {
         VideoCommentQuery commentQuery = new VideoCommentQuery();
         commentQuery.setVideoId(videoId);
         commentQuery.setTopType(CommentTopTypeEnum.TOP.getType());
-        commentQuery.setLoadChildren(true);
+        commentQuery.setLoadChildren(true);//要查询一级评论的子评论
+        //返回的数据虽然是一个List集合，但是结果只有一条数据。
         List<VideoComment> videoCommentList = videoCommentService.findListByParam(commentQuery);
         return videoCommentList;
     }

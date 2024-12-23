@@ -135,7 +135,7 @@
         inner join user_info u on v.user_id = u.user_id
         left join user_info u2 on u2.user_id = v.reply_user_id
         where p_comment_id = #{commentId}
-        order by v.comment_id asc
+        order by v.comment_id asc     <!-- 子评论根据它们的comment_id进行排序  -->
     </select>
 
     <!-- 查询一级评论时，同时查询其的所有子评论 -->
