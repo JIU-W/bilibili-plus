@@ -81,11 +81,14 @@ public class Constants {
     //视频在线
     public static final String REDIS_KEY_VIDEO_PLAY_COUNT_ONLINE_PREIFX = REDIS_KEY_PREFIX + "video:play:online:";
 
+    //在线人数标识
     public static final String REDIS_KEY_VIDEO_PLAY_COUNT_ONLINE = REDIS_KEY_VIDEO_PLAY_COUNT_ONLINE_PREIFX + "count:%s";
 
     public static final String REDIS_KEY_VIDEO_PLAY_COUNT_USER_PREFIX = "user:";
 
-    public static final String REDIS_KEY_VIDEO_PLAY_COUNT_USER = REDIS_KEY_VIDEO_PLAY_COUNT_ONLINE_PREIFX + REDIS_KEY_VIDEO_PLAY_COUNT_USER_PREFIX + "%s:%s";
+    //播放用户标识
+    public static final String REDIS_KEY_VIDEO_PLAY_COUNT_USER = REDIS_KEY_VIDEO_PLAY_COUNT_ONLINE_PREIFX +
+            REDIS_KEY_VIDEO_PLAY_COUNT_USER_PREFIX + "%s:%s";
 
     public static final String REDIS_KEY_CATEGORY_LIST = REDIS_KEY_PREFIX + "category:list:";
 

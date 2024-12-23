@@ -55,6 +55,11 @@ public class RedisUtils<V> {
         }
     }
 
+    /**
+     * 判断key是否存在
+     * @param key
+     * @return
+     */
     public boolean keyExists(String key) {
         return redisTemplate.hasKey(key);
     }
@@ -149,6 +154,12 @@ public class RedisUtils<V> {
         return count;
     }
 
+    /**
+     * 递增并设置过期时间
+     * @param key
+     * @param milliseconds
+     * @return
+     */
     public Long incrementex(String key, long milliseconds) {
         Long count = redisTemplate.opsForValue().increment(key, 1);
         if (count == 1) {

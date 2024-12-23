@@ -125,10 +125,18 @@ public class VideoController extends ABaseController {
         return getSuccessResponseVO(resultVo);
     }
 
-
+    /**
+     * 获取视频播放在线人数
+     * @param fileId 某个投稿下的分p视频id
+     * @param deviceId 设备id：前端通过一个插件生成的一个唯一标识，用于区分不同的浏览器设备。
+     *                 有小概率存在相同值，但是概率极低，可以忽略。
+     * @return
+     */
     @RequestMapping("/reportVideoPlayOnline")
     public ResponseVO reportVideoPlayOnline(@NotEmpty String fileId, @NotEmpty String deviceId) {
-        return getSuccessResponseVO(null);
+        //统计在线人数
+        Integer count = redisComponent.reportVideoPlayOnline(fileId, deviceId);
+        return getSuccessResponseVO(count);
     }
 
     /**

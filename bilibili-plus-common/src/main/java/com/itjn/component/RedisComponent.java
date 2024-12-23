@@ -198,18 +198,30 @@ public class RedisComponent {
         return categoryInfoList == null ? new ArrayList<>() : categoryInfoList;
     }
 
-
+    /**
+     * 统计在线人数
+     * @param fileId
+     * @param deviceId
+     * @return
+     */
     public Integer reportVideoPlayOnline(String fileId, String deviceId) {
+        //播放用户标识
         String userPlayOnlineKey = String.format(Constants.REDIS_KEY_VIDEO_PLAY_COUNT_USER, fileId, deviceId);
+        //在线人数标识
         String playOnlineCountKey = String.format(Constants.REDIS_KEY_VIDEO_PLAY_COUNT_ONLINE, fileId);
 
+        //判断是否已经播放
         if (!redisUtils.keyExists(userPlayOnlineKey)) {
+            //这个userPlayOnlineKey在redis中不存在，说明是第一次播放。
+            //设置失效时间为8秒
             redisUtils.setex(userPlayOnlineKey, fileId, Constants.REDIS_KEY_EXPIRES_ONE_SECONDS * 8);
+            //在线人数+1，并且设置过期时间为10秒
             return redisUtils.incrementex(playOnlineCountKey, Constants.REDIS_KEY_EXPIRES_ONE_SECONDS * 10).intValue();
         }
+        //正在播放，不是第一次播放
         //给视频在线总数量续期
         redisUtils.expire(playOnlineCountKey, Constants.REDIS_KEY_EXPIRES_ONE_SECONDS * 10);
-        //给播放用户续期
+        //给播放用户续期，续上8秒
         redisUtils.expire(userPlayOnlineKey, Constants.REDIS_KEY_EXPIRES_ONE_SECONDS * 8);
         Integer count = (Integer) redisUtils.get(playOnlineCountKey);
         return count == null ? 1 : count;
@@ -217,7 +229,6 @@ public class RedisComponent {
 
     /**
      * 减少数量
-     *
      * @param key
      */
     public void decrementPlayOnlineCount(String key) {
@@ -249,4 +260,5 @@ public class RedisComponent {
     public List<String> getKeywordTop(Integer top) {
         return redisUtils.getZSetList(Constants.REDIS_KEY_VIDEO_SEARCH_COUNT, top - 1);
     }
+
 }
