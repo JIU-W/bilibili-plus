@@ -25,8 +25,18 @@ public interface UserFocusMapper<T, P> extends BaseMapper<T, P> {
     T selectByUserIdAndFocusUserId(@Param("userId") String userId, @Param("focusUserId") String focusUserId);
 
 
+    /**
+     * 根据UserId查询关注数
+     * @param userId
+     * @return
+     */
     Integer selectFocusCount(@Param("userId") String userId);
 
+    /**
+     * 根据UserId查询粉丝数
+     * @param userId
+     * @return
+     */
     Integer selectFansCount(@Param("userId") String userId);
 
 }

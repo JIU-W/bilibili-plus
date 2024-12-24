@@ -305,22 +305,26 @@ public class UserInfoServiceImpl implements UserInfoService {
         if (null == userInfo) {
             throw new BusinessException(ResponseCodeEnum.CODE_404);
         }
-        //查询用户的所有投稿总共的播放数量、获赞数量
+        //查询用户的所有投稿总共的"播放数量、获赞数量"
         CountInfoDto countInfoDto = videoInfoMapper.selectSumCountInfo(userId);
         CopyTools.copyProperties(countInfoDto, userInfo);
 
-        //TODO 粉丝关注相关
-        /*Integer fansCount = userFocusMapper.selectFansCount(userId);
+        //查询用户的粉丝数、关注数
+        Integer fansCount = userFocusMapper.selectFansCount(userId);
         Integer focusCount = userFocusMapper.selectFocusCount(userId);
         userInfo.setFansCount(fansCount);
         userInfo.setFocusCount(focusCount);
 
-        if (currentUserId == null) {//没有登录的情况
+        if (currentUserId == null) {
+            //当前没有用户登录：直接设置false
             userInfo.setHaveFocus(false);
         } else {
+            //查询当前用户是否关注了该用户
             UserFocus userFocus = userFocusMapper.selectByUserIdAndFocusUserId(currentUserId, userId);
+            //设置当前用户是否关注了该用户
             userInfo.setHaveFocus(userFocus == null ? false : true);
-        }*/
+        }
+
         return userInfo;
     }
 

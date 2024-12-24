@@ -115,8 +115,10 @@ public class UserInfo implements Serializable {
 
     private Integer playCount;
 
+    //返回给前端，表示是否关注
+    //返回false给前端(意味着当前用户没有关注该用户)：前端"关注按钮"那里显示：关注
+    //返回true给前端(意味着当前用户关注了该用户)：前端"关注按钮"那里显示：取消关注
     private Boolean haveFocus;
-
 
     @Override
     public String toString() {

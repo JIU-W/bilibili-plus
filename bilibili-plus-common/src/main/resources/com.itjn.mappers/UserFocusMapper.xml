@@ -241,4 +241,5 @@
     <select id="selectFansCount" resultType="java.lang.Integer">
         select count(1) from user_focus where focus_user_id = #{userId}
     </select>
+
 </mapper>
