@@ -324,7 +324,6 @@ public class UserInfoServiceImpl implements UserInfoService {
             //设置当前用户是否关注了该用户
             userInfo.setHaveFocus(userFocus == null ? false : true);
         }
-
         return userInfo;
     }
 

@@ -60,15 +60,18 @@
     <select id="selectList" resultMap="base_result_map">
         SELECT
         <include refid="base_column_list"/>
-        <if test="query.queryType!=null">
-            ,i.nick_name otherNickName,i.user_id otherUserId,i.person_introduction otherPersonIntroduction,i.avatar otherAvatar
-            ,(select count(1) from user_focus f where u.user_id=f.focus_user_id and u.focus_user_id=f.user_id) focusType
+        <if test="query.queryType != null">
+            ,i.nick_name otherNickName, i.user_id otherUserId,
+            i.person_introduction otherPersonIntroduction, i.avatar otherAvatar,
+            (select count(1) from user_focus f where u.user_id = f.focus_user_id and u.focus_user_id = f.user_id) focusType
         </if>
         FROM user_focus u
-        <if test="query.queryType==0">
+        <!-- 查询关注列表 -->
+        <if test="query.queryType == 0">
             inner join user_info i on i.user_id = u.focus_user_id
         </if>
-        <if test="query.queryType==1">
+        <!-- 查询粉丝列表 -->
+        <if test="query.queryType == 1">
             inner join user_info i on i.user_id = u.user_id
         </if>
         <include refid="query_condition"/>

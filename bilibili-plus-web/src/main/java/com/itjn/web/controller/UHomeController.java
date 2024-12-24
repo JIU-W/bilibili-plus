@@ -120,33 +120,46 @@ public class UHomeController extends ABaseController {
     }
 
 
-    /*
+    /**
+     * 加载我的关注列表
+     */
     @RequestMapping("/loadFocusList")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO loadFocusList(Integer pageNo) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         UserFocusQuery focusQuery = new UserFocusQuery();
+        //设置user_id
         focusQuery.setUserId(tokenUserInfoDto.getUserId());
+        //设置查询类型为“查关注列表”
         focusQuery.setQueryType(Constants.ZERO);
         focusQuery.setPageNo(pageNo);
         focusQuery.setOrderBy("focus_time desc");
+        //分页查询关注列表
         PaginationResultVO resultVO = userFocusService.findListByPage(focusQuery);
         return getSuccessResponseVO(resultVO);
     }
 
+    /**
+     * 加载我的粉丝列表
+     */
     @RequestMapping("/loadFansList")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO loadFansList(Integer pageNo) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         UserFocusQuery focusQuery = new UserFocusQuery();
+        //设置focus_user_id
         focusQuery.setFocusUserId(tokenUserInfoDto.getUserId());
+        //设置查询类型为“查粉丝列表”
         focusQuery.setQueryType(Constants.ONE);
         focusQuery.setPageNo(pageNo);
         focusQuery.setOrderBy("focus_time desc");
+        //分页查询粉丝列表
         PaginationResultVO resultVO = userFocusService.findListByPage(focusQuery);
         return getSuccessResponseVO(resultVO);
     }
 
+
+    /*
     @RequestMapping("/loadVideoList")
     //@GlobalInterceptor
     public ResponseVO loadVideoList(@NotEmpty String userId, Integer type, Integer pageNo, String videoName, Integer orderType) {
