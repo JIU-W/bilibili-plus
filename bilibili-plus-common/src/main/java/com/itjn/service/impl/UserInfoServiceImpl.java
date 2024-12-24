@@ -214,7 +214,7 @@ public class UserInfoServiceImpl implements UserInfoService {
         return this.userInfoMapper.deleteByNickName(nickName);
     }
 
-    @Override
+
     @Transactional(rollbackFor = Exception.class)
     public void register(String email, String nickName, String password) {
         UserInfo userInfo = this.userInfoMapper.selectByEmail(email);
@@ -246,7 +246,6 @@ public class UserInfoServiceImpl implements UserInfoService {
         this.userInfoMapper.insert(userInfo);
     }
 
-    @Override
     public TokenUserInfoDto login(String email, String password, String ip) {
         UserInfo userInfo = this.userInfoMapper.selectByEmail(email);
         if (null == userInfo || !userInfo.getPassword().equals(password)) {
@@ -268,9 +267,9 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
 
-    @Override
     @Transactional
     public void updateUserInfo(UserInfo userInfo, TokenUserInfoDto tokenUserInfoDto) {
+        //查询数据库用户信息
         UserInfo dbInfo = this.userInfoMapper.selectByUserId(userInfo.getUserId());
         if (!dbInfo.getNickName().equals(userInfo.getNickName()) && dbInfo.getCurrentCoinCount() < Constants.UPDATE_NICK_NAME_COIN) {
             throw new BusinessException("硬币不足，无法修改昵称");
@@ -297,16 +296,19 @@ public class UserInfoServiceImpl implements UserInfoService {
         }
     }
 
-    @Override
+
     public UserInfo getUserDetailInfo(String currentUserId, String userId) {
+        //查询用户信息
         UserInfo userInfo = getUserInfoByUserId(userId);
         if (null == userInfo) {
             throw new BusinessException(ResponseCodeEnum.CODE_404);
         }
+
         CountInfoDto countInfoDto = videoInfoMapper.selectSumCountInfo(userId);
         CopyTools.copyProperties(countInfoDto, userInfo);
 
-        Integer fansCount = userFocusMapper.selectFansCount(userId);
+        //TODO 粉丝关注相关
+        /*Integer fansCount = userFocusMapper.selectFansCount(userId);
         Integer focusCount = userFocusMapper.selectFocusCount(userId);
         userInfo.setFansCount(fansCount);
         userInfo.setFocusCount(focusCount);
@@ -316,11 +318,11 @@ public class UserInfoServiceImpl implements UserInfoService {
         } else {
             UserFocus userFocus = userFocusMapper.selectByUserIdAndFocusUserId(currentUserId, userId);
             userInfo.setHaveFocus(userFocus == null ? false : true);
-        }
+        }*/
         return userInfo;
     }
 
-    @Override
+
     public UserCountInfoDto getUserCountInfo(String userId) {
         UserInfo userInfo = getUserInfoByUserId(userId);
         Integer fansCount = userFocusMapper.selectFansCount(userId);
@@ -343,4 +345,5 @@ public class UserInfoServiceImpl implements UserInfoService {
         }
         return this.userInfoMapper.updateCoinCountInfo(userId, changeCount);
     }
+
 }

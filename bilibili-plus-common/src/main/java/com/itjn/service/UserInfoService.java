@@ -124,12 +124,23 @@ public interface UserInfoService {
      */
     void register(String email, String nickName, String password);
 
-
+    /**
+     * 更新用户信息
+     * @param userInfo
+     * @param tokenUserInfoDto
+     */
     void updateUserInfo(UserInfo userInfo, TokenUserInfoDto tokenUserInfoDto);
 
+    /**
+     * 获取用户主页信息详情
+     * @param currentUserId 当前登录用户id
+     * @param userId 被查看的用户id
+     * @return
+     */
     UserInfo getUserDetailInfo(String currentUserId, String userId);
 
     UserCountInfoDto getUserCountInfo(String userId);
 
     Integer updateCoinCountInfo(String userId, Integer changeCount);
+
 }
