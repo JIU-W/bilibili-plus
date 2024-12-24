@@ -35,9 +35,8 @@ public class UserFocus implements Serializable {
     private Date focusTime;
 
     /**
-     * 返回给前端的信息
+     * 以下都是返回给前端的信息
      */
-
     //关注的人或者粉丝的昵称
     private String otherNickName;
 
@@ -50,7 +49,8 @@ public class UserFocus implements Serializable {
     //关注的人或者粉丝的头像
     private String otherAvatar;
 
-    //查询是否互相关注
+    //查询是否互相关注(是否互粉)
+    //0：未互关 1：已互关
     private Integer focusType;
 
     @Override

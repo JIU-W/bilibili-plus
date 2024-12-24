@@ -128,7 +128,7 @@ public class UHomeController extends ABaseController {
     public ResponseVO loadFocusList(Integer pageNo) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         UserFocusQuery focusQuery = new UserFocusQuery();
-        //设置user_id
+        //重点：设置user_id
         focusQuery.setUserId(tokenUserInfoDto.getUserId());
         //设置查询类型为“查关注列表”
         focusQuery.setQueryType(Constants.ZERO);
@@ -147,7 +147,7 @@ public class UHomeController extends ABaseController {
     public ResponseVO loadFansList(Integer pageNo) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         UserFocusQuery focusQuery = new UserFocusQuery();
-        //设置focus_user_id
+        //重点：设置focus_user_id
         focusQuery.setFocusUserId(tokenUserInfoDto.getUserId());
         //设置查询类型为“查粉丝列表”
         focusQuery.setQueryType(Constants.ONE);

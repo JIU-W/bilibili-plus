@@ -63,6 +63,8 @@
         <if test="query.queryType != null">
             ,i.nick_name otherNickName, i.user_id otherUserId,
             i.person_introduction otherPersonIntroduction, i.avatar otherAvatar,
+            <!-- 查询是否互相关注(是否互粉) -->
+            <!-- focusType： 0：未互关 1：已互关 -->
             (select count(1) from user_focus f where u.user_id = f.focus_user_id and u.focus_user_id = f.user_id) focusType
         </if>
         FROM user_focus u
