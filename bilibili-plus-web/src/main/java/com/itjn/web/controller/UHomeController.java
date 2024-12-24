@@ -22,9 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @RestController
 @Validated
@@ -82,9 +80,14 @@ public class UHomeController extends ABaseController {
         return getSuccessResponseVO(null);
     }
 
-    /*@RequestMapping("/saveTheme")
+    /**
+     * 保存主题
+     * @param theme
+     * @return
+     */
+    @RequestMapping("/saveTheme")
     //@GlobalInterceptor
-    public ResponseVO saveTheme(Integer theme) {
+    public ResponseVO saveTheme(@Min(1) @Max(10) @NotNull Integer theme) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         UserInfo userInfo = new UserInfo();
         userInfo.setTheme(theme);
@@ -92,6 +95,11 @@ public class UHomeController extends ABaseController {
         return getSuccessResponseVO(null);
     }
 
+    /**
+     * 关注
+     * @param focusUserId 被关注用户id
+     * @return
+     */
     @RequestMapping("/focus")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO focus(@NotEmpty String focusUserId) {
@@ -99,6 +107,11 @@ public class UHomeController extends ABaseController {
         return getSuccessResponseVO(null);
     }
 
+    /**
+     * 取消关注
+     * @param focusUserId
+     * @return
+     */
     @RequestMapping("/cancelFocus")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO cancelFocus(@NotEmpty String focusUserId) {
@@ -106,6 +119,8 @@ public class UHomeController extends ABaseController {
         return getSuccessResponseVO(null);
     }
 
+
+    /*
     @RequestMapping("/loadFocusList")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO loadFocusList(Integer pageNo) {

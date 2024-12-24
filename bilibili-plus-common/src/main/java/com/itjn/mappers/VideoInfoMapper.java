@@ -32,7 +32,7 @@ public interface VideoInfoMapper<T, P> extends BaseMapper<T, P> {
                          @Param("changeCount") Integer changeCount);
 
     /**
-     * 获取统计信息
+     * 获取统计信息：播放数量、获赞数量
      * @param userId
      * @return
      */

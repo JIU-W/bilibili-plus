@@ -280,6 +280,7 @@ public class UserInfoServiceImpl implements UserInfoService {
                 throw new BusinessException("硬币不足，无法修改昵称");
             }
         }
+        //修改用户信息
         this.userInfoMapper.updateByUserId(userInfo, userInfo.getUserId());
 
         Boolean updateTokenInfo = false;
@@ -292,6 +293,7 @@ public class UserInfoServiceImpl implements UserInfoService {
             updateTokenInfo = true;
         }
         if (updateTokenInfo) {
+            //更新token信息
             redisComponent.updateTokenInfo(tokenUserInfoDto);
         }
     }
@@ -303,7 +305,7 @@ public class UserInfoServiceImpl implements UserInfoService {
         if (null == userInfo) {
             throw new BusinessException(ResponseCodeEnum.CODE_404);
         }
-
+        //查询用户的所有投稿总共的播放数量、获赞数量
         CountInfoDto countInfoDto = videoInfoMapper.selectSumCountInfo(userId);
         CopyTools.copyProperties(countInfoDto, userInfo);
 
@@ -313,7 +315,7 @@ public class UserInfoServiceImpl implements UserInfoService {
         userInfo.setFansCount(fansCount);
         userInfo.setFocusCount(focusCount);
 
-        if (currentUserId == null) {
+        if (currentUserId == null) {//没有登录的情况
             userInfo.setHaveFocus(false);
         } else {
             UserFocus userFocus = userFocusMapper.selectByUserIdAndFocusUserId(currentUserId, userId);
