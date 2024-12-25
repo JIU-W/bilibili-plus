@@ -37,4 +37,5 @@ public interface UserVideoSeriesMapper<T, P> extends BaseMapper<T, P> {
     List<T> selectUserAllSeries(@Param("userId") String userId);
 
     List<T> selectListWithVideoList(@Param("query") P p);
+
 }

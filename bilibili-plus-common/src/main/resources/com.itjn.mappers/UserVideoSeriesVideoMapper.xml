@@ -187,7 +187,7 @@
         <foreach collection="list" item="item" separator=",">
             (#{item.seriesId}, #{item.videoId}, #{item.userId}, #{item.sort})
         </foreach>
-        on DUPLICATE key update
+        on DUPLICATE key update  <!-- 如果在插入过程中发生了主键或唯一键冲突，则执行更新操作 -->
         series_id = VALUES(series_id),
         video_id = VALUES(video_id),
         user_id = VALUES(user_id),

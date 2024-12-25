@@ -320,13 +320,17 @@
         </foreach>
     </update>
 
+    <!-- 根据userId查询用户视频归档(合集) -->
+    <!-- 重点：同时还需要把"合集"里的"第一条视频数据的封面"查出来作为"这个合集的封面"！！！ -->
     <select id="selectUserAllSeries" resultMap="base_result_map">
         SELECT t.*, v.video_cover cover
         FROM (SELECT *,
-        (SELECT video_id FROM user_video_series_video v WHERE v.series_id = s.series_id ORDER BY sort ASC LIMIT 1) video_id
+        (SELECT video_id FROM user_video_series_video v WHERE v.series_id = s.series_id ORDER BY sort ASC LIMIT 1)
+            video_id
         FROM user_video_series s
         WHERE s.user_id = #{userId}) t
-        LEFT JOIN video_info v ON v.video_id = t.video_id order by t.sort asc
+        LEFT JOIN video_info v ON v.video_id = t.video_id
+        order by t.sort asc
     </select>
 
     <!--查询所有系列和系列下的视频-->

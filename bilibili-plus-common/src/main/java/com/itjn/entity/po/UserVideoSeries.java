@@ -48,6 +48,9 @@ public class UserVideoSeries implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
+    /**
+     * 返回给前端的数据：合集的封面
+     */
     private String cover;
 
     /**

@@ -49,6 +49,7 @@ public class UHomeVideoSeriesController extends ABaseController {
     //@GlobalInterceptor
     public ResponseVO loadVideoSeries(@NotEmpty String userId) {
         //不分页查询，因为每个用户的视频分类合集不会太多
+        //同时还需要把"合集"里的"第一条视频数据的封面"查出来作为"这个合集的封面"！！！
         List<UserVideoSeries> videoSeries = userVideoSeriesService.getUserAllSeries(userId);
         return getSuccessResponseVO(videoSeries);
     }
@@ -103,7 +104,7 @@ public class UHomeVideoSeriesController extends ABaseController {
         return getSuccessResponseVO(videoInfoList);
     }
 
-    @RequestMapping("/getVideoSeriesDetail")
+    /*@RequestMapping("/getVideoSeriesDetail")
     //@GlobalInterceptor
     public ResponseVO getVideoSeriesDetail(@NotNull Integer seriesId) {
         UserVideoSeries videoSeries = userVideoSeriesService.getUserVideoSeriesBySeriesId(seriesId);
@@ -119,12 +120,12 @@ public class UHomeVideoSeriesController extends ABaseController {
         return getSuccessResponseVO(new UserVideoSeriesDetailVO(videoSeries, seriesVideoList));
     }
 
-    /**
+    *//**
      * 保存用户视频到集合
      * @param seriesId
      * @param videoIds
      * @return
-     */
+     *//*
     @RequestMapping("/saveSeriesVideo")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO saveSeriesVideo(@NotNull Integer seriesId, @NotEmpty String videoIds) {
@@ -133,13 +134,13 @@ public class UHomeVideoSeriesController extends ABaseController {
         return getSuccessResponseVO(null);
     }
 
-    /**
+    *//**
      * 删除视频
      *
      * @param seriesId
      * @param videoId
      * @return
-     */
+     *//*
     @RequestMapping("/delSeriesVideo")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO delSeriesVideo(@NotNull Integer seriesId, @NotEmpty String videoId) {
@@ -148,12 +149,12 @@ public class UHomeVideoSeriesController extends ABaseController {
         return getSuccessResponseVO(null);
     }
 
-    /**
+    *//**
      * 删除系列
      *
      * @param seriesId
      * @return
-     */
+     *//*
     @RequestMapping("/delVideoSeries")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO delVideoSeries(@NotNull Integer seriesId) {
@@ -163,12 +164,12 @@ public class UHomeVideoSeriesController extends ABaseController {
     }
 
 
-    /**
+    *//**
      * 系列排序
      *
      * @param seriesIds
      * @return
-     */
+     *//*
     @RequestMapping("/changeVideoSeriesSort")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO changeVideoSeriesSort(@NotEmpty String seriesIds) {
@@ -186,6 +187,6 @@ public class UHomeVideoSeriesController extends ABaseController {
         seriesQuery.setOrderBy("sort asc");
         List<UserVideoSeries> videoSeries = userVideoSeriesService.findListWithVideoList(seriesQuery);
         return getSuccessResponseVO(videoSeries);
-    }
+    }*/
 
 }
