@@ -186,11 +186,14 @@
             <if test="query.categoryIdOrPCategoryId != null">
                 and (category_id = #{query.categoryIdOrPCategoryId} or p_category_id = #{query.categoryIdOrPCategoryId})
             </if>
-            <if test="query.videoIdArray!=null and query.videoIdArray.length > 0">
+            <if test="query.videoIdArray != null and query.videoIdArray.length > 0">
                 and video_id in(<foreach collection="query.videoIdArray" separator="," item="item">#{item}</foreach>)
             </if>
-            <if test="query.excludeVideoIdArray!=null and query.excludeVideoIdArray.length>0">
-                and video_id not in(<foreach collection="query.excludeVideoIdArray" separator="," item="item">#{item}</foreach>)
+            <if test="query.excludeVideoIdArray != null and query.excludeVideoIdArray.length > 0">
+                and video_id not in
+                (<foreach collection="query.excludeVideoIdArray" separator="," item="item">
+                #{item}
+                </foreach>)
             </if>
             <if test="query.lastPlayHour!=null">
                 <![CDATA[ and  v.last_play_time>=date_sub(now(), interval #{query.lastPlayHour} hour) ]]>

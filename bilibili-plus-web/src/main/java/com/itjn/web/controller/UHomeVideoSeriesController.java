@@ -76,6 +76,12 @@ public class UHomeVideoSeriesController extends ABaseController {
         return getSuccessResponseVO(null);
     }
 
+    /**
+     * 查询出当前用户的视频供给选择(往合集里加视频时就需要先查出来再选择)
+     *                              前提：要过滤掉已经存在合集里的视频
+     * @param seriesId
+     * @return
+     */
     @RequestMapping("/loadAllVideo")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO loadAllVideo(Integer seriesId) {
@@ -86,7 +92,10 @@ public class UHomeVideoSeriesController extends ABaseController {
             videoSeriesVideoQuery.setSeriesId(seriesId);
             videoSeriesVideoQuery.setUserId(tokenUserInfoDto.getUserId());
             List<UserVideoSeriesVideo> seriesVideoList = userVideoSeriesVideoService.findListByParam(videoSeriesVideoQuery);
-            List<String> videoList = seriesVideoList.stream().map(item -> item.getVideoId()).collect(Collectors.toList());
+            //取出集合seriesVideoList里的视频id
+            List<String> videoList = seriesVideoList.stream()
+                    .map(item -> item.getVideoId()).collect(Collectors.toList());
+            //排除掉已经存在的视频
             infoQuery.setExcludeVideoIdArray(videoList.toArray(new String[videoList.size()]));
         }
         infoQuery.setUserId(tokenUserInfoDto.getUserId());
@@ -111,8 +120,7 @@ public class UHomeVideoSeriesController extends ABaseController {
     }
 
     /**
-     * 保存系列视频
-     *
+     * 保存用户视频到集合
      * @param seriesId
      * @param videoIds
      * @return

@@ -211,6 +211,7 @@ public class UserVideoSeriesServiceImpl implements UserVideoSeriesService {
             videoSeriesVideo.setUserId(userId);
             seriesVideoList.add(videoSeriesVideo);
         }
+        //批量插入视频到合集：操作表(user_video_series_video)
         this.userVideoSeriesVideoMapper.insertOrUpdateBatch(seriesVideoList);
     }
 
