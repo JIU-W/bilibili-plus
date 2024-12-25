@@ -128,7 +128,9 @@ public class UHomeVideoSeriesController extends ABaseController {
 
 
     /**
-     * 1、批量保存用户视频到集合  2、更改合集里的视频的"排序"
+     * 1、批量保存用户视频到集合
+     * 2、更改合集里的视频的"排序"(参数：会按新的顺序将合集里的视频的id传过来)
+     *
      * @param seriesId
      * @param videoIds
      * @return
@@ -184,15 +186,20 @@ public class UHomeVideoSeriesController extends ABaseController {
         return getSuccessResponseVO(null);
     }
 
-/*
+    /**
+     * 用户主页下方展示的东西：获取用户的"视频合集"列表(带视频列表：只查5条)
+     * @param userId
+     * @return
+     */
     @RequestMapping("/loadVideoSeriesWithVideo")
     //@GlobalInterceptor
     public ResponseVO loadVideoSeriesWithVideo(@NotEmpty String userId) {
         UserVideoSeriesQuery seriesQuery = new UserVideoSeriesQuery();
         seriesQuery.setUserId(userId);
         seriesQuery.setOrderBy("sort asc");
+        //获取用户的"视频合集"列表(每个合集都附带查5条视频)
         List<UserVideoSeries> videoSeries = userVideoSeriesService.findListWithVideoList(seriesQuery);
         return getSuccessResponseVO(videoSeries);
-    }*/
+    }
 
 }

@@ -72,7 +72,7 @@ public class UCenterVideoPostController extends ABaseController {
         videoInfo.setVideoId(videoId);
         videoInfo.setVideoName(videoName);
         videoInfo.setVideoCover(videoCover);
-        videoInfo.setpCategoryId(pCategoryId);
+        videoInfo.setPCategoryId(pCategoryId);
         videoInfo.setCategoryId(categoryId);
         videoInfo.setPostType(postType);
         videoInfo.setTags(tags);

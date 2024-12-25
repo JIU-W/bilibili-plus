@@ -32,10 +32,16 @@ public interface UserVideoSeriesMapper<T, P> extends BaseMapper<T, P> {
      */
     Integer selectMaxSort(@Param("userId") String userId);
 
+    /**
+     * 更新排序
+     */
     void changeSort(@Param("videoSeriesList") List<UserVideoSeries> videoSeriesList);
 
     List<T> selectUserAllSeries(@Param("userId") String userId);
 
+    /**
+     * 获取用户的"视频合集"列表(每个合集都附带查5条视频)
+     */
     List<T> selectListWithVideoList(@Param("query") P p);
 
 }

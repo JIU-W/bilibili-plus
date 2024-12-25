@@ -178,19 +178,6 @@ public class UserVideoSeriesServiceImpl implements UserVideoSeriesService {
         }
     }
 
-    public void changeVideoSeriesSort(String userId, String seriesIds) {
-        String[] seriesIdArray = seriesIds.split(",");
-        List<UserVideoSeries> videoSeriesList = new ArrayList<>();
-        Integer sort = 0;
-        for (String seriesId : seriesIdArray) {
-            UserVideoSeries videoSeries = new UserVideoSeries();
-            videoSeries.setUserId(userId);
-            videoSeries.setSeriesId(Integer.parseInt(seriesId));
-            videoSeries.setSort(++sort);
-            videoSeriesList.add(videoSeries);
-        }
-        userVideoSeriesMapper.changeSort(videoSeriesList);
-    }
 
     public void saveSeriesVideo(String userId, Integer seriesId, String videoIds) {
         UserVideoSeries userVideoSeries = getUserVideoSeriesBySeriesId(seriesId);
@@ -248,8 +235,24 @@ public class UserVideoSeriesServiceImpl implements UserVideoSeriesService {
         userVideoSeriesVideoMapper.deleteByParam(videoSeriesVideoQuery);
     }
 
-    @Override
+    public void changeVideoSeriesSort(String userId, String seriesIds) {
+        String[] seriesIdArray = seriesIds.split(",");
+        List<UserVideoSeries> videoSeriesList = new ArrayList<>();
+        Integer sort = 0;
+        for (String seriesId : seriesIdArray) {
+            UserVideoSeries videoSeries = new UserVideoSeries();
+            videoSeries.setUserId(userId);
+            videoSeries.setSeriesId(Integer.parseInt(seriesId));
+            videoSeries.setSort(++sort);
+            videoSeriesList.add(videoSeries);
+        }
+        //(批量修改排序字段)修改视频合集的排序：操作表(user_video_series)
+        userVideoSeriesMapper.changeSort(videoSeriesList);
+    }
+
+
     public List<UserVideoSeries> findListWithVideoList(UserVideoSeriesQuery query) {
         return userVideoSeriesMapper.selectListWithVideoList(query);
     }
+
 }

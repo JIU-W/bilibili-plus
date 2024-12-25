@@ -316,7 +316,9 @@
 
     <update id="changeSort">
         <foreach collection="videoSeriesList" separator=";" item="item">
-            update user_video_series set sort = #{item.sort} where user_id = #{item.userId} and series_id=#{item.seriesId}
+            update user_video_series
+            set sort = #{item.sort}
+            where user_id = #{item.userId} and series_id = #{item.seriesId}
         </foreach>
     </update>
 
@@ -333,18 +335,25 @@
         order by t.sort asc
     </select>
 
-    <!--查询所有系列和系列下的视频-->
+    <!-- 查询所有系列(合集)和系列下的视频 -->
+    <!-- 这个resultMap继承了resultMap：base_result_map -->
+    <!-- resultMap：本质上就是对查询的数据库字段的结果集映射到实体类的字段上并返回-->
     <resultMap id="base_result_map_video" type="com.itjn.entity.po.UserVideoSeries" extends="base_result_map">
-        <collection property="videoInfoList" column="series_id" select="com.itjn.mappers.UserVideoSeriesMapper.selectVideoList">
+        <collection column="series_id" property="videoInfoList" select="com.itjn.mappers.UserVideoSeriesMapper.selectVideoList">
         </collection>
     </resultMap>
 
     <select id="selectVideoList" resultType="com.itjn.entity.po.VideoInfo">
-        select v.video_id,v.video_name,v.video_cover,v.play_count,v.create_time
-        from user_video_series_video sv inner join video_info v on sv.video_id=v.video_id
-        where sv.series_id = #{seriesId} order by sv.sort asc limit 5
+        select v.video_id, v.video_name, v.video_cover, v.play_count, v.create_time
+        from user_video_series_video sv
+        inner join video_info v on sv.video_id = v.video_id
+        where sv.series_id = #{seriesId}
+        order by sv.sort asc
+        limit 5
     </select>
 
+    <!-- 获取用户的"视频合集"列表(每个合集都附带查5条视频) -->
+    <!-- 自定义了resultMap-->
     <select id="selectListWithVideoList" resultMap="base_result_map_video">
         SELECT
         <include refid="base_column_list"/>
@@ -357,4 +366,5 @@
             limit #{query.simplePage.start},#{query.simplePage.end}
         </if>
     </select>
+
 </mapper>

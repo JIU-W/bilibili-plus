@@ -54,7 +54,7 @@ public class UserVideoSeries implements Serializable {
     private String cover;
 
     /**
-     * 专题下的视频
+     * 专题(合集)下的视频
      */
     private List<VideoInfo> videoInfoList;
 

@@ -74,6 +74,9 @@ public interface UserVideoSeriesService {
      */
     void saveUserVideoSeries(UserVideoSeries bean, String videoIds);
 
+    /**
+     * 修改视频合集的"排序"
+     */
     void changeVideoSeriesSort(String userId, String seriesIds);
 
     /**
@@ -101,6 +104,11 @@ public interface UserVideoSeriesService {
      */
     void delVideoSeries(String userId, Integer seriesId);
 
+    /**
+     * 获取用户的"视频合集"列表(每个合集都附带查5条视频)
+     * @param query
+     * @return
+     */
     List<UserVideoSeries> findListWithVideoList(UserVideoSeriesQuery query);
 
 }

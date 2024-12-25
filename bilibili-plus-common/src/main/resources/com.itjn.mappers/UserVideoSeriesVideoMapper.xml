@@ -189,7 +189,7 @@
             (#{item.seriesId}, #{item.videoId}, #{item.userId}, #{item.sort})
         </foreach>
         <!-- 如果在插入过程中发生了主键或唯一键冲突，则执行更新操作 -->
-        <!-- 给合集里的视频"排序"是回走更新操作 -->
+        <!-- 更改合集里的视频"排序"会走更新操作 -->
         on DUPLICATE key update
         series_id = VALUES(series_id),
         video_id = VALUES(video_id),

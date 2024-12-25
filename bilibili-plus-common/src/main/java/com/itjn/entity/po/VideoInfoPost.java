@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.itjn.entity.enums.DateTimePatternEnum;
 import com.itjn.entity.enums.VideoStatusEnum;
 import com.itjn.utils.DateUtil;
+import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import java.util.Date;
 /**
  * 视频信息---发布表(发布时的投稿信息)
  */
+@Data
 public class VideoInfoPost extends VideoInfo implements Serializable {
 
 
@@ -100,134 +102,6 @@ public class VideoInfoPost extends VideoInfo implements Serializable {
      */
     private String statusName;
 
-    public String getStatusName() {
-        VideoStatusEnum statusEnum = VideoStatusEnum.getByStatus(status);
-        return statusEnum == null ? "" : statusEnum.getDesc();
-    }
-
-    public void setStatusName(String statusName) {
-        this.statusName = statusName;
-    }
-
-    public void setVideoId(String videoId) {
-        this.videoId = videoId;
-    }
-
-    public String getVideoId() {
-        return this.videoId;
-    }
-
-    public void setVideoCover(String videoCover) {
-        this.videoCover = videoCover;
-    }
-
-    public String getVideoCover() {
-        return this.videoCover;
-    }
-
-    public void setVideoName(String videoName) {
-        this.videoName = videoName;
-    }
-
-    public String getVideoName() {
-        return this.videoName;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getUserId() {
-        return this.userId;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getCreateTime() {
-        return this.createTime;
-    }
-
-    public void setLastUpdateTime(Date lastUpdateTime) {
-        this.lastUpdateTime = lastUpdateTime;
-    }
-
-    public Date getLastUpdateTime() {
-        return this.lastUpdateTime;
-    }
-
-    public void setpCategoryId(Integer pCategoryId) {
-        this.pCategoryId = pCategoryId;
-    }
-
-    public Integer getpCategoryId() {
-        return this.pCategoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public Integer getCategoryId() {
-        return this.categoryId;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Integer getStatus() {
-        return this.status;
-    }
-
-    public void setPostType(Integer postType) {
-        this.postType = postType;
-    }
-
-    public Integer getPostType() {
-        return this.postType;
-    }
-
-    public void setOriginInfo(String originInfo) {
-        this.originInfo = originInfo;
-    }
-
-    public String getOriginInfo() {
-        return this.originInfo;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
-    }
-
-    public String getTags() {
-        return this.tags;
-    }
-
-    public void setIntroduction(String introduction) {
-        this.introduction = introduction;
-    }
-
-    public String getIntroduction() {
-        return this.introduction;
-    }
-
-    public void setInteraction(String interaction) {
-        this.interaction = interaction;
-    }
-
-    public String getInteraction() {
-        return this.interaction;
-    }
-
-    public void setDuration(Integer duration) {
-        this.duration = duration;
-    }
-
-    public Integer getDuration() {
-        return this.duration;
-    }
 
     @Override
     public String toString() {
@@ -238,4 +112,5 @@ public class VideoInfoPost extends VideoInfo implements Serializable {
                 DateTimePatternEnum.YYYY_MM_DD_HH_MM_SS.getPattern())) + "，父级分类ID:" + (pCategoryId == null ? "空" : pCategoryId) + "，分类ID:" + (categoryId == null ? "空" : categoryId) + "，0:转码中 1转码失败 " +
                 "2:待审核 3:审核成功 4:审核失败:" + (status == null ? "空" : status) + "，0:自制作  1:转载:" + (postType == null ? "空" : postType) + "，原资源说明:" + (originInfo == null ? "空" : originInfo) + "，标签:" + (tags == null ? "空" : tags) + "，简介:" + (introduction == null ? "空" : introduction) + "，互动设置:" + (interaction == null ? "空" : interaction) + "，持续时间（秒）:" + (duration == null ? "空" : duration);
     }
+
 }
