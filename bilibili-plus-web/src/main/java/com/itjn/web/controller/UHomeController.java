@@ -159,27 +159,42 @@ public class UHomeController extends ABaseController {
     }
 
 
-    /*
+    /**
+     * 查询视频列表
+     * @param userId 用户id
+     * @param type 前端的两种查询后的展示类型： 1.主页型：只展示10个投稿 + 投稿的分类展示  2.投稿型：纯分页查询
+     * @param pageNo 分页参数：当前页码
+     * @param videoName 投稿(视频)名称
+     * @param orderType 投稿型里面分页查询的排序类型(规则)： 0.最新发布  1.最多播放  2.最多收藏
+     * @return
+     */
     @RequestMapping("/loadVideoList")
     //@GlobalInterceptor
-    public ResponseVO loadVideoList(@NotEmpty String userId, Integer type, Integer pageNo, String videoName, Integer orderType) {
+    public ResponseVO loadVideoList(@NotEmpty String userId, Integer type,
+                                    Integer pageNo, String videoName, Integer orderType) {
         VideoInfoQuery infoQuery = new VideoInfoQuery();
         if (type != null) {
             infoQuery.setPageSize(PageSize.SIZE10.getSize());
         }
         VideoOrderTypeEnum videoOrderTypeEnum = VideoOrderTypeEnum.getByType(orderType);
         if (videoOrderTypeEnum == null) {
+            //默认按照发布时间排序
             videoOrderTypeEnum = VideoOrderTypeEnum.CREATE_TIME;
         }
         infoQuery.setOrderBy(videoOrderTypeEnum.getField() + " desc");
-        infoQuery.setVideoNameFuzzy(videoName);
-        infoQuery.setPageNo(pageNo);
+        infoQuery.setVideoNameFuzzy(videoName);//投稿名称模糊查询
+        infoQuery.setPageNo(pageNo);//当前页码
         infoQuery.setUserId(userId);
         PaginationResultVO resultVO = videoInfoService.findListByPage(infoQuery);
         return getSuccessResponseVO(resultVO);
     }
 
-
+    /**
+     * 查询用户的收藏列表
+     * @param userId
+     * @param pageNo
+     * @return
+     */
     @RequestMapping("/loadUserCollection")
     //@GlobalInterceptor
     public ResponseVO loadUserCollection(@NotEmpty String userId, Integer pageNo) {
@@ -191,6 +206,6 @@ public class UHomeController extends ABaseController {
         actionQuery.setOrderBy("action_time desc");
         PaginationResultVO resultVO = userActionService.findListByPage(actionQuery);
         return getSuccessResponseVO(resultVO);
-    }*/
+    }
 
 }
