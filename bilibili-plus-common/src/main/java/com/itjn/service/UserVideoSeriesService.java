@@ -77,10 +77,16 @@ public interface UserVideoSeriesService {
     void changeVideoSeriesSort(String userId, String seriesIds);
 
     /**
-     * 保存视频到合集
+     * 保存视频到合集 或者是 更改合集里的视频的"排序"
      */
     void saveSeriesVideo(String userId, Integer seriesId, String videoIds);
 
+    /**
+     * 删除视频合集里的视频
+     * @param userId
+     * @param seriesId
+     * @param videoId
+     */
     void delSeriesVideo(String userId, Integer seriesId, String videoId);
 
     /**
@@ -88,7 +94,13 @@ public interface UserVideoSeriesService {
      */
     List<UserVideoSeries> getUserAllSeries(String userId);
 
+    /**
+     * 删除视频合集
+     * @param userId
+     * @param seriesId
+     */
     void delVideoSeries(String userId, Integer seriesId);
 
     List<UserVideoSeries> findListWithVideoList(UserVideoSeriesQuery query);
+
 }

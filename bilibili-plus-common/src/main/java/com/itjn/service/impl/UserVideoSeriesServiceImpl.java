@@ -212,10 +212,11 @@ public class UserVideoSeriesServiceImpl implements UserVideoSeriesService {
             seriesVideoList.add(videoSeriesVideo);
         }
         //批量插入视频到合集：操作表(user_video_series_video)
+        //使用insertOrUpdateBatch而不是使用insertBatch的原因：这个接口还用于：更改合集里的视频的"排序"
+        //排序时前端传的视频是存在合集里的，但前端传的视频的排序字段是要更新的，所以需要使用insertOrUpdateBatch
         this.userVideoSeriesVideoMapper.insertOrUpdateBatch(seriesVideoList);
     }
 
-    @Override
     public void delSeriesVideo(String userId, Integer seriesId, String videoId) {
         UserVideoSeriesVideoQuery videoSeriesVideoQuery = new UserVideoSeriesVideoQuery();
         videoSeriesVideoQuery.setUserId(userId);
@@ -228,16 +229,19 @@ public class UserVideoSeriesServiceImpl implements UserVideoSeriesService {
         return userVideoSeriesMapper.selectUserAllSeries(userId);
     }
 
-    @Override
+
     @Transactional(rollbackFor = Exception.class)
     public void delVideoSeries(String userId, Integer seriesId) {
         UserVideoSeriesQuery seriesQuery = new UserVideoSeriesQuery();
         seriesQuery.setUserId(userId);
         seriesQuery.setSeriesId(seriesId);
+        //多条件删除视频合集：操作表(user_video_series)
         Integer count = userVideoSeriesMapper.deleteByParam(seriesQuery);
         if (count == 0) {
+            //删除失败
             throw new BusinessException(ResponseCodeEnum.CODE_600);
         }
+        //同时删除视频合集里的视频：操作表(user_video_series_video)
         UserVideoSeriesVideoQuery videoSeriesVideoQuery = new UserVideoSeriesVideoQuery();
         videoSeriesVideoQuery.setSeriesId(seriesId);
         videoSeriesVideoQuery.setUserId(userId);

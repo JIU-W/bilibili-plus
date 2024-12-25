@@ -104,43 +104,50 @@ public class UHomeVideoSeriesController extends ABaseController {
         return getSuccessResponseVO(videoInfoList);
     }
 
-    /*@RequestMapping("/getVideoSeriesDetail")
+    /**
+     * 获取某个视频合集里的详情信息
+     */
+    @RequestMapping("/getVideoSeriesDetail")
     //@GlobalInterceptor
     public ResponseVO getVideoSeriesDetail(@NotNull Integer seriesId) {
         UserVideoSeries videoSeries = userVideoSeriesService.getUserVideoSeriesBySeriesId(seriesId);
         if (videoSeries == null) {
             throw new BusinessException(ResponseCodeEnum.CODE_404);
         }
-
         UserVideoSeriesVideoQuery videoSeriesVideoQuery = new UserVideoSeriesVideoQuery();
         videoSeriesVideoQuery.setOrderBy("sort asc");
+        //设置要"关联视频表"以"查询视频信息"
         videoSeriesVideoQuery.setQueryVideoInfo(true);
         videoSeriesVideoQuery.setSeriesId(seriesId);
+        //查询出视频合集里的视频信息(不分页)
         List<UserVideoSeriesVideo> seriesVideoList = userVideoSeriesVideoService.findListByParam(videoSeriesVideoQuery);
-        return getSuccessResponseVO(new UserVideoSeriesDetailVO(videoSeries, seriesVideoList));
+        //封装VO
+        UserVideoSeriesDetailVO userVideoSeriesDetailVO = new UserVideoSeriesDetailVO(videoSeries, seriesVideoList);
+        return getSuccessResponseVO(userVideoSeriesDetailVO);
     }
 
-    *//**
-     * 保存用户视频到集合
+
+    /**
+     * 1、批量保存用户视频到集合  2、更改合集里的视频的"排序"
      * @param seriesId
      * @param videoIds
      * @return
-     *//*
+     */
     @RequestMapping("/saveSeriesVideo")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO saveSeriesVideo(@NotNull Integer seriesId, @NotEmpty String videoIds) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        //批量保存视频到合集 或者是 更改合集里的视频的"排序"
         userVideoSeriesService.saveSeriesVideo(tokenUserInfoDto.getUserId(), seriesId, videoIds);
         return getSuccessResponseVO(null);
     }
 
-    *//**
-     * 删除视频
-     *
+    /**
+     * 删除合集里的视频
      * @param seriesId
      * @param videoId
      * @return
-     *//*
+     */
     @RequestMapping("/delSeriesVideo")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO delSeriesVideo(@NotNull Integer seriesId, @NotEmpty String videoId) {
@@ -149,12 +156,12 @@ public class UHomeVideoSeriesController extends ABaseController {
         return getSuccessResponseVO(null);
     }
 
-    *//**
-     * 删除系列
-     *
+
+    /**
+     * 删除视频合集
      * @param seriesId
      * @return
-     *//*
+     */
     @RequestMapping("/delVideoSeries")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO delVideoSeries(@NotNull Integer seriesId) {
@@ -164,12 +171,11 @@ public class UHomeVideoSeriesController extends ABaseController {
     }
 
 
-    *//**
-     * 系列排序
-     *
+    /**
+     * 更改合集的排序
      * @param seriesIds
      * @return
-     *//*
+     */
     @RequestMapping("/changeVideoSeriesSort")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO changeVideoSeriesSort(@NotEmpty String seriesIds) {
@@ -178,7 +184,7 @@ public class UHomeVideoSeriesController extends ABaseController {
         return getSuccessResponseVO(null);
     }
 
-
+/*
     @RequestMapping("/loadVideoSeriesWithVideo")
     //@GlobalInterceptor
     public ResponseVO loadVideoSeriesWithVideo(@NotEmpty String userId) {

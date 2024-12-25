@@ -59,6 +59,7 @@
     <select id="selectList" resultMap="base_result_map">
         SELECT
         <include refid="base_column_list"/>
+        <!-- 关联视频表查视频信息-->
         <if test="query.queryVideoInfo">
             ,v.video_cover,v.video_name,v.play_count,v.create_time
         </if>
@@ -187,7 +188,9 @@
         <foreach collection="list" item="item" separator=",">
             (#{item.seriesId}, #{item.videoId}, #{item.userId}, #{item.sort})
         </foreach>
-        on DUPLICATE key update  <!-- 如果在插入过程中发生了主键或唯一键冲突，则执行更新操作 -->
+        <!-- 如果在插入过程中发生了主键或唯一键冲突，则执行更新操作 -->
+        <!-- 给合集里的视频"排序"是回走更新操作 -->
+        on DUPLICATE key update
         series_id = VALUES(series_id),
         video_id = VALUES(video_id),
         user_id = VALUES(user_id),

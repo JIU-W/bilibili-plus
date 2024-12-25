@@ -31,6 +31,7 @@ public class UserVideoSeriesVideoQuery extends BaseParam {
      */
     private Integer sort;
 
+    //设置是否要"关联视频表"以"查询视频信息"
     private Boolean queryVideoInfo;
 
     public Boolean getQueryVideoInfo() {

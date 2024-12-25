@@ -4,9 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 
-/**
- *
- */
 public class UserVideoSeriesVideo implements Serializable {
 
 
@@ -30,6 +27,9 @@ public class UserVideoSeriesVideo implements Serializable {
      */
     private Integer sort;
 
+    /**
+     * 以下的数据都要返回给前端
+     */
     private String videoCover;
 
     private String videoName;
