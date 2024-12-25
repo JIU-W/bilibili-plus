@@ -160,7 +160,7 @@ public class UHomeController extends ABaseController {
 
 
     /**
-     * 查询视频列表
+     * 查询用户主页的视频列表：主页型、投稿型
      * @param userId 用户id
      * @param type 前端的两种查询后的展示类型： 1.主页型：只展示10个投稿 + 投稿的分类展示  2.投稿型：纯分页查询
      * @param pageNo 分页参数：当前页码
