@@ -202,8 +202,10 @@ public class UHomeController extends ABaseController {
         actionQuery.setActionType(UserActionTypeEnum.VIDEO_COLLECT.getType());
         actionQuery.setUserId(userId);
         actionQuery.setPageNo(pageNo);
+        //设置要查询视频信息
         actionQuery.setQueryVideoInfo(true);
         actionQuery.setOrderBy("action_time desc");
+        //分页查询用户的收藏列表
         PaginationResultVO resultVO = userActionService.findListByPage(actionQuery);
         return getSuccessResponseVO(resultVO);
     }

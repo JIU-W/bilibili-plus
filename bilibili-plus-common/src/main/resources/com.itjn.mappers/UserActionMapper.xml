@@ -97,6 +97,7 @@
     <select id="selectList" resultMap="base_result_map">
         SELECT
         <include refid="base_column_list"/>
+        <!-- 要关联查询视频信息 -->
         <if test="query.queryVideoInfo">
             ,v.video_cover videoCover,v.video_name videoName
         </if>

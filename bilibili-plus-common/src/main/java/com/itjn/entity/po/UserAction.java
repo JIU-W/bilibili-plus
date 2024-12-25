@@ -57,8 +57,10 @@ public class UserAction implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date actionTime;
 
+    //返回给前端的信息：关联的视频名称
     private String videoName;
 
+    //返回给前端的信息：关联的视频封面
     private String videoCover;
 
     public void setActionId(Integer actionId) {

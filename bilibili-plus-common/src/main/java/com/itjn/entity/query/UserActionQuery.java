@@ -61,6 +61,7 @@ public class UserActionQuery extends BaseParam {
 
     private Integer[] actionTypeArray;
 
+    //是否关联查询视频信息
     private Boolean queryVideoInfo;
 
 }
