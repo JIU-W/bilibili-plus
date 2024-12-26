@@ -88,7 +88,7 @@ public class UCenterVideoPostController extends ABaseController {
 
     /**
      * 加载投稿列表
-     * @param status 前端传的投稿状态
+     * @param status 前端传的投稿状态   -1：显示“进行中”的投稿信息  3：显示“已通过”的投稿信息  4：显示“未通过”的投稿信息
      * @param pageNo 分页页码
      * @param videoNameFuzzy 根据视频名称(投稿名称)进行模糊查询
      * @return
@@ -108,6 +108,7 @@ public class UCenterVideoPostController extends ABaseController {
                 videoInfoQuery.setExcludeStatusArray(new Integer[]{VideoStatusEnum.STATUS3.getStatus(),
                         VideoStatusEnum.STATUS4.getStatus()});
             } else {
+                //设置投稿状态：审核通过或者审核失败的状态
                 videoInfoQuery.setStatus(status);
             }
         }
@@ -182,6 +183,7 @@ public class UCenterVideoPostController extends ABaseController {
 
     /**
      * 保存投稿的互动信息
+     *              互动信息设置： null：既没关闭评论也没关闭弹幕  包含0：关闭评论  包含1：关闭弹幕
      * @param videoId
      * @param interaction
      * @return
@@ -190,10 +192,16 @@ public class UCenterVideoPostController extends ABaseController {
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO saveVideoInteraction(@NotEmpty String videoId, String interaction) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        //更新视频的互动信息
         videoInfoService.changeInteraction(videoId, tokenUserInfoDto.getUserId(), interaction);
         return getSuccessResponseVO(null);
     }
 
+    /**
+     * 删除投稿
+     * @param videoId
+     * @return
+     */
     @RequestMapping("/deleteVideo")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO deleteVideo(@NotEmpty String videoId) {

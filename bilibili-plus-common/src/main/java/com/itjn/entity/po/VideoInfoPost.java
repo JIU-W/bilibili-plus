@@ -104,6 +104,12 @@ public class VideoInfoPost extends VideoInfo implements Serializable {
      */
     private String statusName;
 
+    //这个get方法一定不能去掉：用来设置状态名称
+    public String getStatusName() {
+        //获取状态名称
+        VideoStatusEnum statusEnum = VideoStatusEnum.getByStatus(status);
+        return statusEnum == null ? "未知" : statusEnum.getDesc();
+    }
 
     @Override
     public String toString() {

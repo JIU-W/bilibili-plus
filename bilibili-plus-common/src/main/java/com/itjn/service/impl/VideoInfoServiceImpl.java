@@ -175,7 +175,7 @@ public class VideoInfoServiceImpl implements VideoInfoService {
         this.videoInfoMapper.updateCountInfo(videoId, UserActionTypeEnum.VIDEO_PLAY.getField(), 1);
     }
 
-    @Override
+
     @Transactional(rollbackFor = Exception.class)
     public void changeInteraction(String videoId, String userId, String interaction) {
         VideoInfo videoInfo = new VideoInfo();
@@ -183,14 +183,15 @@ public class VideoInfoServiceImpl implements VideoInfoService {
         VideoInfoQuery videoInfoQuery = new VideoInfoQuery();
         videoInfoQuery.setVideoId(videoId);
         videoInfoQuery.setUserId(userId);
+        //修改投稿信息(正式表)
         videoInfoMapper.updateByParam(videoInfo, videoInfoQuery);
-
 
         VideoInfoPost videoInfoPost = new VideoInfoPost();
         videoInfoPost.setInteraction(interaction);
         VideoInfoPostQuery videoInfoPostQuery = new VideoInfoPostQuery();
         videoInfoPostQuery.setVideoId(videoId);
         videoInfoPostQuery.setUserId(userId);
+        //更新(发布时的投稿信息)
         videoInfoPostMapper.updateByParam(videoInfoPost, videoInfoPostQuery);
     }
 

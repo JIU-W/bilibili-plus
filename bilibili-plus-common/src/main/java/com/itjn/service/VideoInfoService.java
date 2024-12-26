@@ -71,7 +71,16 @@ public interface VideoInfoService {
 
     void addReadCount(String videoId);
 
+    /**
+     * 修改投稿的互动信息
+     */
     void changeInteraction(String videoId, String userId, String interaction);
 
+    /**
+     * 删除投稿
+     * @param videoId
+     * @param userId
+     */
     void deleteVideo(String videoId, String userId);
+
 }
