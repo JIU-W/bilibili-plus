@@ -223,9 +223,9 @@ public class VideoInfoServiceImpl implements VideoInfoService {
             //查询分P
             List<VideoInfoFile> videoInfoFileList = this.videoInfoFileMapper.selectList(videoInfoFileQuery);
 
-            //删除分P
+            //删除分P视频信息
             videoInfoFileMapper.deleteByParam(videoInfoFileQuery);
-
+            //删除发布时的分P视频信息
             VideoInfoFilePostQuery videoInfoFilePostQuery = new VideoInfoFilePostQuery();
             videoInfoFilePostQuery.setVideoId(videoId);
             videoInfoFilePostMapper.deleteByParam(videoInfoFilePostQuery);
@@ -248,6 +248,7 @@ public class VideoInfoServiceImpl implements VideoInfoService {
                     log.error("删除文件失败，文件路径:{}", item.getFilePath());
                 }
             }
+
         });
 
     }
