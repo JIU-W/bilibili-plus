@@ -1,6 +1,7 @@
 package com.itjn.entity.po;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.itjn.entity.enums.DateTimePatternEnum;
 import com.itjn.entity.enums.VideoStatusEnum;
 import com.itjn.utils.DateUtil;
@@ -55,6 +56,7 @@ public class VideoInfoPost extends VideoInfo implements Serializable {
     /**
      * 父级分类ID
      */
+    @JsonProperty("pCategoryId") //显式指定JSON字段名称
     private Integer pCategoryId;
 
     /**

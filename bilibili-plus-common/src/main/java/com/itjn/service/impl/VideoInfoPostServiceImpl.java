@@ -301,6 +301,8 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
 
     /*
     * 修改投稿信息时，判断视频信息(标题，封面，标签，简介)是否更改
+    * 只看这四个字段是否更改，因为只有这四个字段是会掺杂一些敏感信息、不良信息的，需要重点审核，
+    * 其它的字段都不用审核。
      */
     private boolean changeVideoInfo(VideoInfoPost videoInfoPost) {
         VideoInfoPost dbInfo = this.videoInfoPostMapper.selectByVideoId(videoInfoPost.getVideoId());

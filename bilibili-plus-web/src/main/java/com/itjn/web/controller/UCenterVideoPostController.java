@@ -152,24 +152,40 @@ public class UCenterVideoPostController extends ABaseController {
     }
 
 
+    /**
+     * 获取投稿详情信息(用户编辑自己的投稿信息时之前要查出之前的投稿信息)：
+     *                  1、获取投稿信息   2、获取投稿时的分p视频文件信息
+     * @param videoId
+     * @return
+     */
     @RequestMapping("/getVideoByVideoId")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO getVideoByVideoId(@NotEmpty String videoId) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        //查询投稿信息
         VideoInfoPost videoInfoPost = this.videoInfoPostService.getVideoInfoPostByVideoId(videoId);
+        //校验该投稿是否属于当前登录用户
         if (videoInfoPost == null || !videoInfoPost.getUserId().equals(tokenUserInfoDto.getUserId())) {
             throw new BusinessException(ResponseCodeEnum.CODE_404);
         }
+        //查询投稿时的分p视频文件信息
         VideoInfoFilePostQuery videoInfoFilePostQuery = new VideoInfoFilePostQuery();
         videoInfoFilePostQuery.setVideoId(videoId);
         videoInfoFilePostQuery.setOrderBy("file_index asc");
         List<VideoInfoFilePost> videoInfoFilePostList = this.videoInfoFilePostService.findListByParam(videoInfoFilePostQuery);
+        //封装VO
         VideoPostEditInfoVo vo = new VideoPostEditInfoVo();
         vo.setVideoInfo(videoInfoPost);
         vo.setVideoInfoFileList(videoInfoFilePostList);
         return getSuccessResponseVO(vo);
     }
 
+    /**
+     * 保存投稿的互动信息
+     * @param videoId
+     * @param interaction
+     * @return
+     */
     @RequestMapping("/saveVideoInteraction")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO saveVideoInteraction(@NotEmpty String videoId, String interaction) {

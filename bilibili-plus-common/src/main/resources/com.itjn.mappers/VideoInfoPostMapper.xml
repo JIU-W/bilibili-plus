@@ -43,7 +43,6 @@
         v.video_id,v.video_cover,v.video_name,v.user_id,v.create_time,
         v.last_update_time,v.p_category_id,v.category_id,v.status,v.post_type,
         v.origin_info,v.tags,v.introduction,v.interaction,v.duration
-
     </sql>
 
     <sql id="base_condition_filed">
@@ -654,7 +653,7 @@
     <select id="selectByVideoId" resultMap="base_result_map">
         select
         <include refid="base_column_list"/>
-        from video_info_post v where video_id=#{videoId}
+        from video_info_post v where video_id = #{videoId}
     </select>
 
 </mapper>
