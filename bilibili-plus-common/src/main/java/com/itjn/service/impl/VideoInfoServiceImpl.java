@@ -195,31 +195,29 @@ public class VideoInfoServiceImpl implements VideoInfoService {
         videoInfoPostMapper.updateByParam(videoInfoPost, videoInfoPostQuery);
     }
 
-    @Override
+
     @Transactional(rollbackFor = Exception.class)
     public void deleteVideo(String videoId, String userId) {
         VideoInfoPost videoInfoPost = this.videoInfoPostMapper.selectByVideoId(videoId);
-        if (videoInfoPost == null || userId != null && !userId.equals(videoInfoPost.getUserId())) {
+        if (videoInfoPost == null || (userId != null && !userId.equals(videoInfoPost.getUserId()))) {
             throw new BusinessException(ResponseCodeEnum.CODE_404);
         }
-
+        //删除投稿信息(正式表)
         this.videoInfoMapper.deleteByVideoId(videoId);
-
+        //删除投稿信息(发布时的投稿信息)
         this.videoInfoPostMapper.deleteByVideoId(videoId);
-
         /**
          * 删除用户硬币
          */
         SysSettingDto sysSettingDto = redisComponent.getSysSettingDto();
         userInfoService.updateCoinCountInfo(videoInfoPost.getUserId(), -sysSettingDto.getPostVideoCoinCount());
-
         /**
          * 删除es信息
          */
-        esSearchComponent.delDoc(videoId);
+        //esSearchComponent.delDoc(videoId);
 
+        //开启异步线程池去删除文件
         executorService.execute(() -> {
-
             VideoInfoFileQuery videoInfoFileQuery = new VideoInfoFileQuery();
             videoInfoFileQuery.setVideoId(videoId);
             //查询分P
@@ -251,5 +249,6 @@ public class VideoInfoServiceImpl implements VideoInfoService {
                 }
             }
         });
+
     }
 }

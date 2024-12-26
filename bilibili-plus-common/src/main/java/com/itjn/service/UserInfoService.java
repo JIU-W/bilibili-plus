@@ -141,6 +141,9 @@ public interface UserInfoService {
 
     UserCountInfoDto getUserCountInfo(String userId);
 
+    /**
+     * 更新用户积分(硬币)
+     */
     Integer updateCoinCountInfo(String userId, Integer changeCount);
 
 }

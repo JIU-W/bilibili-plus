@@ -351,4 +351,5 @@ public class UserInfoServiceImpl implements UserInfoService {
         return this.userInfoMapper.updateCoinCountInfo(userId, changeCount);
     }
 
+
 }
