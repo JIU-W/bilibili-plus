@@ -97,8 +97,10 @@ public class VideoComment implements Serializable {
     //回复人头像
     private String replyAvatar;
 
+    //返回给前端的：视频名称
     private String videoName;
 
+    //返回给前端的：视频封面
     private String videoCover;
 
     public void setCommentId(Integer commentId) {
