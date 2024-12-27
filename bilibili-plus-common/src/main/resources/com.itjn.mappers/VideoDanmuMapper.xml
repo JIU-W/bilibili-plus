@@ -94,7 +94,7 @@
                 and v.color like concat('%', #{query.colorFuzzy}, '%')
             </if>
             <!-- 特殊条件：相当于加了一个"关联表查询"的条件  -->
-            <if test="query.videoUserId! = null and query.videoUserId!=''">
+            <if test="query.videoUserId != null and query.videoUserId != ''">
                 and vd.user_id = #{query.videoUserId}
             </if>
 

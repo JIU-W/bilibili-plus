@@ -173,7 +173,6 @@ public class VideoDanmuServiceImpl implements VideoDanmuService {
     }
 
 
-    @Override
     public void deleteDanmu(String userId, Integer danmuId) {
         VideoDanmu danmu = videoDanmuMapper.selectByDanmuId(danmuId);
         if (null == danmu) {
@@ -183,7 +182,6 @@ public class VideoDanmuServiceImpl implements VideoDanmuService {
         if (null == videoInfo) {
             throw new BusinessException(ResponseCodeEnum.CODE_600);
         }
-
         if (userId != null && !videoInfo.getUserId().equals(userId)) {
             throw new BusinessException(ResponseCodeEnum.CODE_600);
         }

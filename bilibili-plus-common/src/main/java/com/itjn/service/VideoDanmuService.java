@@ -74,5 +74,11 @@ public interface VideoDanmuService {
      */
     void saveVideoDanmu(VideoDanmu bean);
 
+    /**
+     * 删除弹幕
+     * @param userId
+     * @param danmuId
+     */
     void deleteDanmu(String userId, Integer danmuId);
+
 }
