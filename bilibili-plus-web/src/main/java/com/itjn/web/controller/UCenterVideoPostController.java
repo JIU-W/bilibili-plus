@@ -87,7 +87,7 @@ public class UCenterVideoPostController extends ABaseController {
 
 
     /**
-     * 加载投稿列表
+     * 加载投稿列表(这个接口前端是会不断地轮询地去查的，几秒钟查一次)
      * @param status 前端传的投稿状态   -1：显示“进行中”的投稿信息  3：显示“已通过”的投稿信息  4：显示“未通过”的投稿信息
      * @param pageNo 分页页码
      * @param videoNameFuzzy 根据视频名称(投稿名称)进行模糊查询
@@ -122,6 +122,7 @@ public class UCenterVideoPostController extends ABaseController {
 
     /**
      * 获取三种类型投稿的总数(进行中，已通过，未通过)
+     *             (这个接口前端也是会不断地轮询地去查的，几秒钟查一次)
      * @return
      */
     @RequestMapping("/getVideoCountInfo")

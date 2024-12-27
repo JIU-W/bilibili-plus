@@ -251,13 +251,15 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
             //判断修改投稿信息时：视频信息是否有更改   (如果视频信息有更改，管理员下次审核该投稿时重点审核)
             Boolean changeVideoInfo = this.changeVideoInfo(videoInfoPost);
 
-            if (!addFileList.isEmpty()) {
-                //修改投稿信息时：没有加文件(分p视频文件)  那用户修改重新发布后，管理员不用再次审核了，投稿状态为转码中。
+            if (!addFileList.isEmpty()) {//加了文件
+                //修改投稿信息时：加了文件(分p视频文件)  那用户修改重新发布后，投稿状态为转码中，转码完后置为待审核。
+                //等于就是如果走了这个if块就一定是要重新审核的，就不用管后面的else-if块。
                 videoInfoPost.setStatus(VideoStatusEnum.STATUS0.getStatus());
-            } else if (changeVideoInfo || updateFileName) {
+            } else if (changeVideoInfo || updateFileName) {//没有进上面的if块，再考虑这个else-if块。
                 //修改投稿信息时：如果 1.视频信息有更改，或者 2.分p视频文件名有更改，则投稿状态为待审核
                 videoInfoPost.setStatus(VideoStatusEnum.STATUS2.getStatus());
-            }
+            }//如果既没有加文件，也没有修改视频信息，也没有修改分p视频文件名，则投稿状态不变。
+
             this.videoInfoPostMapper.updateByVideoId(videoInfoPost, videoInfoPost.getVideoId());
         }
 
