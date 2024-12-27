@@ -47,21 +47,24 @@ public class UCenterInteractController extends ABaseController {
         return getSuccessResponseVO(videoInfoList);
     }
 
+
     /**
-     * 查询当前用户发布的视频下评论(查询出的评论不用层级展示，线形展示就可以了)
+     * 查询当前用户发布的视频下的所有评论(查询出的评论不用层级展示，线形展示就可以了)
      * @param pageNo
-     * @param videoId
+     * @param pageSize
+     * @param videoId 可传可不传：前端在搜索框选择了视频就传，否则不传。
      * @return
      */
     @RequestMapping("/loadComment")
     //@GlobalInterceptor(checkLogin = true)
-    public ResponseVO loadComment(Integer pageNo, String videoId) {
+    public ResponseVO loadComment(Integer pageNo, Integer pageSize, String videoId) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         VideoCommentQuery commentQuery = new VideoCommentQuery();
         commentQuery.setVideoUserId(tokenUserInfoDto.getUserId());
         commentQuery.setVideoId(videoId);
         commentQuery.setOrderBy("comment_id desc");
         commentQuery.setPageNo(pageNo);
+        commentQuery.setPageSize(pageSize);
         //设置同时要查询评论对应的"视频信息"(名称，封面)以及评论的"发布人信息"(昵称，头像)
                                                    //以及评论的"回复人信息"(昵称)
         commentQuery.setQueryVideoInfo(true);
@@ -70,8 +73,12 @@ public class UCenterInteractController extends ABaseController {
         return getSuccessResponseVO(resultVO);
     }
 
-
-    /*@RequestMapping("/delComment")
+    /**
+     * 删除评论
+     * @param commentId
+     * @return
+     */
+    @RequestMapping("/delComment")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO delComment(@NotNull Integer commentId) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
@@ -79,15 +86,26 @@ public class UCenterInteractController extends ABaseController {
         return getSuccessResponseVO(null);
     }
 
+    /**
+     * 查询当前用户发布的视频下的所有弹幕
+     * @param pageNo
+     * @param videoId 可传可不传：前端在搜索框选择了视频就传，否则不传。
+     * @return
+     */
     @RequestMapping("/loadDanmu")
     //@GlobalInterceptor(checkLogin = true)
     public ResponseVO loadDanmu(Integer pageNo, String videoId) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        //封装查询条件
         VideoDanmuQuery danmuQuery = new VideoDanmuQuery();
+        //弹幕属于的投稿视频的用户id //重点：videoUserId这个字段在数据库里并没有做冗余，
+                    //但是现在要根据这个字段来查弹幕数据，那就只能在SQL的query_condition里加特殊条件了。
         danmuQuery.setVideoUserId(tokenUserInfoDto.getUserId());
+        //弹幕属于的视频id
         danmuQuery.setVideoId(videoId);
         danmuQuery.setOrderBy("danmu_id desc");
         danmuQuery.setPageNo(pageNo);
+        //设置同时要查询弹幕对应的"视频信息"(名称，封面)和弹幕发布人信息(昵称)
         danmuQuery.setQueryVideoInfo(true);
         PaginationResultVO resultVO = videoDanmuService.findListByPage(danmuQuery);
         return getSuccessResponseVO(resultVO);
@@ -100,6 +118,6 @@ public class UCenterInteractController extends ABaseController {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         videoDanmuService.deleteDanmu(tokenUserInfoDto.getUserId(), danmuId);
         return getSuccessResponseVO(null);
-    }*/
+    }
 
 }

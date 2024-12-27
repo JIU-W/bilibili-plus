@@ -64,8 +64,10 @@ public class VideoDanmuQuery extends BaseParam {
      */
     private Integer time;
 
+    //设置同时要查询弹幕对应的"视频信息"(名称，封面)和弹幕发布人信息(昵称)
     private Boolean queryVideoInfo;
 
+    //弹幕属于的视频的发布人
     private String videoUserId;
 
     private String videoNameFuzzy;

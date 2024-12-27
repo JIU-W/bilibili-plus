@@ -93,8 +93,8 @@
             <if test="query.colorFuzzy!= null  and query.colorFuzzy!=''">
                 and v.color like concat('%', #{query.colorFuzzy}, '%')
             </if>
-
-            <if test="query.videoUserId!= null and query.videoUserId!=''">
+            <!-- 特殊条件：相当于加了一个"关联表查询"的条件  -->
+            <if test="query.videoUserId! = null and query.videoUserId!=''">
                 and vd.user_id = #{query.videoUserId}
             </if>
 
@@ -108,6 +108,7 @@
     <select id="selectList" resultMap="base_result_map">
         SELECT
         <include refid="base_column_list"/>
+        <!-- 设置同时要查询弹幕对应的"视频信息"(名称，封面)和弹幕发布人信息(昵称) -->
         <if test="query.queryVideoInfo">
             ,vd.video_name,vd.video_cover,u.nick_name
         </if>

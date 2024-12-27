@@ -62,10 +62,13 @@ public class VideoDanmu implements Serializable {
      */
     private Integer time;
 
+    //返回给前端的数据：视频名称
     private String videoName;
 
+    //返回给前端的数据：视频封面
     private String videoCover;
 
+    //返回给前端的数据：用户昵称
     private String nickName;
 
     public String getNickName() {
