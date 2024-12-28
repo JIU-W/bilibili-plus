@@ -65,7 +65,7 @@ public class EsSearchComponent {
     }
 
     /**
-     * 如果es索引库不存在则初始化es索引
+     * 如果索引库easylive_video不存在则初始化索引库
      */
     public void createIndex() {
         try {
@@ -148,6 +148,10 @@ public class EsSearchComponent {
 
     }
 
+    /**
+     * 往索引库easylive_video里添加一条文档数据
+     * @param videoInfo
+     */
     public void saveDoc(VideoInfo videoInfo) {
         try {
             if (docExist(videoInfo.getVideoId())) {

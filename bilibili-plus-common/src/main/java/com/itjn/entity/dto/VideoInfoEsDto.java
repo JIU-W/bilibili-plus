@@ -5,7 +5,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import java.util.Date;
 
 /**
- * 存在视频信息在ES中使用的Dto
+ * ES中的easylive_video(视频信息)索引库信息对应的Dto
  */
 public class VideoInfoEsDto {
 
