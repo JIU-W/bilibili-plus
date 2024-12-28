@@ -64,6 +64,9 @@ public class EsSearchComponent {
         return restHighLevelClient.indices().exists(getIndexRequest, RequestOptions.DEFAULT);
     }
 
+    /**
+     * 如果es索引库不存在则初始化es索引
+     */
     public void createIndex() {
         try {
             Boolean existIndex = isExistIndex();
@@ -71,6 +74,7 @@ public class EsSearchComponent {
                 return;
             }
             CreateIndexRequest request = new CreateIndexRequest(appConfig.getEsIndexVideoName());
+            //自定义的分词器：根据逗号分割    (这个自定义分词器用于索引库的tags字段)
             request.settings(
                     "{\"analysis\": {\n" +
                             "      \"analyzer\": {\n" +
@@ -122,7 +126,8 @@ public class EsSearchComponent {
                             "      }\n" +
                             " }}", XContentType.JSON);
 
-            CreateIndexResponse createIndexResponse = restHighLevelClient.indices().create(request, RequestOptions.DEFAULT);
+            CreateIndexResponse createIndexResponse =
+                    restHighLevelClient.indices().create(request, RequestOptions.DEFAULT);
             boolean acknowledged = createIndexResponse.isAcknowledged();
             if (!acknowledged) {
                 throw new BusinessException("初始化es失败");
