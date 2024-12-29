@@ -567,9 +567,9 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
         redisComponent.cleanDelFileList(videoId);
 
         /**
-         * 保存信息到es
+         * 保存信息到es：往eseasylive_video索引库中添加一条文档数据
          */
-        //esSearchComponent.saveDoc(videoInfo);
+        esSearchComponent.saveDoc(videoInfo);
     }
 
 

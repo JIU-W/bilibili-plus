@@ -140,6 +140,12 @@ public class EsSearchComponent {
         }
     }
 
+    /**
+     * 判断索引库easylive_video的某一条文档数据是否存在
+     * @param id
+     * @return
+     * @throws IOException
+     */
     private Boolean docExist(String id) throws IOException {
         GetRequest getRequest = new GetRequest(appConfig.getEsIndexVideoName(), id);
         // 执行查询
