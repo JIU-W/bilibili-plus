@@ -151,7 +151,6 @@ public class EsSearchComponent {
         // 执行查询
         GetResponse response = restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);
         return response.isExists();
-
     }
 
     /**
@@ -184,13 +183,20 @@ public class EsSearchComponent {
             //时间不更新
             videoInfo.setLastUpdateTime(null);
             videoInfo.setCreateTime(null);
+            //通过反射获取需要更新的字段！！！
             Map<String, Object> dataMap = new HashMap<>();
+            //获取所有字段
             Field[] fields = videoInfo.getClass().getDeclaredFields();
             for (Field field : fields) {
+                //拼接方法名
                 String methodName = "get" + StringTools.upperCaseFirstLetter(field.getName());
+                //根据方法名获取方法
                 Method method = videoInfo.getClass().getMethod(methodName);
+                //执行方法获取字段的值
                 Object object = method.invoke(videoInfo);
-                if (object != null && object instanceof String && !StringTools.isEmpty(object.toString()) || object != null && !(object instanceof String)) {
+                //如果该字段是字符串类型且不为空不为Empty  或者 非字符串类型且不为空，则添加到map中
+                if (object != null && object instanceof String && !StringTools.isEmpty(object.toString())
+                        || object != null && !(object instanceof String)) {
                     dataMap.put(field.getName(), object);
                 }
             }
@@ -198,6 +204,7 @@ public class EsSearchComponent {
                 return;
             }
             UpdateRequest updateRequest = new UpdateRequest(appConfig.getEsIndexVideoName(), videoInfo.getVideoId());
+            //更新数据
             updateRequest.doc(dataMap);
             restHighLevelClient.update(updateRequest, RequestOptions.DEFAULT);
         } catch (Exception e) {
