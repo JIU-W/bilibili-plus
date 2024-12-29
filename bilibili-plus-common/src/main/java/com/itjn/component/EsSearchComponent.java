@@ -204,7 +204,6 @@ public class EsSearchComponent {
                 return;
             }
             UpdateRequest updateRequest = new UpdateRequest(appConfig.getEsIndexVideoName(), videoInfo.getVideoId());
-            //更新数据
             updateRequest.doc(dataMap);
             restHighLevelClient.update(updateRequest, RequestOptions.DEFAULT);
         } catch (Exception e) {
@@ -213,10 +212,19 @@ public class EsSearchComponent {
         }
     }
 
+    /**
+     * 更新es中视频的有关数量的字段的值
+     * @param videoId
+     * @param fieldName
+     * @param count
+     */
     public void updateDocCount(String videoId, String fieldName, Integer count) {
         try {
             UpdateRequest updateRequest = new UpdateRequest(appConfig.getEsIndexVideoName(), videoId);
-            Script script = new Script(ScriptType.INLINE, "painless", "ctx._source." + fieldName + " += params.count", Collections.singletonMap("count", count));
+            //脚本
+            Script script = new Script(ScriptType.INLINE, "painless",
+                    "ctx._source." + fieldName + " += params.count",
+                                            Collections.singletonMap("count", count));
             updateRequest.script(script);
             restHighLevelClient.update(updateRequest, RequestOptions.DEFAULT);
         } catch (Exception e) {

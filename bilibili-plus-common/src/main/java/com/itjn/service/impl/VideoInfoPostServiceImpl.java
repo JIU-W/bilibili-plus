@@ -568,6 +568,7 @@ public class VideoInfoPostServiceImpl implements VideoInfoPostService {
 
         /**
          * 保存信息到es：往eseasylive_video索引库中添加一条文档数据
+         *          或者 修改eseasylive_video索引库中的文档数据的某些字段的值
          */
         esSearchComponent.saveDoc(videoInfo);
     }
