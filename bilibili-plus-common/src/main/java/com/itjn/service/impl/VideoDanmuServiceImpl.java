@@ -168,7 +168,7 @@ public class VideoDanmuServiceImpl implements VideoDanmuService {
         //顺序最好是 1.先写自己的数据库 2.再调用别人的接口。
 
         //更新es弹幕数量
-        //esSearchComponent.updateDocCount(bean.getVideoId(), SearchOrderTypeEnum.VIDEO_DANMU.getField(), 1);
+        esSearchComponent.updateDocCount(bean.getVideoId(), SearchOrderTypeEnum.VIDEO_DANMU.getField(), 1);
 
     }
 

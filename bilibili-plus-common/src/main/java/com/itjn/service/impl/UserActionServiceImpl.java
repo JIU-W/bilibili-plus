@@ -213,8 +213,8 @@ public class UserActionServiceImpl implements UserActionService {
                 videoInfoMapper.updateCountInfo(bean.getVideoId(), actionTypeEnum.getField(), changeCount);
 
                 if (actionTypeEnum == UserActionTypeEnum.VIDEO_COLLECT) {
-                    //TODO 更新es收藏数量
-                    //esSearchComponent.updateDocCount(videoInfo.getVideoId(), SearchOrderTypeEnum.VIDEO_COLLECT.getField(), changeCount);
+                    //更新es收藏数量
+                    esSearchComponent.updateDocCount(videoInfo.getVideoId(), SearchOrderTypeEnum.VIDEO_COLLECT.getField(), changeCount);
                 }
                 break;
             //投币的逻辑

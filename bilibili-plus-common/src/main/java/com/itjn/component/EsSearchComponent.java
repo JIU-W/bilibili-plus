@@ -213,7 +213,7 @@ public class EsSearchComponent {
     }
 
     /**
-     * 更新es中视频的有关数量的字段的值
+     * 更新es中视频的有关数量的字段(弹幕数量、收藏数量、播放数量)的值
      * @param videoId
      * @param fieldName
      * @param count
