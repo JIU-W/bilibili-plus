@@ -212,7 +212,7 @@ public class VideoInfoServiceImpl implements VideoInfoService {
         SysSettingDto sysSettingDto = redisComponent.getSysSettingDto();
         userInfoService.updateCoinCountInfo(videoInfoPost.getUserId(), -sysSettingDto.getPostVideoCoinCount());
         /**
-         * 删除es信息
+         * TODO 删除es信息
          */
         //esSearchComponent.delDoc(videoId);
 

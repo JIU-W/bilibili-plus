@@ -233,6 +233,10 @@ public class EsSearchComponent {
         }
     }
 
+    /**
+     * 从es中删除视频的一条文档数据
+     * @param videoId
+     */
     public void delDoc(String videoId) {
         try {
             DeleteRequest deleteRequest = new DeleteRequest(appConfig.getEsIndexVideoName(), videoId);
