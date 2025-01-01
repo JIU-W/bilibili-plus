@@ -248,6 +248,15 @@ public class EsSearchComponent {
 
     }
 
+    /**
+     * es搜索视频
+     * @param highlight
+     * @param keyword
+     * @param orderType
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
     public PaginationResultVO<VideoInfo> search(Boolean highlight, String keyword, Integer orderType, Integer pageNo, Integer pageSize) {
         try {
 
