@@ -197,5 +197,24 @@ public class VideoController extends ABaseController {
         return getSuccessResponseVO(keywordList);
     }
 
+    /**
+     * 获取热门视频列表
+     * @param pageNo
+     * @return
+     */
+    @RequestMapping("/loadHotVideoList")
+    //@GlobalInterceptor
+    public ResponseVO loadHotVideoList(Integer pageNo) {
+        VideoInfoQuery videoInfoQuery = new VideoInfoQuery();
+        videoInfoQuery.setPageNo(pageNo);
+        videoInfoQuery.setQueryUserInfo(true);
+        videoInfoQuery.setOrderBy("play_count desc");
+        //最近播放
+        videoInfoQuery.setLastPlayHour(Constants.HOUR_24);
+        //查询最近24小时内播放量最多的视频列表
+        PaginationResultVO resultVO = videoInfoService.findListByPage(videoInfoQuery);
+        return getSuccessResponseVO(resultVO);
+    }
+
 
 }
