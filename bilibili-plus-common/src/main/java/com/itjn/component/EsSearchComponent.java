@@ -280,8 +280,8 @@ public class EsSearchComponent {
             if (orderType != null) {
                 searchSourceBuilder.sort(searchOrderTypeEnum.getField(), SortOrder.DESC); // 第一个排序字段，升序
             }
-            pageNo = pageNo == null ? 1 : pageNo;
             //分页查询
+            pageNo = pageNo == null ? 1 : pageNo;
             pageSize = pageSize == null ? PageSize.SIZE20.getSize() : pageSize;
             searchSourceBuilder.size(pageSize);
             searchSourceBuilder.from((pageNo - 1) * pageSize);
@@ -289,37 +289,51 @@ public class EsSearchComponent {
             SearchRequest searchRequest = new SearchRequest(appConfig.getEsIndexVideoName());
             searchRequest.source(searchSourceBuilder);
 
-            // 执行查询
+            //执行查询
             SearchResponse searchResponse = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
 
-            // 处理查询结果
+            //处理查询结果
             SearchHits hits = searchResponse.getHits();
             Integer totalCount = (int) hits.getTotalHits().value;
 
             List<VideoInfo> videoInfoList = new ArrayList<>();
-
             List<String> userIdList = new ArrayList<>();
+
             for (SearchHit hit : hits.getHits()) {
-                VideoInfo videoInfo = JsonUtils.convertJson2Obj(hit.getSourceAsString(), VideoInfo.class);
+                //获取原始的JSON字符串(这部分是非高亮结果)
+                String source = hit.getSourceAsString();
+                //反序列化，将搜索结果转换为对象。
+                VideoInfo videoInfo = JsonUtils.convertJson2Obj(source, VideoInfo.class);
+                //获取高亮结果
                 if (hit.getHighlightFields().get("videoName") != null) {
+                    //用高亮结果替换掉原来的非高亮的结果
                     videoInfo.setVideoName(hit.getHighlightFields().get("videoName").fragments()[0].string());
                 }
+                //将视频信息添加到集合中
                 videoInfoList.add(videoInfo);
-
+                //获取search到的视频对应的用户id
                 userIdList.add(videoInfo.getUserId());
             }
+
+            //根据用户id从数据库查询用户信息
             UserInfoQuery userInfoQuery = new UserInfoQuery();
             userInfoQuery.setUserIdList(userIdList);
             List<UserInfo> userInfoList = userInfoMapper.selectList(userInfoQuery);
-            Map<String, UserInfo> userInfoMap = userInfoList.stream().collect(Collectors.toMap(item -> item.getUserId(), Function.identity(), (data1, data2) -> data2));
+            //将查询到的用户信息放入map集合中
+            Map<String, UserInfo> userInfoMap = userInfoList.stream()
+                    .collect(Collectors.toMap(item -> item.getUserId(), Function.identity(), (data1, data2) -> data2));
+
+            //把数据库里查到的用户信息中的用户昵称放到ES查询结果中去
             videoInfoList.forEach(item -> {
                 UserInfo userInfo = userInfoMap.get(item.getUserId());
                 if (userInfo != null) {
                     item.setNickName(userInfo.getNickName());
                 }
             });
+
             SimplePage page = new SimplePage(pageNo, totalCount, pageSize);
-            PaginationResultVO<VideoInfo> result = new PaginationResultVO(totalCount, page.getPageSize(), page.getPageNo(), page.getPageTotal(), videoInfoList);
+            PaginationResultVO<VideoInfo> result = new PaginationResultVO
+                    (totalCount, page.getPageSize(), page.getPageNo(), page.getPageTotal(), videoInfoList);
             return result;
         } catch (BusinessException e) {
             throw e;

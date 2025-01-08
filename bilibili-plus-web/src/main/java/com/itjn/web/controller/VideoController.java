@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotEmpty;
@@ -154,6 +155,17 @@ public class VideoController extends ABaseController {
         List<VideoInfoFile> fileList = videoInfoFileService.findListByParam(videoInfoQuery);
         return getSuccessResponseVO(fileList);
     }
+
+
+    @RequestMapping("/loadVideoPList")
+    //@GlobalInterceptor
+    public ResponseVO search(@NotEmpty String keyword, Integer orderType, Integer pageNo) {
+        //TODO 记录搜索热词
+
+        PaginationResultVO resultVO = esSearchComponent.search(true, keyword, orderType, pageNo, PageSize.SIZE30.getSize());
+        return getSuccessResponseVO(resultVO);
+    }
+
 
 
 }
