@@ -250,32 +250,31 @@ public class EsSearchComponent {
 
     /**
      * es搜索视频
-     * @param highlight
-     * @param keyword
-     * @param orderType
-     * @param pageNo
-     * @param pageSize
+     * @param highlight 是否高亮
+     * @param keyword 搜索关键字
+     * @param orderType 排序类型
+     * @param pageNo 当前页码
+     * @param pageSize 每页条数
      * @return
      */
-    public PaginationResultVO<VideoInfo> search(Boolean highlight, String keyword, Integer orderType, Integer pageNo, Integer pageSize) {
+    public PaginationResultVO<VideoInfo> search(Boolean highlight, String keyword, Integer orderType,
+                                                Integer pageNo, Integer pageSize) {
         try {
-
+            //获取排序类型
             SearchOrderTypeEnum searchOrderTypeEnum = SearchOrderTypeEnum.getByType(orderType);
 
             SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
             //关键字
             searchSourceBuilder.query(QueryBuilders.multiMatchQuery(keyword, "videoName", "tags"));
 
+            //高亮
             if (highlight) {
-                //高亮
                 HighlightBuilder highlightBuilder = new HighlightBuilder();
                 highlightBuilder.field("videoName"); // 替换为你想要高亮的字段名
                 highlightBuilder.preTags("<span class='highlight'>");
                 highlightBuilder.postTags("</span>");
                 searchSourceBuilder.highlighter(highlightBuilder);
             }
-
-
             //排序
             searchSourceBuilder.sort("_score", SortOrder.ASC); // 第一个排序字段，升序
             if (orderType != null) {
