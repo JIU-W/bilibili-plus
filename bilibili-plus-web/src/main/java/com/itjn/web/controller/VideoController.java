@@ -209,7 +209,6 @@ public class VideoController extends ABaseController {
         videoInfoQuery.setPageNo(pageNo);
         videoInfoQuery.setQueryUserInfo(true);
         videoInfoQuery.setOrderBy("play_count desc");
-        //最近播放
         videoInfoQuery.setLastPlayHour(Constants.HOUR_24);
         //查询最近24小时内播放量最多的视频列表
         PaginationResultVO resultVO = videoInfoService.findListByPage(videoInfoQuery);
