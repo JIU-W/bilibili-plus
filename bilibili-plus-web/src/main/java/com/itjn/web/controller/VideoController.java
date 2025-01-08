@@ -156,7 +156,9 @@ public class VideoController extends ABaseController {
         return getSuccessResponseVO(fileList);
     }
 
-
+    /**
+     * 搜索视频作品
+     */
     @RequestMapping("/loadVideoPList")
     //@GlobalInterceptor
     public ResponseVO search(@NotEmpty String keyword, Integer orderType, Integer pageNo) {
