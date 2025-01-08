@@ -159,7 +159,7 @@ public class VideoController extends ABaseController {
     /**
      * 搜索视频作品
      */
-    @RequestMapping("/loadVideoPList")
+    @RequestMapping("/search")
     //@GlobalInterceptor
     public ResponseVO search(@NotEmpty String keyword, Integer orderType, Integer pageNo) {
         //TODO 记录搜索热词
@@ -168,6 +168,21 @@ public class VideoController extends ABaseController {
         return getSuccessResponseVO(resultVO);
     }
 
-
+    /**
+     * 获取视频作品推荐列表：在ES中搜索，根据播放量排序后推荐前十个。(展示在视频播放页面，展示的列表与当前视频相关)
+     * @param keyword 搜索关键词：当前视频作品的名称(video_name)
+     * @param videoId 当前视频作品id
+     * @return
+     */
+    @RequestMapping("/getVideoRecommend")
+    //@GlobalInterceptor
+    public ResponseVO getVideoRecommend(@NotEmpty String keyword, @NotEmpty String videoId) {
+        List<VideoInfo> videoInfoList = esSearchComponent.search(false, keyword,
+                SearchOrderTypeEnum.VIDEO_PLAY.getType(), 1, PageSize.SIZE10.getSize()).getList();
+        //搜索结果中排除当前视频作品
+        videoInfoList = videoInfoList.stream()
+                .filter(item -> !item.getVideoId().equals(videoId)).collect(Collectors.toList());
+        return getSuccessResponseVO(videoInfoList);
+    }
 
 }
