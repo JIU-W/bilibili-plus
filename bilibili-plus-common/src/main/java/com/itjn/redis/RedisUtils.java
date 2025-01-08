@@ -193,6 +193,11 @@ public class RedisUtils<V> {
         return resultMap;
     }
 
+    /**
+     * 添加有序集合
+     * @param key
+     * @param v
+     */
     public void zaddCount(String key, V v) {
         redisTemplate.opsForZSet().incrementScore(key, v, 1);
     }

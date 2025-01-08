@@ -253,10 +253,19 @@ public class RedisComponent {
         redisUtils.delete(keys.toArray(new String[keys.size()]));
     }
 
+    /**
+     * 添加搜索关键字(搜索热词)
+     * @param keyword
+     */
     public void addKeywordCount(String keyword) {
         redisUtils.zaddCount(Constants.REDIS_KEY_VIDEO_SEARCH_COUNT, keyword);
     }
 
+    /**
+     * 获取搜索热词
+     * @param top
+     * @return
+     */
     public List<String> getKeywordTop(Integer top) {
         return redisUtils.getZSetList(Constants.REDIS_KEY_VIDEO_SEARCH_COUNT, top - 1);
     }

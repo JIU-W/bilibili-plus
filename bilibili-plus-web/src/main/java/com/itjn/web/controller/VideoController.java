@@ -157,18 +157,6 @@ public class VideoController extends ABaseController {
     }
 
     /**
-     * 搜索视频作品
-     */
-    @RequestMapping("/search")
-    //@GlobalInterceptor
-    public ResponseVO search(@NotEmpty String keyword, Integer orderType, Integer pageNo) {
-        //TODO 记录搜索热词
-
-        PaginationResultVO resultVO = esSearchComponent.search(true, keyword, orderType, pageNo, PageSize.SIZE30.getSize());
-        return getSuccessResponseVO(resultVO);
-    }
-
-    /**
      * 获取视频作品推荐列表：在ES中搜索，根据播放量排序后推荐前十个。(展示在视频播放页面，列表的视频都与当前视频相关)
      * @param keyword 搜索关键词：当前视频作品的名称(video_name)
      * @param videoId 当前视频作品id
@@ -184,5 +172,30 @@ public class VideoController extends ABaseController {
                 .filter(item -> !item.getVideoId().equals(videoId)).collect(Collectors.toList());
         return getSuccessResponseVO(videoInfoList);
     }
+
+    /**
+     * 搜索视频作品
+     */
+    @RequestMapping("/search")
+    //@GlobalInterceptor
+    public ResponseVO search(@NotEmpty String keyword, Integer orderType, Integer pageNo) {
+        //记录搜索热词：给对应热词的数量加1
+        redisComponent.addKeywordCount(keyword);
+        //搜索视频作品
+        PaginationResultVO resultVO = esSearchComponent.search(true, keyword, orderType, pageNo, PageSize.SIZE30.getSize());
+        return getSuccessResponseVO(resultVO);
+    }
+
+    /**
+     * 获取搜索热词
+     * @return
+     */
+    @RequestMapping("/getSearchKeywordTop")
+    //@GlobalInterceptor
+    public ResponseVO getSearchKeywordTop() {
+        List<String> keywordList = redisComponent.getKeywordTop(Constants.LENGTH_10);
+        return getSuccessResponseVO(keywordList);
+    }
+
 
 }
