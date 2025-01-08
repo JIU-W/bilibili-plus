@@ -252,7 +252,7 @@ public class EsSearchComponent {
      * es搜索视频
      * @param highlight 是否高亮
      * @param keyword 搜索关键字
-     * @param orderType 排序类型
+     * @param orderType 排序类型：没有传：不使用自定义排序  0：按视频播放量排序，1：按发布时间排序，2：按弹幕量排序，3：按收藏量排序
      * @param pageNo 当前页码
      * @param pageSize 每页条数
      * @return
@@ -276,9 +276,10 @@ public class EsSearchComponent {
                 searchSourceBuilder.highlighter(highlightBuilder);
             }
             //排序
-            searchSourceBuilder.sort("_score", SortOrder.ASC); // 第一个排序字段，升序
+            searchSourceBuilder.sort("_score", SortOrder.ASC); //按es搜索结果的得分去升序排序
+            //自定义排序，不传orderType的话使用ES默认排序。
             if (orderType != null) {
-                searchSourceBuilder.sort(searchOrderTypeEnum.getField(), SortOrder.DESC); // 第一个排序字段，升序
+                searchSourceBuilder.sort(searchOrderTypeEnum.getField(), SortOrder.DESC);//按倒序排
             }
             //分页查询
             pageNo = pageNo == null ? 1 : pageNo;

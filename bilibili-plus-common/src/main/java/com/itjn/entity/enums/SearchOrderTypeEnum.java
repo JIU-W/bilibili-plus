@@ -1,6 +1,11 @@
 package com.itjn.entity.enums;
 
-
+/**
+ * @description 使用ES搜索时排序的几种方式
+ * @author JIU-W
+ * @date 2025-01-08
+ * @version 1.0
+ */
 public enum SearchOrderTypeEnum {
     VIDEO_PLAY(0, "playCount", "视频播放数"),
     VIDEO_TIME(1, "createTime", "视频时间"),
