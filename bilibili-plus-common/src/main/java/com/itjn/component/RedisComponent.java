@@ -254,7 +254,7 @@ public class RedisComponent {
     }
 
     /**
-     * 添加搜索关键字(搜索热词)
+     * 给搜索关键字(搜索热词)的得分加一
      * @param keyword
      */
     public void addKeywordCount(String keyword) {
