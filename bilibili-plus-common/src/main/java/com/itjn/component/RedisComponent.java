@@ -235,6 +235,10 @@ public class RedisComponent {
         redisUtils.decrement(key);
     }
 
+    /**
+     * 往消息队列中添加视频播放信息
+     * @param videoPlayInfoDto
+     */
     public void addVideoPlay(VideoPlayInfoDto videoPlayInfoDto) {
         redisUtils.lpush(Constants.REDIS_KEY_QUEUE_VIDEO_PLAY, videoPlayInfoDto, null);
     }
