@@ -85,29 +85,6 @@ public class ABaseController {
         return month + "/" + file.getName();
     }
 
-    public TokenUserInfoDto getTokenInfoFromCookie() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        String token = getTokenFromCookie(request);
-        if (token == null) {
-            return null;
-        }
-        return redisComponent.getTokenInfo(token);
-    }
-
-
-    private String getTokenFromCookie(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            return null;
-        }
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equalsIgnoreCase(Constants.TOKEN_WEB)) {
-                return cookie.getValue();
-            }
-        }
-        return null;
-    }
-
 */
 
 
@@ -138,6 +115,37 @@ public class ABaseController {
         return redisComponent.getTokenInfo(token);
     }
 
+    /**
+     * 从cookie中获取token从而获取用户信息
+     * @return
+     */
+    public TokenUserInfoDto getTokenInfoFromCookie() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        //从cookie中获取token
+        String token = getTokenFromCookie(request);
+        if (token == null) {
+            return null;
+        }
+        return redisComponent.getTokenInfo(token);
+    }
+
+    /**
+     * 从cookie中获取token
+     * @param request
+     * @return
+     */
+    private String getTokenFromCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return null;
+        }
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equalsIgnoreCase(Constants.TOKEN_WEB)) {
+                return cookie.getValue();
+            }
+        }
+        return null;
+    }
 
 
     /**

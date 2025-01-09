@@ -223,11 +223,25 @@ public class FileController extends ABaseController {
      */
     @RequestMapping("/videoResource/{fileId}")
     public void getVideoResource(HttpServletResponse response, @PathVariable @NotEmpty String fileId) {
-        VideoInfoFilePost videoInfoFilePost = videoInfoFilePostService.getVideoInfoFilePostByFileId(fileId);
-        String filePath = videoInfoFilePost.getFilePath();
+        VideoInfoFile videoInfoFile = videoInfoFileService.getVideoInfoFileByFileId(fileId);
+        String filePath = videoInfoFile.getFilePath();
         //读取视频文件的.m3u8索引文件
         readFile(response, filePath + "/" + Constants.M3U8_NAME);
-        //TODO 更新视频的阅读记录
+
+        //更新视频的阅读记录  播放次数
+        VideoPlayInfoDto videoPlayInfoDto = new VideoPlayInfoDto();
+        videoPlayInfoDto.setVideoId(videoInfoFile.getVideoId());
+        videoPlayInfoDto.setFileIndex(videoInfoFile.getFileIndex());
+
+        //根据cookie获取用户token信息
+        //因为这个播放视频接口前端是播放器发的请求，我们无法自己在请求头设置token，只能从cookie里拿token
+        TokenUserInfoDto tokenUserInfoDto = getTokenInfoFromCookie();
+        if (tokenUserInfoDto != null) {
+            videoPlayInfoDto.setUserId(tokenUserInfoDto.getUserId());
+        }
+
+        //更新视频的播放记录
+        redisComponent.addVideoPlay(videoPlayInfoDto);
     }
 
     /**
@@ -236,8 +250,8 @@ public class FileController extends ABaseController {
     @RequestMapping("/videoResource/{fileId}/{ts}")
     public void getVideoResourceTs(HttpServletResponse response, @PathVariable @NotEmpty String fileId,
                                    @PathVariable @NotNull String ts) {
-        VideoInfoFilePost videoInfoFilePost = videoInfoFilePostService.getVideoInfoFilePostByFileId(fileId);
-        String filePath = videoInfoFilePost.getFilePath() + "";
+        VideoInfoFile videoInfoFile = videoInfoFileService.getVideoInfoFileByFileId(fileId);
+        String filePath = videoInfoFile.getFilePath();
         readFile(response, filePath + "/" + ts);
     }
 
