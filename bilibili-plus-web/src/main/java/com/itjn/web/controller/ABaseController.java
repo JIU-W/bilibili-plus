@@ -116,7 +116,7 @@ public class ABaseController {
     }
 
     /**
-     * 从cookie中获取token从而获取用户信息
+     * 从cookie中获取token从而通过token从redis获取用户信息
      * @return
      */
     public TokenUserInfoDto getTokenInfoFromCookie() {
@@ -126,6 +126,7 @@ public class ABaseController {
         if (token == null) {
             return null;
         }
+        //从redis中获取用户信息
         return redisComponent.getTokenInfo(token);
     }
 

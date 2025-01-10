@@ -195,7 +195,8 @@
                 #{item}
                 </foreach>)
             </if>
-            <!-- 补充的条件 -->
+            <!-- 补充的条件的作用：从"当前时间往前推24小时的那个时间点"到"当前时间"的时间段内，
+            最后一次播放时间在这个时间段内的投稿作品给查出来。          (lastPlayHour)固定设置的是24-->
             <if test="query.lastPlayHour != null">
                 <![CDATA[ and  v.last_play_time >= date_sub(now(), interval #{query.lastPlayHour} hour) ]]>
             </if>

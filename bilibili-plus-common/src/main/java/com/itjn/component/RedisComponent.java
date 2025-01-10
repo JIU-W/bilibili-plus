@@ -236,7 +236,7 @@ public class RedisComponent {
     }
 
     /**
-     * 往消息队列中添加视频播放信息
+     * 往Redis消息队列中添加视频播放信息
      * @param videoPlayInfoDto
      */
     public void addVideoPlay(VideoPlayInfoDto videoPlayInfoDto) {

@@ -234,13 +234,13 @@ public class FileController extends ABaseController {
         videoPlayInfoDto.setFileIndex(videoInfoFile.getFileIndex());
 
         //根据cookie获取用户token信息
-        //因为这个播放视频接口前端是播放器发的请求，我们无法自己在请求头设置token，只能从cookie里拿token
+        //因为这个播放视频接口前端是"播放器"发起的请求，我们无法自己在请求头设置token，只能从cookie里拿token
         TokenUserInfoDto tokenUserInfoDto = getTokenInfoFromCookie();
         if (tokenUserInfoDto != null) {
             videoPlayInfoDto.setUserId(tokenUserInfoDto.getUserId());
         }
 
-        //更新视频的播放记录
+        //添加分p视频的播放数据到redis消息队列
         redisComponent.addVideoPlay(videoPlayInfoDto);
     }
 
