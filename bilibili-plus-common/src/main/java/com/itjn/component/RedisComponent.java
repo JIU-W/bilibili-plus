@@ -243,9 +243,15 @@ public class RedisComponent {
         redisUtils.lpush(Constants.REDIS_KEY_QUEUE_VIDEO_PLAY, videoPlayInfoDto, null);
     }
 
+    /**
+     * 按天统计视频播放次数
+     * @param videoId
+     */
     public void recordVideoPlayCount(String videoId) {
+        //统计日期
         String date = DateUtil.format(new Date(), DateTimePatternEnum.YYYY_MM_DD.getPattern());
-        redisUtils.incrementex(Constants.REDIS_KEY_VIDEO_PLAY_COUNT + date + ":" + videoId, Constants.REDIS_KEY_EXPIRES_DAY * 2L);
+        redisUtils.incrementex(Constants.REDIS_KEY_VIDEO_PLAY_COUNT + date + ":" + videoId,
+                Constants.REDIS_KEY_EXPIRES_DAY * 2L);//失效时间为2天
     }
 
     public Map<String, Integer> getVideoPlayCount(String date) {

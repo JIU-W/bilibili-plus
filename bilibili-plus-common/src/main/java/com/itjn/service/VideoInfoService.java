@@ -69,6 +69,10 @@ public interface VideoInfoService {
      */
     Integer deleteVideoInfoByVideoId(String videoId);
 
+
+    /**
+     * 增加投稿作品播放量
+     */
     void addReadCount(String videoId);
 
     /**

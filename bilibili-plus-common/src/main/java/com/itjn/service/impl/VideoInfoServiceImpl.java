@@ -170,7 +170,7 @@ public class VideoInfoServiceImpl implements VideoInfoService {
         return this.videoInfoMapper.deleteByVideoId(videoId);
     }
 
-    @Override
+
     public void addReadCount(String videoId) {
         this.videoInfoMapper.updateCountInfo(videoId, UserActionTypeEnum.VIDEO_PLAY.getField(), 1);
     }

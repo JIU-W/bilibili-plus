@@ -89,34 +89,43 @@ public class ExecuteQueueTask {
 
 
 
-    /*@PostConstruct
+
+    /**
+     * 监听分p视频播放队列并异步处理相关任务
+     */
+    @PostConstruct
     public void consumeVideoPlayQueue() {
         executorService.execute(() -> {
             while (true) {
                 try {
-                    VideoPlayInfoDto videoPlayInfoDto = (VideoPlayInfoDto) redisUtils.rpop(Constants.REDIS_KEY_QUEUE_VIDEO_PLAY);
+                    VideoPlayInfoDto videoPlayInfoDto = (VideoPlayInfoDto)
+                            redisUtils.rpop(Constants.REDIS_KEY_QUEUE_VIDEO_PLAY);
                     if (videoPlayInfoDto == null) {
                         Thread.sleep(1500);
+                        log.info("没有获取到视频播放文件队列信息");
                         continue;
                     }
-                    //更新播放数
+
+                    //更新播放量：每个分p视频播放的时候都会往队列加一条数据，说明投稿的不同的分p视频播放一次都会给这个投稿加一次播放量
                     videoInfoService.addReadCount(videoPlayInfoDto.getVideoId());
+
+                    //记录用户的历史播放记录
                     if (!StringTools.isEmpty(videoPlayInfoDto.getUserId())) {
                         //记录历史
                         videoPlayHistoryService.saveHistory(videoPlayInfoDto.getUserId(), videoPlayInfoDto.getVideoId(), videoPlayInfoDto.getFileIndex());
                     }
-                    //按天记录播放数
+
+                    //按天记录视频播放量
                     redisComponent.recordVideoPlayCount(videoPlayInfoDto.getVideoId());
 
-
                     //更新es播放数量
-                    //esSearchComponent.updateDocCount(videoPlayInfoDto.getVideoId(), SearchOrderTypeEnum.VIDEO_PLAY.getField(), 1);
+                    esSearchComponent.updateDocCount(videoPlayInfoDto.getVideoId(), SearchOrderTypeEnum.VIDEO_PLAY.getField(), 1);
 
                 } catch (Exception e) {
                     log.error("获取视频播放文件队列信息失败", e);
                 }
             }
         });
-    }*/
+    }
 
 }
