@@ -2,6 +2,7 @@ package com.itjn.web.controller;
 
 import com.itjn.component.RedisComponent;
 import com.itjn.entity.vo.ResponseVO;
+import com.itjn.web.annotation.GlobalInterceptor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +18,7 @@ public class SysSettingController extends ABaseController {
     private RedisComponent redisComponent;
 
     @RequestMapping(value = "/getSetting")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO getSetting() {
         return getSuccessResponseVO(redisComponent.getSysSettingDto());
     }

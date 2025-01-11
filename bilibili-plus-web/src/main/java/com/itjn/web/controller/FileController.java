@@ -19,6 +19,7 @@ import com.itjn.service.VideoInfoFileService;
 import com.itjn.utils.DateUtil;
 import com.itjn.utils.FFmpegUtils;
 import com.itjn.utils.StringTools;
+import com.itjn.web.annotation.GlobalInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.springframework.validation.annotation.Validated;
@@ -61,7 +62,7 @@ public class FileController extends ABaseController {
 
 
     @RequestMapping("/getResource")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public void getResource(HttpServletResponse response, @NotEmpty String sourceName) {
         //判断文件名是否合法(路径中包含 .. 的话则会访问到上一层目录的内容导致越权)
         if (!StringTools.pathIsOk(sourceName)) {
@@ -110,7 +111,7 @@ public class FileController extends ABaseController {
      * @return
      */
     @RequestMapping("/preUploadVideo")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO preUploadVideo(@NotEmpty String fileName, @NotNull Integer chunks) {
         //获取当前用户信息
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
@@ -129,7 +130,7 @@ public class FileController extends ABaseController {
      * @throws IOException
      */
     @RequestMapping("/uploadVideo")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO uploadVideo(@NotNull MultipartFile chunkFile, @NotNull Integer chunkIndex,
                                   @NotEmpty String uploadId) throws IOException {
         //获取当前用户信息
@@ -196,7 +197,7 @@ public class FileController extends ABaseController {
      * @throws IOException
      */
     @RequestMapping("/uploadImage")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO uploadCover(@NotNull MultipartFile file, @NotNull Boolean createThumbnail) throws IOException {
         String day = DateUtil.format(new Date(), DateTimePatternEnum.YYYYMMDD.getPattern());
         String folder = appConfig.getProjectFolder() + Constants.FILE_FOLDER + Constants.FILE_COVER + day;

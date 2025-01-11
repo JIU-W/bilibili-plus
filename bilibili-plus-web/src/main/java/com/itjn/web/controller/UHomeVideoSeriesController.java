@@ -14,6 +14,7 @@ import com.itjn.exception.BusinessException;
 import com.itjn.service.UserVideoSeriesService;
 import com.itjn.service.UserVideoSeriesVideoService;
 import com.itjn.service.VideoInfoService;
+import com.itjn.web.annotation.GlobalInterceptor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,7 +47,7 @@ public class UHomeVideoSeriesController extends ABaseController {
      * @return
      */
     @RequestMapping("/loadVideoSeries")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO loadVideoSeries(@NotEmpty String userId) {
         //不分页查询，因为每个用户的视频分类合集不会太多
         //同时还需要把"合集"里的"第一条视频数据的封面"查出来作为"这个合集的封面"！！！
@@ -63,7 +64,7 @@ public class UHomeVideoSeriesController extends ABaseController {
      * @return
      */
     @RequestMapping("/saveVideoSeries")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO saveVideoSeries(Integer seriesId, @NotEmpty @Size(max = 100) String seriesName,
                                       @Size(max = 200) String seriesDescription, String videoIds) {
         //获取当前登录用户信息
@@ -84,7 +85,7 @@ public class UHomeVideoSeriesController extends ABaseController {
      * @return
      */
     @RequestMapping("/loadAllVideo")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO loadAllVideo(Integer seriesId) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         VideoInfoQuery infoQuery = new VideoInfoQuery();
@@ -108,7 +109,7 @@ public class UHomeVideoSeriesController extends ABaseController {
      * 获取某个视频合集里的详情信息
      */
     @RequestMapping("/getVideoSeriesDetail")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO getVideoSeriesDetail(@NotNull Integer seriesId) {
         UserVideoSeries videoSeries = userVideoSeriesService.getUserVideoSeriesBySeriesId(seriesId);
         if (videoSeries == null) {
@@ -136,7 +137,7 @@ public class UHomeVideoSeriesController extends ABaseController {
      * @return
      */
     @RequestMapping("/saveSeriesVideo")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO saveSeriesVideo(@NotNull Integer seriesId, @NotEmpty String videoIds) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         //批量保存视频到合集 或者是 更改合集里的视频的"排序"
@@ -151,7 +152,7 @@ public class UHomeVideoSeriesController extends ABaseController {
      * @return
      */
     @RequestMapping("/delSeriesVideo")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO delSeriesVideo(@NotNull Integer seriesId, @NotEmpty String videoId) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         userVideoSeriesService.delSeriesVideo(tokenUserInfoDto.getUserId(), seriesId, videoId);
@@ -165,7 +166,7 @@ public class UHomeVideoSeriesController extends ABaseController {
      * @return
      */
     @RequestMapping("/delVideoSeries")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO delVideoSeries(@NotNull Integer seriesId) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         userVideoSeriesService.delVideoSeries(tokenUserInfoDto.getUserId(), seriesId);
@@ -179,7 +180,7 @@ public class UHomeVideoSeriesController extends ABaseController {
      * @return
      */
     @RequestMapping("/changeVideoSeriesSort")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO changeVideoSeriesSort(@NotEmpty String seriesIds) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         userVideoSeriesService.changeVideoSeriesSort(tokenUserInfoDto.getUserId(), seriesIds);
@@ -192,7 +193,7 @@ public class UHomeVideoSeriesController extends ABaseController {
      * @return
      */
     @RequestMapping("/loadVideoSeriesWithVideo")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO loadVideoSeriesWithVideo(@NotEmpty String userId) {
         UserVideoSeriesQuery seriesQuery = new UserVideoSeriesQuery();
         seriesQuery.setUserId(userId);

@@ -20,6 +20,7 @@ import com.itjn.service.UserActionService;
 import com.itjn.service.VideoInfoFileService;
 import com.itjn.service.VideoInfoService;
 import com.itjn.utils.CopyTools;
+import com.itjn.web.annotation.GlobalInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,7 +59,7 @@ public class VideoController extends ABaseController {
      * @return
      */
     @RequestMapping("/loadRecommendVideo")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO loadRecommendVideo() {
         VideoInfoQuery videoInfoQuery = new VideoInfoQuery();
         videoInfoQuery.setQueryUserInfo(true);//同时要关联查询出对应的用户信息(用户昵称和用户头像)
@@ -77,7 +78,7 @@ public class VideoController extends ABaseController {
      * @return
      */
     @RequestMapping("/loadVideo")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO postVideo(Integer pCategoryId, Integer categoryId, Integer pageNo) {
         VideoInfoQuery videoInfoQuery = new VideoInfoQuery();
         videoInfoQuery.setCategoryId(categoryId);
@@ -98,7 +99,7 @@ public class VideoController extends ABaseController {
      * @return
      */
     @RequestMapping("/getVideoInfo")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO getVideoInfo(@NotEmpty String videoId) {
         //查询视频信息
         VideoInfo videoInfo = videoInfoService.getVideoInfoByVideoId(videoId);
@@ -146,7 +147,7 @@ public class VideoController extends ABaseController {
      * @return
      */
     @RequestMapping("/loadVideoPList")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO loadVideoPList(@NotEmpty String videoId) {
         VideoInfoFileQuery videoInfoQuery = new VideoInfoFileQuery();
         videoInfoQuery.setVideoId(videoId);
@@ -163,7 +164,7 @@ public class VideoController extends ABaseController {
      * @return
      */
     @RequestMapping("/getVideoRecommend")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO getVideoRecommend(@NotEmpty String keyword, @NotEmpty String videoId) {
         List<VideoInfo> videoInfoList = esSearchComponent.search(false, keyword,
                 SearchOrderTypeEnum.VIDEO_PLAY.getType(), 1, PageSize.SIZE10.getSize()).getList();
@@ -177,7 +178,7 @@ public class VideoController extends ABaseController {
      * 搜索视频作品
      */
     @RequestMapping("/search")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO search(@NotEmpty String keyword, Integer orderType, Integer pageNo) {
         //记录搜索热词：给对应热词的得分加1
         redisComponent.addKeywordCount(keyword);
@@ -191,7 +192,7 @@ public class VideoController extends ABaseController {
      * @return
      */
     @RequestMapping("/getSearchKeywordTop")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO getSearchKeywordTop() {
         List<String> keywordList = redisComponent.getKeywordTop(Constants.LENGTH_10);
         return getSuccessResponseVO(keywordList);
@@ -203,7 +204,7 @@ public class VideoController extends ABaseController {
      * @return
      */
     @RequestMapping("/loadHotVideoList")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO loadHotVideoList(Integer pageNo) {
         VideoInfoQuery videoInfoQuery = new VideoInfoQuery();
         videoInfoQuery.setPageNo(pageNo);

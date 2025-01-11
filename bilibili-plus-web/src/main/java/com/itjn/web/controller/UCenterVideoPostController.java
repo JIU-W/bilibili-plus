@@ -16,6 +16,7 @@ import com.itjn.service.VideoInfoFilePostService;
 import com.itjn.service.VideoInfoPostService;
 import com.itjn.service.VideoInfoService;
 import com.itjn.utils.JsonUtils;
+import com.itjn.web.annotation.GlobalInterceptor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,7 +57,7 @@ public class UCenterVideoPostController extends ABaseController {
      * @return
      */
     @RequestMapping("/postVideo")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO postVideo(String videoId, @NotEmpty String videoCover,
                                 @NotEmpty @Size(max = 100) String videoName, @NotNull Integer pCategoryId,
                                 Integer categoryId, @NotNull Integer postType,
@@ -94,7 +95,7 @@ public class UCenterVideoPostController extends ABaseController {
      * @return
      */
     @RequestMapping("/loadVideoList")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO loadVideoList(Integer status, Integer pageNo, String videoNameFuzzy) {
         //获取当前登录用户信息
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
@@ -126,7 +127,7 @@ public class UCenterVideoPostController extends ABaseController {
      * @return
      */
     @RequestMapping("/getVideoCountInfo")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO getVideoCountInfo() {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
 
@@ -161,7 +162,7 @@ public class UCenterVideoPostController extends ABaseController {
      * @return
      */
     @RequestMapping("/getVideoByVideoId")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO getVideoByVideoId(@NotEmpty String videoId) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         //查询投稿信息
@@ -190,7 +191,7 @@ public class UCenterVideoPostController extends ABaseController {
      * @return
      */
     @RequestMapping("/saveVideoInteraction")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO saveVideoInteraction(@NotEmpty String videoId, String interaction) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         //更新视频的互动信息
@@ -204,7 +205,7 @@ public class UCenterVideoPostController extends ABaseController {
      * @return
      */
     @RequestMapping("/deleteVideo")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO deleteVideo(@NotEmpty String videoId) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         videoInfoService.deleteVideo(videoId, tokenUserInfoDto.getUserId());

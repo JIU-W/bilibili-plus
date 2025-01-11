@@ -10,6 +10,7 @@ import com.itjn.entity.vo.ResponseVO;
 import com.itjn.service.VideoCommentService;
 import com.itjn.service.VideoDanmuService;
 import com.itjn.service.VideoInfoService;
+import com.itjn.web.annotation.GlobalInterceptor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +38,7 @@ public class UCenterInteractController extends ABaseController {
      * @return
      */
     @RequestMapping("/loadAllVideo")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO loadAllVideo() {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         VideoInfoQuery videoInfoQuery = new VideoInfoQuery();
@@ -56,7 +57,7 @@ public class UCenterInteractController extends ABaseController {
      * @return
      */
     @RequestMapping("/loadComment")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO loadComment(Integer pageNo, Integer pageSize, String videoId) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         VideoCommentQuery commentQuery = new VideoCommentQuery();
@@ -79,7 +80,7 @@ public class UCenterInteractController extends ABaseController {
      * @return
      */
     @RequestMapping("/delComment")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO delComment(@NotNull Integer commentId) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         videoCommentService.deleteComment(commentId, tokenUserInfoDto.getUserId());
@@ -94,7 +95,7 @@ public class UCenterInteractController extends ABaseController {
      * @return
      */
     @RequestMapping("/loadDanmu")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO loadDanmu(Integer pageNo, Integer pageSize, String videoId) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         //封装查询条件
@@ -119,7 +120,7 @@ public class UCenterInteractController extends ABaseController {
      * @return
      */
     @RequestMapping("/delDanmu")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO delDanmu(@NotNull Integer danmuId) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         videoDanmuService.deleteDanmu(tokenUserInfoDto.getUserId(), danmuId);

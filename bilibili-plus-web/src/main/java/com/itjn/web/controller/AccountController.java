@@ -11,6 +11,7 @@ import com.itjn.entity.vo.ResponseVO;
 import com.itjn.exception.BusinessException;
 import com.itjn.service.UserInfoService;
 import com.itjn.utils.StringTools;
+import com.itjn.web.annotation.GlobalInterceptor;
 import com.wf.captcha.ArithmeticCaptcha;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,7 +57,7 @@ public class AccountController extends ABaseController {
 
     //生成验证码
     @RequestMapping(value = "/checkCode")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO checkCode() {
         ArithmeticCaptcha captcha = new ArithmeticCaptcha(100, 42);
 
@@ -72,7 +73,7 @@ public class AccountController extends ABaseController {
 
     //注册
     @RequestMapping(value = "/register")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO register(@NotEmpty @Email @Size(max = 150) String email,
                                @NotEmpty @Size(max = 20) String nickName,
                                @NotEmpty @Pattern(regexp = Constants.REGEX_PASSWORD) String registerPassword,
@@ -91,7 +92,7 @@ public class AccountController extends ABaseController {
 
     //登录
     @RequestMapping(value = "/login")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO login(HttpServletRequest request, HttpServletResponse response,
                             @NotEmpty @Email String email, @NotEmpty String password,
                             @NotEmpty String checkCodeKey, @NotEmpty String checkCode) {
@@ -150,7 +151,7 @@ public class AccountController extends ABaseController {
      * @return
      */
     @RequestMapping(value = "/autoLogin")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO autoLogin(HttpServletResponse response) {
         //从redis中获取用户信息
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
@@ -171,7 +172,7 @@ public class AccountController extends ABaseController {
 
     //退出登录
     @RequestMapping(value = "/logout")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO logout(HttpServletResponse response) {
         //清除cookie:清理服务端redis里的token,同时清除浏览器端的cookie中的token
         cleanCookie(response);
@@ -180,7 +181,7 @@ public class AccountController extends ABaseController {
 
 
     @RequestMapping(value = "/getUserCountInfo")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO getUserCountInfo() {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         UserCountInfoDto userCountInfoDto = userInfoService.getUserCountInfo(tokenUserInfoDto.getUserId());

@@ -6,6 +6,7 @@ import com.itjn.entity.enums.MessageTypeEnum;
 import com.itjn.entity.po.UserAction;
 import com.itjn.entity.vo.ResponseVO;
 import com.itjn.service.UserActionService;
+import com.itjn.web.annotation.GlobalInterceptor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,7 +35,7 @@ public class UserActionController extends ABaseController {
      */
     @RequestMapping("doAction")
     //@RecordUserMessage(messageType = MessageTypeEnum.LIKE)
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO doAction(@NotEmpty String videoId, @NotEmpty Integer actionType,
                                @Max(2) @Min(1) Integer actionCount, Integer commentId) {
         UserAction userAction = new UserAction();

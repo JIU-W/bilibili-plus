@@ -17,6 +17,7 @@ import com.itjn.service.UserFocusService;
 import com.itjn.service.UserInfoService;
 import com.itjn.service.VideoInfoService;
 import com.itjn.utils.CopyTools;
+import com.itjn.web.annotation.GlobalInterceptor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,7 +48,7 @@ public class UHomeController extends ABaseController {
      * @return
      */
     @RequestMapping("/getUserInfo")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO getUserInfo(@NotEmpty String userId) {
         //当前登录用户
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
@@ -62,7 +63,7 @@ public class UHomeController extends ABaseController {
      * 修改用户信息
      */
     @RequestMapping("/updateUserInfo")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO updateUserInfo(@NotEmpty @Size(max = 20) String nickName, @NotEmpty @Size(max = 100) String avatar,
                                      @NotNull Integer sex, String birthday, @Size(max = 150) String school,
                                      @Size(max = 80) String personIntroduction, @Size(max = 300) String noticeInfo) {
@@ -86,7 +87,7 @@ public class UHomeController extends ABaseController {
      * @return
      */
     @RequestMapping("/saveTheme")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO saveTheme(@Min(1) @Max(10) @NotNull Integer theme) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         UserInfo userInfo = new UserInfo();
@@ -101,7 +102,7 @@ public class UHomeController extends ABaseController {
      * @return
      */
     @RequestMapping("/focus")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO focus(@NotEmpty String focusUserId) {
         userFocusService.focusUser(getTokenUserInfoDto().getUserId(), focusUserId);
         return getSuccessResponseVO(null);
@@ -113,7 +114,7 @@ public class UHomeController extends ABaseController {
      * @return
      */
     @RequestMapping("/cancelFocus")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO cancelFocus(@NotEmpty String focusUserId) {
         userFocusService.cancelFocus(getTokenUserInfoDto().getUserId(), focusUserId);
         return getSuccessResponseVO(null);
@@ -124,7 +125,7 @@ public class UHomeController extends ABaseController {
      * 加载我的关注列表
      */
     @RequestMapping("/loadFocusList")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO loadFocusList(Integer pageNo) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         UserFocusQuery focusQuery = new UserFocusQuery();
@@ -143,7 +144,7 @@ public class UHomeController extends ABaseController {
      * 加载我的粉丝列表
      */
     @RequestMapping("/loadFansList")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO loadFansList(Integer pageNo) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         UserFocusQuery focusQuery = new UserFocusQuery();
@@ -169,7 +170,7 @@ public class UHomeController extends ABaseController {
      * @return
      */
     @RequestMapping("/loadVideoList")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO loadVideoList(@NotEmpty String userId, Integer type,
                                     Integer pageNo, String videoName, Integer orderType) {
         VideoInfoQuery infoQuery = new VideoInfoQuery();
@@ -196,7 +197,7 @@ public class UHomeController extends ABaseController {
      * @return
      */
     @RequestMapping("/loadUserCollection")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO loadUserCollection(@NotEmpty String userId, Integer pageNo) {
         UserActionQuery actionQuery = new UserActionQuery();
         actionQuery.setActionType(UserActionTypeEnum.VIDEO_COLLECT.getType());

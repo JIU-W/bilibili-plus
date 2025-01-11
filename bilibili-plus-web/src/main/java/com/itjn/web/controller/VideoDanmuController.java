@@ -7,6 +7,7 @@ import com.itjn.entity.query.VideoDanmuQuery;
 import com.itjn.entity.vo.ResponseVO;
 import com.itjn.service.VideoDanmuService;
 import com.itjn.service.impl.VideoInfoServiceImpl;
+import com.itjn.web.annotation.GlobalInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +43,7 @@ public class VideoDanmuController extends ABaseController {
      * @return
      */
     @RequestMapping("/postDanmu")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO postDanmu(@NotEmpty String videoId, @NotEmpty String fileId,
                                 @NotEmpty @Size(max = 200) String text, @NotNull Integer mode,
                                 @NotEmpty String color, @NotNull Integer time) {
@@ -71,7 +72,7 @@ public class VideoDanmuController extends ABaseController {
      * @return
      */
     @RequestMapping("/loadDanmu")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO loadDanmu(@NotEmpty String fileId, @NotEmpty String videoId) {
         VideoInfo videoInfo = videoInfoService.getVideoInfoByVideoId(videoId);
         //投稿是否关闭弹幕这个功能                                                              //ZERO

@@ -18,6 +18,7 @@ import com.itjn.entity.vo.VideoCommentResultVO;
 import com.itjn.service.UserActionService;
 import com.itjn.service.VideoCommentService;
 import com.itjn.service.impl.VideoInfoServiceImpl;
+import com.itjn.web.annotation.GlobalInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,7 +64,7 @@ public class VideoCommentController extends ABaseController {
      * @return
      */
     @RequestMapping("/postComment")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     //@RecordUserMessage(messageType = MessageTypeEnum.COMMENT)
     public ResponseVO postComment(@NotEmpty String videoId, Integer replyCommentId,
                                   @NotEmpty @Size(max = 500) String content, @Size(max = 50) String imgPath) {
@@ -90,7 +91,7 @@ public class VideoCommentController extends ABaseController {
      * @return
      */
     @RequestMapping("/loadComment")
-    //@GlobalInterceptor
+    @GlobalInterceptor
     public ResponseVO loadComment(@NotEmpty String videoId, Integer pageNo, Integer orderType) {
 
         VideoInfo videoInfo = videoInfoService.getVideoInfoByVideoId(videoId);
@@ -165,7 +166,7 @@ public class VideoCommentController extends ABaseController {
      * @return
      */
     @RequestMapping("/topComment")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO topComment(@NotNull Integer commentId) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         videoCommentService.topComment(commentId, tokenUserInfoDto.getUserId());
@@ -179,7 +180,7 @@ public class VideoCommentController extends ABaseController {
      * @return
      */
     @RequestMapping("/cancelTopComment")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO cancelTopComment(@NotNull Integer commentId) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         videoCommentService.cancelTopComment(commentId, tokenUserInfoDto.getUserId());
@@ -192,7 +193,7 @@ public class VideoCommentController extends ABaseController {
      * @return
      */
     @RequestMapping("/userDelComment")
-    //@GlobalInterceptor(checkLogin = true)
+    @GlobalInterceptor(checkLogin = true)
     public ResponseVO userDelComment(@NotNull Integer commentId) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         VideoComment comment = new VideoComment();
