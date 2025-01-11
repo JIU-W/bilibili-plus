@@ -147,11 +147,12 @@ public class UserMessageServiceImpl implements UserMessageService {
         return this.userMessageMapper.deleteByMessageId(messageId);
     }
 
-    @Async
+    @Async  //异步执行: 异步执行方法，返回值和普通方法一样，多个异步方法会并发执行，不会等待上一个执行完再执行下一个
     public void saveUserMessage(String videoId, String sendUserId, MessageTypeEnum messageTypeEnum, String content, Integer replyCommentId) {
-
         VideoInfo videoInfo = this.videoInfoPostMapper.selectByVideoId(videoId);
         if (videoInfo == null) {
+            //视频不存在，只是不记录消息，不抛出异常。因为点赞或者收藏或者评论等等这些行为是成功的，只是消息发送不成功，没有大的影响，
+            //故不抛异常到前端
             return;
         }
 

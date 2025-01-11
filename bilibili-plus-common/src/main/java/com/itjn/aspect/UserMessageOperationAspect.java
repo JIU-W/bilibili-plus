@@ -129,6 +129,7 @@ public class UserMessageOperationAspect {
             messageTypeEnum = MessageTypeEnum.COLLECTION;
         }
 
+        //获取消息发送人信息(当前用户信息)
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
 
         //保存消息到数据库

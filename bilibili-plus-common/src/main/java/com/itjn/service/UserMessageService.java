@@ -73,11 +73,6 @@ public interface UserMessageService {
 
     /**
      * 保存用户消息
-     * @param videoId
-     * @param sendUserId
-     * @param messageTypeEnum
-     * @param content
-     * @param replyCommentId
      */
     void saveUserMessage(String videoId, String sendUserId, MessageTypeEnum messageTypeEnum, String content, Integer replyCommentId);
 
