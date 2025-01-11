@@ -41,8 +41,10 @@ public class UserMessageOperationAspect {
 
     private static final String PARAMETERS_REPLY_COMMENTID = "replyCommentId";
 
+    //系统消息需要的参数：审核不通过原因
     private static final String PARAMETERS_AUDIT_REJECT_REASON = "reason";
 
+    //评论消息需要的参数：评论内容
     private static final String PARAMETERS_CONTENT = "content";
 
     @Resource
@@ -71,7 +73,7 @@ public class UserMessageOperationAspect {
             //获取注解
             RecordUserMessage recordUserMessage = method.getAnnotation(RecordUserMessage.class);
             if (recordUserMessage != null) {
-                //记录保存用户的消息
+                //记录用户的消息(将消息填入数据库的消息表)
                 saveUserMessage(recordUserMessage, point.getArgs(), method.getParameters());
             }
             return result;//返回目标方法的返回值
@@ -89,14 +91,24 @@ public class UserMessageOperationAspect {
 
     /**
      * 记录用户的消息
+     *              目标方法是这几个其中之一：doAction()，   postComment()，   auditVideo()
+     * 所有的消息类型：
+     *              1.系统消息：管理员对我的作品的审核消息
+     *              2.点赞：自己作品被点赞/给别人作品点赞
+     *              3.收藏：自己作品被收藏/收藏别人作品
+     *              4.评论：自己作品被评论/自己发布评论
      * @param recordUserMessage 注解
      * @param arguments 目标方法参数具体的值
      * @param parameters 目标方法的参数
      */
     private void saveUserMessage(RecordUserMessage recordUserMessage, Object[] arguments, Parameter[] parameters) {
+        //视频id："所有消息"都需要
         String videoId = null;
+        //行为类型："点赞"或者"收藏"的消息需要
         Integer actionType = null;
+        //回复评论id："评论消息"需要
         Integer replyCommentId = null;
+        //评论内容/审核不通过原因："评论消息"或者"系统消息"需要
         String content = null;
         for (int i = 0; i < parameters.length; i++) {
             if (PARAMETERS_VIDEO_ID.equals(parameters[i].getName())) {
@@ -111,14 +123,18 @@ public class UserMessageOperationAspect {
                 content = (String) arguments[i];
             }
         }
+        //确定actionType是"点赞"还是"收藏"类型的消息
         MessageTypeEnum messageTypeEnum = recordUserMessage.messageType();
         if (UserActionTypeEnum.VIDEO_COLLECT.getType().equals(actionType)) {
             messageTypeEnum = MessageTypeEnum.COLLECTION;
         }
 
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
-        //管理端获取不到用户信息，系统发送，不需要用户id
-        userMessageService.saveUserMessage(videoId, tokenUserInfoDto == null ? null : tokenUserInfoDto.getUserId(), messageTypeEnum, content, replyCommentId);
+
+        //保存消息到数据库
+        //系统消息不需要消息发送人(管理端获取不到用户信息，系统发送，不需要用户id)
+        userMessageService.saveUserMessage(videoId, tokenUserInfoDto == null ? null : tokenUserInfoDto.getUserId(),
+                messageTypeEnum, content, replyCommentId);
     }
 
     private TokenUserInfoDto getTokenUserInfoDto() {

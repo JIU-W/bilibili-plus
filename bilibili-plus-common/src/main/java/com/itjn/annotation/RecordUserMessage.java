@@ -17,6 +17,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RecordUserMessage {
 
+    //消息类型：用于确定是"点赞"还是"收藏"消息
     MessageTypeEnum messageType();
 
 }
