@@ -62,15 +62,19 @@ public class UserMessageOperationAspect {
     @Around("@annotation(com.itjn.annotation.RecordUserMessage)")   //切点位置：加了注解@annotation的方法
     public ResponseVO interceptorDo(ProceedingJoinPoint point) throws Exception {
         try {           //ProceedingJoinPoint:目标方法的上下文。可以通过它获取到目标方法的各种信息
-            //调用目标方法执行
+
+            //调用目标方法执行：相当于就是AOP这里帮助调用执行了目标方法，目标方法就不用再执行了。
             ResponseVO result = (ResponseVO) point.proceed();
-            //获取注解
+
+            //获取目标方法
             Method method = ((MethodSignature) point.getSignature()).getMethod();
+            //获取注解
             RecordUserMessage recordUserMessage = method.getAnnotation(RecordUserMessage.class);
             if (recordUserMessage != null) {
+                //记录保存用户的消息
                 saveUserMessage(recordUserMessage, point.getArgs(), method.getParameters());
             }
-            return result;
+            return result;//返回目标方法的返回值
         } catch (BusinessException e) {
             log.error("全局拦截器异常", e);
             throw e;
@@ -83,6 +87,12 @@ public class UserMessageOperationAspect {
         }
     }
 
+    /**
+     * 记录用户的消息
+     * @param recordUserMessage 注解
+     * @param arguments 目标方法参数具体的值
+     * @param parameters 目标方法的参数
+     */
     private void saveUserMessage(RecordUserMessage recordUserMessage, Object[] arguments, Parameter[] parameters) {
         String videoId = null;
         Integer actionType = null;
