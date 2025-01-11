@@ -56,7 +56,7 @@ public class VideoInfoController extends ABaseController {
      * @return
      */
     @RequestMapping("/auditVideo")
-    //@RecordUserMessage(messageType = MessageTypeEnum.SYS)
+    @RecordUserMessage(messageType = MessageTypeEnum.SYS)
     public ResponseVO auditVideo(@NotEmpty String videoId, @NotNull Integer status, String reason) {
         videoInfoPostService.auditVideo(videoId, status, reason);
         return getSuccessResponseVO(null);

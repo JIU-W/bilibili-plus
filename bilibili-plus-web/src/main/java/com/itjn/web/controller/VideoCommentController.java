@@ -65,7 +65,7 @@ public class VideoCommentController extends ABaseController {
      */
     @RequestMapping("/postComment")
     @GlobalInterceptor(checkLogin = true)
-    //@RecordUserMessage(messageType = MessageTypeEnum.COMMENT)
+    @RecordUserMessage(messageType = MessageTypeEnum.COMMENT)
     public ResponseVO postComment(@NotEmpty String videoId, Integer replyCommentId,
                                   @NotEmpty @Size(max = 500) String content, @Size(max = 50) String imgPath) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();

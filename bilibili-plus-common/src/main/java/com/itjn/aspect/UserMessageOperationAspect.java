@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
 /**
- * @description 用户消息记录切面
+ * @description 自定义用户消息记录切面
  * @author JIU-W
  * @date 2025-01-11
  * @version 1.0
@@ -52,10 +52,19 @@ public class UserMessageOperationAspect {
     private UserMessageService userMessageService;
 
 
-    @Around("@annotation(com.itjn.annotation.RecordUserMessage)")
+    /**
+     *
+     * Around：环绕通知：在目标方法执行前后执行，可以修改参数，可以获取到目标方法的返回值，捕获并处理异常。
+     * @param point
+     * @return
+     * @throws Exception
+     */
+    @Around("@annotation(com.itjn.annotation.RecordUserMessage)")   //切点位置：加了注解@annotation的方法
     public ResponseVO interceptorDo(ProceedingJoinPoint point) throws Exception {
-        try {
+        try {           //ProceedingJoinPoint:目标方法的上下文。可以通过它获取到目标方法的各种信息
+            //调用目标方法执行
             ResponseVO result = (ResponseVO) point.proceed();
+            //获取注解
             Method method = ((MethodSignature) point.getSignature()).getMethod();
             RecordUserMessage recordUserMessage = method.getAnnotation(RecordUserMessage.class);
             if (recordUserMessage != null) {
