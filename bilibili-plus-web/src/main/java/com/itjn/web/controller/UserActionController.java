@@ -34,7 +34,7 @@ public class UserActionController extends ABaseController {
      * @return
      */
     @RequestMapping("doAction")
-    //@RecordUserMessage(messageType = MessageTypeEnum.LIKE)
+    @RecordUserMessage(messageType = MessageTypeEnum.LIKE)
     @GlobalInterceptor(checkLogin = true)
     public ResponseVO doAction(@NotEmpty String videoId, @NotEmpty Integer actionType,
                                @Max(2) @Min(1) Integer actionCount, Integer commentId) {
