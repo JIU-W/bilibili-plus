@@ -887,7 +887,8 @@
     </update>
 
     <select id="selectSumCountInfo" resultType="com.itjn.entity.dto.CountInfoDto">
-        select ifnull(sum(play_count),0) playCount,ifnull(sum(like_count),0) likeCount from video_info
+        select ifnull(sum(play_count),0) playCount, ifnull(sum(like_count),0) likeCount
+        from video_info
         where user_id = #{userId}
     </select>
 

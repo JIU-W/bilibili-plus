@@ -1,6 +1,5 @@
 package com.itjn.entity.dto;
 
-
 public class CountInfoDto {
     private Integer playCount;
     private Integer likeCount;

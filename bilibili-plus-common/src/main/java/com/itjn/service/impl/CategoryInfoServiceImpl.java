@@ -210,13 +210,13 @@ public class CategoryInfoServiceImpl implements CategoryInfoService {
 
     @Override
     public void delCategory(Integer categoryId) {
-        //TODO 判断该分类下是否有视频信息
-        /*VideoInfoQuery videoInfoQuery = new VideoInfoQuery();
+        //判断该分类下是否有视频信息
+        VideoInfoQuery videoInfoQuery = new VideoInfoQuery();
         videoInfoQuery.setCategoryIdOrPCategoryId(categoryId);
         Integer count = videoInfoService.findCountByParam(videoInfoQuery);
         if (count > 0) {
             throw new BusinessException("分类下有视频信息，无法删除");
-        }*/
+        }
 
         CategoryInfoQuery categoryInfoQuery = new CategoryInfoQuery();
         categoryInfoQuery.setCategoryIdOrPCategoryId(categoryId);
