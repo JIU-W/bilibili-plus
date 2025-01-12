@@ -112,7 +112,8 @@ public class ExecuteQueueTask {
                     //记录用户的历史播放记录
                     if (!StringTools.isEmpty(videoPlayInfoDto.getUserId())) {
                         //记录历史
-                        videoPlayHistoryService.saveHistory(videoPlayInfoDto.getUserId(), videoPlayInfoDto.getVideoId(), videoPlayInfoDto.getFileIndex());
+                        videoPlayHistoryService.saveHistory(videoPlayInfoDto.getUserId(), videoPlayInfoDto.getVideoId(),
+                                videoPlayInfoDto.getFileIndex());
                     }
 
                     //按天记录视频播放量
