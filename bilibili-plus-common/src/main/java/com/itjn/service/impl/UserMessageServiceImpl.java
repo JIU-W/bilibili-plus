@@ -162,7 +162,7 @@ public class UserMessageServiceImpl implements UserMessageService {
         //收到消息的用户
         String userId = videoInfo.getUserId();
 
-        //对于收藏和点赞类型的消息：已经记录过一次的话，就不在记录了。
+        //对于收藏和点赞类型的消息：已经记录过一次的话，就不再记录了。
         if (ArrayUtils.contains(new Integer[]{MessageTypeEnum.LIKE.getType(), MessageTypeEnum.COLLECTION.getType()},
                 messageTypeEnum.getType())) {
             UserMessageQuery userMessageQuery = new UserMessageQuery();

@@ -44,7 +44,7 @@ public class UserMessageContrller extends ABaseController {
     }
 
     /**
-     * 分类型获取未读消息数量
+     * 分类获取未读消息数量
      *        类型：1.系统消息(系统通知)  2.点赞消息(收到的赞)  3.收藏消息(收到收藏)  4.评论消息(评论)   和@？？？
      * @return
      */
@@ -52,12 +52,17 @@ public class UserMessageContrller extends ABaseController {
     @GlobalInterceptor(checkLogin = true)
     public ResponseVO getNoReadCountGroup() {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        //按分类获取用户消息未读数(分组查询)
         List<UserMessageCountDto> dataList = userMessageService.
                 getMessageTypeNoReadCount(tokenUserInfoDto.getUserId());
         return getSuccessResponseVO(dataList);
     }
 
-    /*
+    /**
+     * 标记消息为已读
+     * @param messageType
+     * @return
+     */
     @RequestMapping("/readAll")
     @GlobalInterceptor(checkLogin = true)
     public ResponseVO readAll(Integer messageType) {
@@ -69,16 +74,23 @@ public class UserMessageContrller extends ABaseController {
 
         UserMessage userMessage = new UserMessage();
         userMessage.setReadType(MessageReadTypeEnum.READ.getType());
+        //更改对应的消息为已读(根据用户id和消息类型)
         userMessageService.updateByParam(userMessage, userMessageQuery);
         return getSuccessResponseVO(null);
     }
 
+    /**
+     * 分页获取消息列表
+     * @param messageType
+     * @param pageNo
+     * @return
+     */
     @RequestMapping("/loadMessage")
     @GlobalInterceptor(checkLogin = true)
     public ResponseVO loadMessage(@NotNull Integer messageType, Integer pageNo) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         UserMessageQuery messageQuery = new UserMessageQuery();
-        messageQuery.setMessageType(messageType);
+        messageQuery.setMessageType(messageType);//查询条件：消息类型
         messageQuery.setPageNo(pageNo);
         messageQuery.setUserId(tokenUserInfoDto.getUserId());
         messageQuery.setOrderBy("message_id desc");
@@ -86,6 +98,12 @@ public class UserMessageContrller extends ABaseController {
         return getSuccessResponseVO(resultVO);
     }
 
+
+    /**
+     * 删除消息
+     * @param messageId
+     * @return
+     */
     @RequestMapping("/delMessage")
     @GlobalInterceptor(checkLogin = true)
     public ResponseVO delMessage(@NotNull Integer messageId) {
@@ -95,6 +113,6 @@ public class UserMessageContrller extends ABaseController {
         messageQuery.setMessageId(messageId);
         userMessageService.deleteByParam(messageQuery);
         return getSuccessResponseVO(null);
-    }*/
+    }
 
 }
