@@ -134,6 +134,7 @@ public class VideoPlayHistoryServiceImpl implements VideoPlayHistoryService {
         history.setUserId(userId);
         //最后更新时间：用户第二次看同一个视频时不会又加一条记录，而是更新这个字段。
         history.setLastUpdateTime(new Date());
+        //插入或者更新时间
         this.videoPlayHistoryMapper.insertOrUpdate(history);
     }
 

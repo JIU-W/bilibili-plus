@@ -111,7 +111,7 @@ public class ExecuteQueueTask {
 
                     //记录用户的历史播放记录
                     if (!StringTools.isEmpty(videoPlayInfoDto.getUserId())) {
-                        //记录历史
+                        //记录播放记录到历史播放表(插入或者更新(更新最后播放时间))
                         videoPlayHistoryService.saveHistory(videoPlayInfoDto.getUserId(), videoPlayInfoDto.getVideoId(),
                                 videoPlayInfoDto.getFileIndex());
                     }
