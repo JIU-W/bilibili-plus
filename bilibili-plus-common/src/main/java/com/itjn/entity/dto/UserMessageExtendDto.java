@@ -8,13 +8,13 @@ package com.itjn.entity.dto;
  */
 public class UserMessageExtendDto {
 
-    //评论内容
+    //"评论消息"的评论内容
     private String messageContent;
 
-    //回复内容
+    //"评论消息"的回复内容(二级评论才有)
     private String messageContentReply;
 
-    //审核状态
+    //"系统消息"的审核状态
     private Integer auditStatus;
 
     public String getMessageContent() {

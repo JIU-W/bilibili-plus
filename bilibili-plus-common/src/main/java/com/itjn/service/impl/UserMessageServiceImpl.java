@@ -202,7 +202,10 @@ public class UserMessageServiceImpl implements UserMessageService {
             extendDto.setAuditStatus(videoInfoPost.getStatus());
         }
         userMessage.setUserId(userId);
-        userMessage.setExtendJson(JsonUtils.convertObj2Json(extendDto));
+        //转换为json
+        String extendJson = JsonUtils.convertObj2Json(extendDto);
+        userMessage.setExtendJson(extendJson);
+        //记录消息
         this.userMessageMapper.insert(userMessage);
     }
 
@@ -210,4 +213,5 @@ public class UserMessageServiceImpl implements UserMessageService {
     public List<UserMessageCountDto> getMessageTypeNoReadCount(String userId) {
         return this.userMessageMapper.getMessageTypeNoReadCount(userId);
     }
+
 }
