@@ -139,6 +139,9 @@ public interface UserInfoService {
      */
     UserInfo getUserDetailInfo(String currentUserId, String userId);
 
+    /**
+     * 获取用户数量信息：粉丝数，关注数，硬币数
+     */
     UserCountInfoDto getUserCountInfo(String userId);
 
     /**

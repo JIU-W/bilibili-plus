@@ -329,12 +329,13 @@ public class UserInfoServiceImpl implements UserInfoService {
 
 
     public UserCountInfoDto getUserCountInfo(String userId) {
+        //查询用户信息
         UserInfo userInfo = getUserInfoByUserId(userId);
+        //查询用户的粉丝数、关注数
         Integer fansCount = userFocusMapper.selectFansCount(userId);
         Integer focusCount = userFocusMapper.selectFocusCount(userId);
 
         UserCountInfoDto countInfoDto = new UserCountInfoDto();
-
         countInfoDto.setFansCount(fansCount);
         countInfoDto.setFocusCount(focusCount);
         countInfoDto.setCurrentCoinCount(userInfo.getCurrentCoinCount());

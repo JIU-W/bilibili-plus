@@ -105,7 +105,6 @@ public class AccountController extends ABaseController {
             TokenUserInfoDto tokenUserInfoDto = userInfoService.login(email, password, ip);
             //保存token到cookie中
             saveToken2Cookie(response, tokenUserInfoDto.getToken());
-            //TODO 设置粉丝数，关注数，硬币数
             return getSuccessResponseVO(tokenUserInfoDto);
         } finally {
             //用过一次的验证码就要删除
@@ -166,7 +165,6 @@ public class AccountController extends ABaseController {
             //保存新的token到cookie中
             saveToken2Cookie(response, tokenUserInfoDto.getToken());
         }
-        //TODO 设置粉丝数，关注数，硬币数
         return getSuccessResponseVO(tokenUserInfoDto);
     }
 
@@ -179,7 +177,10 @@ public class AccountController extends ABaseController {
         return getSuccessResponseVO(null);
     }
 
-
+    /**
+     * 获取用户数量信息：粉丝数，关注数，硬币数
+     * @return
+     */
     @RequestMapping(value = "/getUserCountInfo")
     @GlobalInterceptor(checkLogin = true)
     public ResponseVO getUserCountInfo() {
