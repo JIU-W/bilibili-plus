@@ -71,7 +71,7 @@ public interface VideoPlayHistoryService {
     Integer deleteVideoPlayHistoryByUserIdAndVideoId(String userId, String videoId);
 
     /**
-     * 保存播放记录到视频播放历史记录表
+     * 保存播放记录 到 视频播放历史记录表
      */
     void saveHistory(String userId, String videoId, Integer fileIndex);
 

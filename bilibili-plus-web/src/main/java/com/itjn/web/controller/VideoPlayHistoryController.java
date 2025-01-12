@@ -22,7 +22,12 @@ public class VideoPlayHistoryController extends ABaseController {
     @Resource
     private VideoPlayHistoryService videoPlayHistoryService;
 
-    /*@RequestMapping("/loadHistory")
+    /**
+     * 加载播放历史记录表
+     * @param pageNo
+     * @return
+     */
+    @RequestMapping("/loadHistory")
     @GlobalInterceptor(checkLogin = true)
     public ResponseVO loadHistory(Integer pageNo) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
@@ -34,6 +39,10 @@ public class VideoPlayHistoryController extends ABaseController {
         return getSuccessResponseVO(videoPlayHistoryService.findListByPage(historyQuery));
     }
 
+    /**
+     * 清空播放历史记录
+     * @return
+     */
     @RequestMapping("/cleanHistory")
     @GlobalInterceptor(checkLogin = true)
     public ResponseVO cleanHistory() {
@@ -44,12 +53,17 @@ public class VideoPlayHistoryController extends ABaseController {
         return getSuccessResponseVO(null);
     }
 
+    /**
+     * 删除播放历史记录
+     * @param videoId
+     * @return
+     */
     @RequestMapping("/delHistory")
     @GlobalInterceptor(checkLogin = true)
     public ResponseVO delHistory(@NotEmpty String videoId) {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         videoPlayHistoryService.deleteVideoPlayHistoryByUserIdAndVideoId(tokenUserInfoDto.getUserId(), videoId);
         return getSuccessResponseVO(null);
-    }*/
+    }
 
 }
