@@ -162,7 +162,11 @@ public class UserMessageServiceImpl implements UserMessageService {
         //收到消息的用户
         String userId = videoInfo.getUserId();
 
-        //对于收藏和点赞类型的消息：已经记录过一次的话，就不再记录了。
+        //对于"收藏"和"点赞"类型的消息：已经记录过一次的话，就不再记录了。
+        //这里设置的本意是点赞和收藏的人只有"在第一次收藏和点赞时"才会发消息给"消息接收人"，
+        //后面如果取消点赞然后再重新点赞的话是不会再次发消息的。
+        //TODO 还有一个小bug，就是"给一个视频下的评论点赞"时会被当成"给视频点赞"然后发消息给视频发布者，
+        //也就是说我们这里没有特殊处理"点赞评论"这种具体的情况。
         if (ArrayUtils.contains(new Integer[]{MessageTypeEnum.LIKE.getType(), MessageTypeEnum.COLLECTION.getType()},
                 messageTypeEnum.getType())) {
             UserMessageQuery userMessageQuery = new UserMessageQuery();

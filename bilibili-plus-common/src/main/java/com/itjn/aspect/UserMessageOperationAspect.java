@@ -132,6 +132,11 @@ public class UserMessageOperationAspect {
             messageTypeEnum = MessageTypeEnum.COLLECTION;
         }
 
+        //TODO 不记录点赞消息(把给评论点赞的情况完全排除掉) 用户解决那个bug
+        /*if(UserActionTypeEnum.COMMENT_LIKE.getType().equals(actionType)){
+            return;
+        }*/
+
         //获取消息发送人信息(当前用户信息)
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
 

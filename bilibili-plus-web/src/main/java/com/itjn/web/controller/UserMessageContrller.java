@@ -94,6 +94,7 @@ public class UserMessageContrller extends ABaseController {
         messageQuery.setPageNo(pageNo);
         messageQuery.setUserId(tokenUserInfoDto.getUserId());
         messageQuery.setOrderBy("message_id desc");
+        //分页查询消息列表(同时关联查出消息发送者信息和消息有关视频的信息)
         PaginationResultVO resultVO = userMessageService.findListByPage(messageQuery);
         return getSuccessResponseVO(resultVO);
     }

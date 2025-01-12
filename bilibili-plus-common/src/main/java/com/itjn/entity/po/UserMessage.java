@@ -60,7 +60,7 @@ public class UserMessage implements Serializable {
      */
     private String extendJson;
 
-
+    //扩展信息:来自数据库extendJson信息的解析
     private UserMessageExtendDto extendDto;
 
     private String videoName;
@@ -72,7 +72,10 @@ public class UserMessage implements Serializable {
     private String sendUserAvatar;
 
     public UserMessageExtendDto getExtendDto() {
-        return StringTools.isEmpty(extendJson) ? new UserMessageExtendDto() : JsonUtils.convertJson2Obj(extendJson, UserMessageExtendDto.class);
+        //解析字段extendJson到extendDto
+        return StringTools.isEmpty(extendJson) ?
+                new UserMessageExtendDto() :
+                JsonUtils.convertJson2Obj(extendJson, UserMessageExtendDto.class);
     }
 
     public void setExtendDto(UserMessageExtendDto extendDto) {
