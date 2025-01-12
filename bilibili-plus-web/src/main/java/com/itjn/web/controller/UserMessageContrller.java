@@ -25,6 +25,10 @@ public class UserMessageContrller extends ABaseController {
     @Resource
     private UserMessageService userMessageService;
 
+    /**
+     * 获取未读消息数量
+     * @return
+     */
     @RequestMapping("/getNoReadCount")
     @GlobalInterceptor(checkLogin = true)
     public ResponseVO getNoReadCount() {
@@ -39,7 +43,11 @@ public class UserMessageContrller extends ABaseController {
         return getSuccessResponseVO(count);
     }
 
-    /*@RequestMapping("/getNoReadCountGroup")
+    /**
+     *
+     * @return
+     */
+    @RequestMapping("/getNoReadCountGroup")
     @GlobalInterceptor(checkLogin = true)
     public ResponseVO getNoReadCountGroup() {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
@@ -47,6 +55,7 @@ public class UserMessageContrller extends ABaseController {
         return getSuccessResponseVO(dataList);
     }
 
+    /*
     @RequestMapping("/readAll")
     @GlobalInterceptor(checkLogin = true)
     public ResponseVO readAll(Integer messageType) {

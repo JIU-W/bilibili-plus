@@ -96,7 +96,7 @@ public class UserMessageOperationAspect {
      *              1.系统消息：管理员对我的作品的审核消息
      *              2.点赞：自己作品被点赞/给别人作品点赞、自己的评论被点赞/给别人的评论点赞
      *              3.收藏：自己作品被收藏/收藏别人作品
-     *              4.评论：自己作品被评论/自己发布评论
+     *              4.评论：自己作品被评论/自己发布一级评论、自己的评论被回复/自己发布二级评论
      * @param recordUserMessage 注解
      * @param arguments 目标方法参数具体的值
      * @param parameters 目标方法的参数
@@ -124,8 +124,10 @@ public class UserMessageOperationAspect {
                 content = (String) arguments[i];
             }
         }
-        //最终在这里确定actionType是"点赞"还是"收藏"类型的消息
+        //获取注解的消息类型
         MessageTypeEnum messageTypeEnum = recordUserMessage.messageType();
+
+        //最终在这里确定actionType是"点赞"还是"收藏"类型的消息
         if (UserActionTypeEnum.VIDEO_COLLECT.getType().equals(actionType)) {
             messageTypeEnum = MessageTypeEnum.COLLECTION;
         }
