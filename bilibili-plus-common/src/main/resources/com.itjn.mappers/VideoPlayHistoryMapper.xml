@@ -248,7 +248,9 @@
 
     <!-- 根据UserIdAndVideoId删除-->
     <delete id="deleteByUserIdAndVideoId">
-        delete from video_play_history where user_id=#{userId} and video_id=#{videoId}
+        delete
+        from video_play_history
+        where user_id = #{userId} and video_id = #{videoId}
     </delete>
 
     <!-- 根据PrimaryKey获取对象-->
