@@ -94,7 +94,7 @@ public class UserMessageOperationAspect {
      *              目标方法是这几个其中之一：doAction()，   postComment()，   auditVideo()
      * 所有的消息类型：
      *              1.系统消息：管理员对我的作品的审核消息
-     *              2.点赞：自己作品被点赞/给别人作品点赞
+     *              2.点赞：自己作品被点赞/给别人作品点赞、自己的评论被点赞/给别人的评论点赞
      *              3.收藏：自己作品被收藏/收藏别人作品
      *              4.评论：自己作品被评论/自己发布评论
      * @param recordUserMessage 注解
@@ -110,6 +110,7 @@ public class UserMessageOperationAspect {
         Integer replyCommentId = null;
         //评论内容/审核不通过原因："评论消息"或者"系统消息"需要
         String content = null;
+        //逐个去解析目标方法的参数
         for (int i = 0; i < parameters.length; i++) {
             if (PARAMETERS_VIDEO_ID.equals(parameters[i].getName())) {
                 videoId = (String) arguments[i];
@@ -123,7 +124,7 @@ public class UserMessageOperationAspect {
                 content = (String) arguments[i];
             }
         }
-        //确定actionType是"点赞"还是"收藏"类型的消息
+        //最终在这里确定actionType是"点赞"还是"收藏"类型的消息
         MessageTypeEnum messageTypeEnum = recordUserMessage.messageType();
         if (UserActionTypeEnum.VIDEO_COLLECT.getType().equals(actionType)) {
             messageTypeEnum = MessageTypeEnum.COLLECTION;

@@ -147,7 +147,7 @@ public class UserMessageServiceImpl implements UserMessageService {
         return this.userMessageMapper.deleteByMessageId(messageId);
     }
 
-    @Async  //异步执行: 异步执行方法，返回值和普通方法一样，多个异步方法会并发执行，不会等待上一个执行完再执行下一个
+    @Async  //记录消息的这个方法是异步执行:与点赞、收藏、评论、审核那些会产生消息的行为分离开，记录消息不会影响那些行为。
     public void saveUserMessage(String videoId, String sendUserId, MessageTypeEnum messageTypeEnum, String content, Integer replyCommentId) {
         VideoInfo videoInfo = this.videoInfoPostMapper.selectByVideoId(videoId);
         if (videoInfo == null) {
@@ -162,13 +162,13 @@ public class UserMessageServiceImpl implements UserMessageService {
         //收到消息的用户
         String userId = videoInfo.getUserId();
 
-        //收藏，点赞 已经记录过消息，不在记录
+        //对于收藏和点赞类型的消息：已经记录过一次的话，就不在记录了
         if (ArrayUtils.contains(new Integer[]{MessageTypeEnum.LIKE.getType(), MessageTypeEnum.COLLECTION.getType()},
                 messageTypeEnum.getType())) {
             UserMessageQuery userMessageQuery = new UserMessageQuery();
-            userMessageQuery.setUserId(userId);////////////////////////???
-            userMessageQuery.setVideoId(videoId);
-            userMessageQuery.setMessageType(messageTypeEnum.getType());
+            userMessageQuery.setUserId(userId);//接收消息用户
+            userMessageQuery.setVideoId(videoId);//消息有关视频
+            userMessageQuery.setMessageType(messageTypeEnum.getType());//消息类型
             Integer count = userMessageMapper.selectCount(userMessageQuery);
             if (count > 0) {
                 return;
