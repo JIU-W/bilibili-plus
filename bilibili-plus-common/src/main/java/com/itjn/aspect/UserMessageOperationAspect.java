@@ -132,7 +132,7 @@ public class UserMessageOperationAspect {
             messageTypeEnum = MessageTypeEnum.COLLECTION;
         }
 
-        //TODO 不记录点赞消息(把给评论点赞的情况完全排除掉) 用户解决那个bug
+        //TODO 不记录点赞消息(把给评论点赞的情况完全排除掉) 用于解决那个bug
         /*if(UserActionTypeEnum.COMMENT_LIKE.getType().equals(actionType)){
             return;
         }*/

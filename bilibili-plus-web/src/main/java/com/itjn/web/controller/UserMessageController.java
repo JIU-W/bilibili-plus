@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @Validated
 @RequestMapping("/message")
-public class UserMessageContrller extends ABaseController {
+public class UserMessageController extends ABaseController {
 
     @Resource
     private UserMessageService userMessageService;
