@@ -44,14 +44,16 @@ public class UserMessageContrller extends ABaseController {
     }
 
     /**
-     *
+     * 分类型获取未读消息数量
+     *        类型：1.系统消息(系统通知)  2.点赞消息(收到的赞)  3.收藏消息(收到收藏)  4.评论消息(评论)   和@？？？
      * @return
      */
     @RequestMapping("/getNoReadCountGroup")
     @GlobalInterceptor(checkLogin = true)
     public ResponseVO getNoReadCountGroup() {
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
-        List<UserMessageCountDto> dataList = userMessageService.getMessageTypeNoReadCount(tokenUserInfoDto.getUserId());
+        List<UserMessageCountDto> dataList = userMessageService.
+                getMessageTypeNoReadCount(tokenUserInfoDto.getUserId());
         return getSuccessResponseVO(dataList);
     }
 

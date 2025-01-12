@@ -209,7 +209,7 @@ public class UserMessageServiceImpl implements UserMessageService {
         this.userMessageMapper.insert(userMessage);
     }
 
-    @Override
+
     public List<UserMessageCountDto> getMessageTypeNoReadCount(String userId) {
         return this.userMessageMapper.getMessageTypeNoReadCount(userId);
     }

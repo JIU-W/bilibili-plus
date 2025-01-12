@@ -76,6 +76,9 @@ public interface UserMessageService {
      */
     void saveUserMessage(String videoId, String sendUserId, MessageTypeEnum messageTypeEnum, String content, Integer replyCommentId);
 
+    /**
+     * 按分类获取用户消息未读数
+     */
     List<UserMessageCountDto> getMessageTypeNoReadCount(String userId);
 
 }

@@ -377,6 +377,10 @@
     </select>
 
     <select id="getMessageTypeNoReadCount" resultType="com.itjn.entity.dto.UserMessageCountDto">
-        select message_type messageType,count(1) messageCount from user_message where user_id = #{userId} and read_type = 0 group by message_type
+        select message_type messageType, count(1) messageCount
+        from user_message
+        where user_id = #{userId} and read_type = 0
+        group by message_type
     </select>
+
 </mapper>
