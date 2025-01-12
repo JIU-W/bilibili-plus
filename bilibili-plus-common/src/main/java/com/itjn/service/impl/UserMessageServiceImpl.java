@@ -159,12 +159,14 @@ public class UserMessageServiceImpl implements UserMessageService {
         UserMessageExtendDto extendDto = new UserMessageExtendDto();
         extendDto.setMessageContent(content);
 
+        //收到消息的用户
         String userId = videoInfo.getUserId();
 
         //收藏，点赞 已经记录过消息，不在记录
-        if (ArrayUtils.contains(new Integer[]{MessageTypeEnum.LIKE.getType(), MessageTypeEnum.COLLECTION.getType()}, messageTypeEnum.getType())) {
+        if (ArrayUtils.contains(new Integer[]{MessageTypeEnum.LIKE.getType(), MessageTypeEnum.COLLECTION.getType()},
+                messageTypeEnum.getType())) {
             UserMessageQuery userMessageQuery = new UserMessageQuery();
-            userMessageQuery.setUserId(userId);
+            userMessageQuery.setUserId(userId);////////////////////////???
             userMessageQuery.setVideoId(videoId);
             userMessageQuery.setMessageType(messageTypeEnum.getType());
             Integer count = userMessageMapper.selectCount(userMessageQuery);
@@ -180,19 +182,21 @@ public class UserMessageServiceImpl implements UserMessageService {
         userMessage.setMessageType(messageTypeEnum.getType());
         userMessage.setSendUserId(sendUserId);
 
-        //评论特殊处理
+        //"评论消息"的特殊处理
         if (replyCommentId != null) {
             VideoComment commentInfo = videoCommentMapper.selectByCommentId(replyCommentId);
             if (null != commentInfo) {
+                //如果发布的评论是用于回复其它的评论(即是二级评论不是一级评论)，那么消息的接收人应该被回复的评论的发送人人。
                 userId = commentInfo.getUserId();
                 extendDto.setMessageContentReply(commentInfo.getContent());
             }
         }
+        //自己回复自己的行为不用发送消息
         if (userId.equals(sendUserId)) {
             return;
         }
 
-        //系统消息特殊处理
+        //"系统消息"特殊处理
         if (MessageTypeEnum.SYS == messageTypeEnum) {
             VideoInfoPost videoInfoPost = videoInfoPostMapper.selectByVideoId(videoId);
             extendDto.setAuditStatus(videoInfoPost.getStatus());
