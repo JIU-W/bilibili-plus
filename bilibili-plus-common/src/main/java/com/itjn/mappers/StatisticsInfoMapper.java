@@ -46,7 +46,7 @@ public interface StatisticsInfoMapper<T, P> extends BaseMapper<T, P> {
                                  @Param("actionTypeArray") Integer[] actionTypeArray);
 
     /**
-     * 获取用户统计信息
+     * 获取当前用户所有的数据(除了粉丝数)
      */
     Map<String, Integer> selectTotalCountInfo(@Param("userId") String userId);
 

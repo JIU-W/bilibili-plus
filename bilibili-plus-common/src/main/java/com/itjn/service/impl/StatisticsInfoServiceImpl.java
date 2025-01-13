@@ -228,9 +228,10 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
 
 
     public Map<String, Integer> getStatisticsInfoActualTime(String userId) {
+        //查询出用户所有的统计数据(除了粉丝数)
         Map<String, Integer> result = statisticsInfoMapper.selectTotalCountInfo(userId);
         if (!StringTools.isEmpty(userId)) {
-            //查询粉丝数
+            //查询用户的粉丝数
             result.put("userCount", userFocusMapper.selectFansCount(userId));
         } else {
             result.put("userCount", userInfoMapper.selectCount(new UserInfoQuery()));

@@ -38,14 +38,16 @@ public class UCenterstatisticsController extends ABaseController {
         param.setStatisticsDate(preDate);
         param.setUserId(tokenUserInfoDto.getUserId());
 
+        //获取当前用户前一天的统计数据
         List<StatisticsInfo> preDayData = statisticsInfoService.findListByParam(param);
-
         Map<Integer, Integer> preDayDataMap = preDayData.stream().collect(
                 Collectors.toMap(StatisticsInfo::getDataType, StatisticsInfo::getStatisticsCount,
-                        (item1, item2) -> item2));//(item1, item2) -> item2)作用：如果key重复，则使用item2
-        //获取当前用户总的统计信息
+                        (item1, item2) -> item2));
+        //(item1, item2) -> item2)作用：键(key)冲突时，选择使用当前值(item2)覆盖已存在的值(item1)
+
+        //获取当前用户所有的数据
         Map<String, Integer> totalCountInfo = statisticsInfoService.getStatisticsInfoActualTime(tokenUserInfoDto.getUserId());
-        //封装
+        //封装返回结果
         Map<String, Object> result = new HashMap<>();
         result.put("preDayData", preDayDataMap);
         result.put("totalCountInfo", totalCountInfo);
