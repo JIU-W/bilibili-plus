@@ -195,7 +195,7 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
         }
         statisticsInfoList.addAll(fansDataList);
 
-        //3.统计用户前一天所有视频作品总共新增的评论数量(只统计前一天的数据)
+        //3.统计用户前一天所有视频作品总共新增的评论数量(只统计前一天的数据)  TODO sql
         List<StatisticsInfo> commentDataList = this.statisticsInfoMapper.selectStatisticsComment(statisticsDate);
         for (StatisticsInfo statisticsInfo : commentDataList) {
             statisticsInfo.setStatisticsDate(statisticsDate);
@@ -203,14 +203,16 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
         }
         statisticsInfoList.addAll(commentDataList);
 
-        //4.统计用户前一天所有视频作品总共收到的 "视频点赞数量"、"视频收藏数量"、"投币数量"(只统计前一天的数据)       弹幕、
+        //todo  弹幕数据还没统计
+
+
+        //4.统计用户前一天所有视频作品总共收到的 "视频点赞数量"、"视频收藏数量"、"投币数量"(只统计前一天的数据)
         List<StatisticsInfo> statisticsInfoOthers = this.statisticsInfoMapper.selectStatisticsInfo(statisticsDate,
                 new Integer[]{UserActionTypeEnum.VIDEO_LIKE.getType(), UserActionTypeEnum.VIDEO_COIN.getType(),
                         UserActionTypeEnum.VIDEO_COLLECT.getType()});
-        //分别设置数据类型
+
         for (StatisticsInfo statisticsInfo : statisticsInfoOthers) {
             statisticsInfo.setStatisticsDate(statisticsDate);
-
             if (UserActionTypeEnum.VIDEO_LIKE.getType().equals(statisticsInfo.getDataType())) {
                 statisticsInfo.setDataType(StatisticsTypeEnum.LIKE.getType());
             } else if (UserActionTypeEnum.VIDEO_COLLECT.getType().equals(statisticsInfo.getDataType())) {
@@ -220,6 +222,7 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
             }
         }
         statisticsInfoList.addAll(statisticsInfoOthers);
+        //正常情况下用insert就行，因为定时任务只会执行一次，但是为了保险起见，还是使用insertOrUpdate。
         this.statisticsInfoMapper.insertOrUpdateBatch(statisticsInfoList);
     }
 
