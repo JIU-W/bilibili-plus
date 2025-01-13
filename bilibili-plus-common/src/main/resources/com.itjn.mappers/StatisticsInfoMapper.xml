@@ -52,12 +52,12 @@
             <if test="query.userIdFuzzy!= null  and query.userIdFuzzy!=''">
                 and s.user_id like concat('%', #{query.userIdFuzzy}, '%')
             </if>
-            <!--补充查询-->
-            <if test="query.statisticsDateStart!=null">
-                <![CDATA[ and  s.statistics_date>=#{query.statisticsDateStart} ]]>
+            <!--补充查询条件-->
+            <if test="query.statisticsDateStart != null">
+                <![CDATA[ and  s.statistics_date >= #{query.statisticsDateStart} ]]>
             </if>
-            <if test="query.statisticsDateEnd!=null">
-                <![CDATA[ and  s.statistics_date<=#{query.statisticsDateEnd} ]]>
+            <if test="query.statisticsDateEnd != null">
+                <![CDATA[ and  s.statistics_date <= #{query.statisticsDateEnd} ]]>
             </if>
         </where>
     </sql>

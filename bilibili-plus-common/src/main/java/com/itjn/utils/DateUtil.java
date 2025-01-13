@@ -57,9 +57,10 @@ public class DateUtil {
         return format(calendar.getTime(), DateTimePatternEnum.YYYY_MM_DD.getPattern());
     }
 
-    //测试getBeforeDayDate方法
+    //测试方法
     public static void main(String[] args) {
         System.out.println(getBeforeDayDate(1));
+        System.out.println(getBeforeDates(7));
     }
 
 
@@ -69,6 +70,11 @@ public class DateUtil {
         return calendar.getTime();
     }
 
+    /**
+     * 生成过去beforeDays天内的日期列表
+     * @param beforeDays
+     * @return
+     */
     public static List<String> getBeforeDates(Integer beforeDays) {
         LocalDate endDate = LocalDate.now();
         List<String> dateList = new ArrayList<>();
@@ -78,4 +84,5 @@ public class DateUtil {
         }
         return dateList;
     }
+
 }

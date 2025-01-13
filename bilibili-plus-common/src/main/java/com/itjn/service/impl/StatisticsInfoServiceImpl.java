@@ -234,6 +234,7 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
             //查询用户的粉丝数
             result.put("userCount", userFocusMapper.selectFansCount(userId));
         } else {
+            //管理后台的某个接口走这种情况：查询系统所有用户数
             result.put("userCount", userInfoMapper.selectCount(new UserInfoQuery()));
         }
         return result;
