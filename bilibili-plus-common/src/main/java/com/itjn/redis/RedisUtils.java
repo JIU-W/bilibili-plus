@@ -163,7 +163,6 @@ public class RedisUtils<V> {
     public Long incrementex(String key, long milliseconds) {
         Long count = redisTemplate.opsForValue().increment(key, 1);
         if (count == 1) {
-            //设置过期时间1天
             expire(key, milliseconds);
         }
         return count;
@@ -184,12 +183,20 @@ public class RedisUtils<V> {
         return keyList;
     }
 
-
+    /**
+     * 批量获取视频播放量
+     * @param keyPrifix
+     * @return
+     */
     public Map<String, V> getBatch(String keyPrifix) {
+        //通过通配符匹配去获取所有的key
         Set<String> keySet = redisTemplate.keys(keyPrifix + "*");
         List<String> keyList = new ArrayList<>(keySet);
+        //批量获取所有key对应的value
         List<V> keyValueList = redisTemplate.opsForValue().multiGet(keyList);
-        Map<String, V> resultMap = keyList.stream().collect(Collectors.toMap(key -> key, value -> keyValueList.get(keyList.indexOf(value))));
+        //将key和value对应起来
+        Map<String, V> resultMap = keyList.stream().collect(
+                Collectors.toMap(key -> key, value -> keyValueList.get(keyList.indexOf(value))));
         return resultMap;
     }
 

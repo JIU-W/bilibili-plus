@@ -57,6 +57,12 @@ public class DateUtil {
         return format(calendar.getTime(), DateTimePatternEnum.YYYY_MM_DD.getPattern());
     }
 
+    //测试getBeforeDayDate方法
+    public static void main(String[] args) {
+        System.out.println(getBeforeDayDate(1));
+    }
+
+
     public static Date getDayAgo(Integer day) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, -day);

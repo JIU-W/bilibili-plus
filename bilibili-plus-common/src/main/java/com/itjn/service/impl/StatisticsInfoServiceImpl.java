@@ -156,8 +156,11 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
         List<StatisticsInfo> statisticsInfoList = new ArrayList<>();
         //获取前一天的日期
         final String statisticsDate = DateUtil.getBeforeDayDate(1);
-        //统计播放量
+
+        //1.统计播放量
+        //获取redis中的所有的播放量数据
         Map<String, Integer> videoPlayCountMap = redisComponent.getVideoPlayCount(statisticsDate);
+
         List<String> playVideoKeys = new ArrayList<>(videoPlayCountMap.keySet());
         playVideoKeys = playVideoKeys.stream().map(item -> item.substring(item.lastIndexOf(":") + 1)).collect(Collectors.toList());
         VideoInfoQuery videoInfoQuery = new VideoInfoQuery();
@@ -176,7 +179,7 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
             statisticsInfoList.add(statisticsInfo);
         });
 
-        //统计粉丝量
+        //2.统计粉丝量
         List<StatisticsInfo> fansDataList = this.statisticsInfoMapper.selectStatisticsFans(statisticsDate);
         for (StatisticsInfo statisticsInfo : fansDataList) {
             statisticsInfo.setStatisticsDate(statisticsDate);
@@ -184,7 +187,7 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
         }
         statisticsInfoList.addAll(fansDataList);
 
-        //统计评论
+        //3.统计评论
         List<StatisticsInfo> commentDataList = this.statisticsInfoMapper.selectStatisticsComment(statisticsDate);
         for (StatisticsInfo statisticsInfo : commentDataList) {
             statisticsInfo.setStatisticsDate(statisticsDate);
@@ -192,7 +195,7 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
         }
         statisticsInfoList.addAll(commentDataList);
 
-        //统计 弹幕、点赞、收藏、投币
+        //4.统计 弹幕、点赞、收藏、投币
         List<StatisticsInfo> statisticsInfoOthers = this.statisticsInfoMapper.selectStatisticsInfo(statisticsDate,
                 new Integer[]{UserActionTypeEnum.VIDEO_LIKE.getType(), UserActionTypeEnum.VIDEO_COIN.getType(), UserActionTypeEnum.VIDEO_COLLECT.getType()});
 

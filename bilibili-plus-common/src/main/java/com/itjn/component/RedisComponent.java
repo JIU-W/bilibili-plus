@@ -254,6 +254,11 @@ public class RedisComponent {
                 Constants.REDIS_KEY_EXPIRES_DAY * 2L);//失效时间为2天
     }
 
+    /**
+     * 批量获取视频播放量
+     * @param date
+     * @return
+     */
     public Map<String, Integer> getVideoPlayCount(String date) {
         Map<String, Integer> videoPlayMap = redisUtils.getBatch(Constants.REDIS_KEY_VIDEO_PLAY_COUNT + date);
         return videoPlayMap;
