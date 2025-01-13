@@ -267,7 +267,7 @@
         from video_comment
         where  <![CDATA[  DATE_FORMAT(post_time,'%Y-%m-%d') = #{statisticsDate} ]]>
         group by video_user_id
-    </select>  <!--老罗代码：video_id--> <!--video_user_id-->
+    </select>  <!--老罗代码：video_id--> <!-- 我的：video_user_id-->
 
     <!-- 根据"用户"+"行为类型"分组统计用户的所有视频作品在前一天收到的点赞数总数、收藏数总数、投币数总数-->
     <select id="selectStatisticsInfo" resultMap="base_result_map">

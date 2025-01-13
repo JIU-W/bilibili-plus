@@ -75,6 +75,9 @@ public interface StatisticsInfoService {
      */
     void statisticsData();
 
+    /**
+     *
+     */
     Map<String, Integer> getStatisticsInfoActualTime(String userId);
 
     /**

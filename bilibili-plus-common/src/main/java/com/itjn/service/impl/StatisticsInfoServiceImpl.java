@@ -195,7 +195,7 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
         }
         statisticsInfoList.addAll(fansDataList);
 
-        //3.统计用户前一天所有视频作品总共新增的评论数量(只统计前一天的数据)  TODO sql
+        //3.统计用户前一天所有视频作品总共新增的评论数量(只统计前一天的数据)  TODO sql被我更改了
         List<StatisticsInfo> commentDataList = this.statisticsInfoMapper.selectStatisticsComment(statisticsDate);
         for (StatisticsInfo statisticsInfo : commentDataList) {
             statisticsInfo.setStatisticsDate(statisticsDate);
@@ -203,7 +203,7 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
         }
         statisticsInfoList.addAll(commentDataList);
 
-        //todo  弹幕数据还没统计
+        //TODO  弹幕数据还没统计
 
 
         //4.统计用户前一天所有视频作品总共收到的 "视频点赞数量"、"视频收藏数量"、"投币数量"(只统计前一天的数据)
@@ -226,7 +226,7 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
         this.statisticsInfoMapper.insertOrUpdateBatch(statisticsInfoList);
     }
 
-    @Override
+
     public Map<String, Integer> getStatisticsInfoActualTime(String userId) {
         Map<String, Integer> result = statisticsInfoMapper.selectTotalCountInfo(userId);
         if (!StringTools.isEmpty(userId)) {

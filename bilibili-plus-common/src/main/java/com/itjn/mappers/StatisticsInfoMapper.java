@@ -45,6 +45,9 @@ public interface StatisticsInfoMapper<T, P> extends BaseMapper<T, P> {
     List<T> selectStatisticsInfo(@Param("statisticsDate") String statisticsDate,
                                  @Param("actionTypeArray") Integer[] actionTypeArray);
 
+    /**
+     * 获取用户统计信息
+     */
     Map<String, Integer> selectTotalCountInfo(@Param("userId") String userId);
 
     List<T> selectListTotalInfoByParam(@Param("query") P p);
