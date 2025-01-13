@@ -153,11 +153,13 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
     }
 
     public void statisticsData() {
+
         List<StatisticsInfo> statisticsInfoList = new ArrayList<>();
+
         //获取前一天的日期
         final String statisticsDate = DateUtil.getBeforeDayDate(1);
 
-        //1.统计播放量
+        //1.统计播放量(只统计前一天的数据)
         //获取redis中的所有的播放量数据
         Map<String, Integer> videoPlayCountMap = redisComponent.getVideoPlayCount(statisticsDate);
 
@@ -165,15 +167,17 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
         //从key中截取出videoId         (key的格式：easylive:video:playcount:2025-01-13:A6jOX5lxQG)
         playVideoKeys = playVideoKeys.stream().map(item ->
                 item.substring(item.lastIndexOf(":") + 1)).collect(Collectors.toList());
-
+        //查询出videoId集合对应的视频信息
         VideoInfoQuery videoInfoQuery = new VideoInfoQuery();
         videoInfoQuery.setVideoIdArray(playVideoKeys.toArray(new String[playVideoKeys.size()]));
         List<VideoInfo> videoInfoList = videoInfoMapper.selectList(videoInfoQuery);
-
-        Map<String, Integer> videoCountMap = videoInfoList.stream().collect(Collectors.groupingBy(VideoInfo::getUserId,
-                Collectors.summingInt(item -> videoPlayCountMap.get(Constants.REDIS_KEY_VIDEO_PLAY_COUNT + statisticsDate
+        //分组统计每个用户的视频播放量的总和。    map格式：<userId, 该用户所有视频播放量的总和>
+        Map<String, Integer> videoCountMap = videoInfoList.stream().collect(Collectors.groupingBy
+                (VideoInfo::getUserId,
+                        Collectors.summingInt(item -> videoPlayCountMap.get(Constants.REDIS_KEY_VIDEO_PLAY_COUNT + statisticsDate
                         + ":" + item.getVideoId()))));
 
+        //往statisticsInfoList中添加数据
         videoCountMap.forEach((k, v) -> {
             StatisticsInfo statisticsInfo = new StatisticsInfo();
             statisticsInfo.setStatisticsDate(statisticsDate);
@@ -183,7 +187,7 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
             statisticsInfoList.add(statisticsInfo);
         });
 
-        //2.统计粉丝量
+        //2.统计粉丝量(只统计前一天的数据)
         List<StatisticsInfo> fansDataList = this.statisticsInfoMapper.selectStatisticsFans(statisticsDate);
         for (StatisticsInfo statisticsInfo : fansDataList) {
             statisticsInfo.setStatisticsDate(statisticsDate);
@@ -191,7 +195,7 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
         }
         statisticsInfoList.addAll(fansDataList);
 
-        //3.统计评论
+        //3.统计评论(只统计前一天的数据)
         List<StatisticsInfo> commentDataList = this.statisticsInfoMapper.selectStatisticsComment(statisticsDate);
         for (StatisticsInfo statisticsInfo : commentDataList) {
             statisticsInfo.setStatisticsDate(statisticsDate);
