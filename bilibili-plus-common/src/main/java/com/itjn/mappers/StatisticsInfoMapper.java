@@ -39,6 +39,9 @@ public interface StatisticsInfoMapper<T, P> extends BaseMapper<T, P> {
      */
     List<T> selectStatisticsComment(@Param("statisticsDate") String statisticsDate);
 
+    /**
+     * 获取点赞、收藏、投币统计信息
+     */
     List<T> selectStatisticsInfo(@Param("statisticsDate") String statisticsDate,
                                  @Param("actionTypeArray") Integer[] actionTypeArray);
 

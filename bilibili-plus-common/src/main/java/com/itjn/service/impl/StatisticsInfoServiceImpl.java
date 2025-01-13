@@ -187,7 +187,7 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
             statisticsInfoList.add(statisticsInfo);
         });
 
-        //2.统计粉丝量(只统计前一天的数据)
+        //2.统计前一天增加的粉丝量(只统计前一天的数据)
         List<StatisticsInfo> fansDataList = this.statisticsInfoMapper.selectStatisticsFans(statisticsDate);
         for (StatisticsInfo statisticsInfo : fansDataList) {
             statisticsInfo.setStatisticsDate(statisticsDate);
@@ -195,7 +195,7 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
         }
         statisticsInfoList.addAll(fansDataList);
 
-        //3.统计评论(只统计前一天的数据)
+        //3.统计用户前一天所有视频作品总共新增的评论数量(只统计前一天的数据)
         List<StatisticsInfo> commentDataList = this.statisticsInfoMapper.selectStatisticsComment(statisticsDate);
         for (StatisticsInfo statisticsInfo : commentDataList) {
             statisticsInfo.setStatisticsDate(statisticsDate);
@@ -203,12 +203,14 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
         }
         statisticsInfoList.addAll(commentDataList);
 
-        //4.统计 弹幕、点赞、收藏、投币
+        //4.统计用户前一天所有视频作品总共收到的 "视频点赞数量"、"视频收藏数量"、"投币数量"(只统计前一天的数据)       弹幕、
         List<StatisticsInfo> statisticsInfoOthers = this.statisticsInfoMapper.selectStatisticsInfo(statisticsDate,
-                new Integer[]{UserActionTypeEnum.VIDEO_LIKE.getType(), UserActionTypeEnum.VIDEO_COIN.getType(), UserActionTypeEnum.VIDEO_COLLECT.getType()});
-
+                new Integer[]{UserActionTypeEnum.VIDEO_LIKE.getType(), UserActionTypeEnum.VIDEO_COIN.getType(),
+                        UserActionTypeEnum.VIDEO_COLLECT.getType()});
+        //分别设置数据类型
         for (StatisticsInfo statisticsInfo : statisticsInfoOthers) {
             statisticsInfo.setStatisticsDate(statisticsDate);
+
             if (UserActionTypeEnum.VIDEO_LIKE.getType().equals(statisticsInfo.getDataType())) {
                 statisticsInfo.setDataType(StatisticsTypeEnum.LIKE.getType());
             } else if (UserActionTypeEnum.VIDEO_COLLECT.getType().equals(statisticsInfo.getDataType())) {
@@ -242,4 +244,5 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
     public List<StatisticsInfo> findUserCountTotalInfoByParam(StatisticsInfoQuery param) {
         return statisticsInfoMapper.selectUserCountTotalInfoByParam(param);
     }
+
 }

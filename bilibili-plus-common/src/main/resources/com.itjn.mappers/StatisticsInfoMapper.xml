@@ -257,28 +257,25 @@
     <select id="selectStatisticsFans" resultMap="base_result_map">
         select focus_user_id userId, count(1) statisticsCount
         from user_focus
-        where
-        <![CDATA[  DATE_FORMAT(focus_time,'%Y-%m-%d') = #{statisticsDate} ]]>
+        where  <![CDATA[  DATE_FORMAT(focus_time,'%Y-%m-%d') = #{statisticsDate} ]]>
         group by focus_user_id
     </select>
 
-    <!--统计评论-->
+    <!-- 统计用户前一天所有视频作品总共新增的评论数量 -->
     <select id="selectStatisticsComment" resultMap="base_result_map">
-        select video_user_id user_id ,count(1) statisticsCount from video_comment where
-        <![CDATA[  DATE_FORMAT(post_time,'%Y-%m-%d')=#{statisticsDate} ]]>
-        group by video_id
-    </select>
+        select video_user_id userId , count(1) statisticsCount
+        from video_comment
+        where  <![CDATA[  DATE_FORMAT(post_time,'%Y-%m-%d') = #{statisticsDate} ]]>
+        group by video_user_id
+    </select>  <!--老罗代码：video_id--> <!--video_user_id-->
 
-    <!--统计点赞-->
+    <!-- 根据"用户"+"行为类型"分组统计用户的所有视频作品在前一天收到的点赞数总数、收藏数总数、投币数总数-->
     <select id="selectStatisticsInfo" resultMap="base_result_map">
-        select video_user_id user_id,
-        action_type data_type,
-        sum(action_count) statistics_count
+        select video_user_id userId, action_type data_type, sum(action_count) statistics_count
         from user_action
-        where
-        <![CDATA[  DATE_FORMAT(action_time,'%Y-%m-%d')=#{statisticsDate} ]]>
+        where  <![CDATA[  DATE_FORMAT(action_time,'%Y-%m-%d') = #{statisticsDate} ]]>
         and action_type in(<foreach collection="actionTypeArray" separator="," item="item">#{item}</foreach>)
-        group by video_user_id,action_type
+        group by video_user_id, action_type
     </select>
 
     <select id="selectTotalCountInfo" resultType="java.util.Map">
