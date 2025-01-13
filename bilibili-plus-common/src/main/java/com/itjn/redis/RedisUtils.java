@@ -189,14 +189,14 @@ public class RedisUtils<V> {
      * @return
      */
     public Map<String, V> getBatch(String keyPrifix) {
-        //通过通配符匹配去获取所有的key
+        //通过 key前缀 + 通配符 匹配获取所有的key
         Set<String> keySet = redisTemplate.keys(keyPrifix + "*");
         List<String> keyList = new ArrayList<>(keySet);
-        //批量获取所有key对应的value
-        List<V> keyValueList = redisTemplate.opsForValue().multiGet(keyList);
-        //将key和value对应起来
+        //批量获取key对应的value
+        List<V> valueList = redisTemplate.opsForValue().multiGet(keyList);
+        //将key和value对应起来，封装为一个Map<String, Integer>
         Map<String, V> resultMap = keyList.stream().collect(
-                Collectors.toMap(key -> key, value -> keyValueList.get(keyList.indexOf(value))));
+                Collectors.toMap(key -> key, value -> valueList.get(keyList.indexOf(value))));
         return resultMap;
     }
 

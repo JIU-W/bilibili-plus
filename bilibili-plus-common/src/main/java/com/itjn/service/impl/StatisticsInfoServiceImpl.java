@@ -162,13 +162,17 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
         Map<String, Integer> videoPlayCountMap = redisComponent.getVideoPlayCount(statisticsDate);
 
         List<String> playVideoKeys = new ArrayList<>(videoPlayCountMap.keySet());
-        playVideoKeys = playVideoKeys.stream().map(item -> item.substring(item.lastIndexOf(":") + 1)).collect(Collectors.toList());
+        //从key中截取出videoId         (key的格式：easylive:video:playcount:2025-01-13:A6jOX5lxQG)
+        playVideoKeys = playVideoKeys.stream().map(item ->
+                item.substring(item.lastIndexOf(":") + 1)).collect(Collectors.toList());
+
         VideoInfoQuery videoInfoQuery = new VideoInfoQuery();
         videoInfoQuery.setVideoIdArray(playVideoKeys.toArray(new String[playVideoKeys.size()]));
         List<VideoInfo> videoInfoList = videoInfoMapper.selectList(videoInfoQuery);
 
         Map<String, Integer> videoCountMap = videoInfoList.stream().collect(Collectors.groupingBy(VideoInfo::getUserId,
-                Collectors.summingInt(item -> videoPlayCountMap.get(Constants.REDIS_KEY_VIDEO_PLAY_COUNT + statisticsDate + ":" + item.getVideoId()))));
+                Collectors.summingInt(item -> videoPlayCountMap.get(Constants.REDIS_KEY_VIDEO_PLAY_COUNT + statisticsDate
+                        + ":" + item.getVideoId()))));
 
         videoCountMap.forEach((k, v) -> {
             StatisticsInfo statisticsInfo = new StatisticsInfo();
