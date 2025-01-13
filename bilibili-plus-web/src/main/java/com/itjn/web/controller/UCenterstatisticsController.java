@@ -90,8 +90,8 @@ public class UCenterstatisticsController extends ABaseController {
                 dataItem = new StatisticsInfo();
                 dataItem.setStatisticsCount(0);
                 dataItem.setStatisticsDate(date);
-                //dataItem.setDataType(dataType);
-                //dataItem.setUserId(tokenUserInfoDto.getUserId());
+                dataItem.setDataType(dataType);
+                dataItem.setUserId(tokenUserInfoDto.getUserId());
             }
             resultDataList.add(dataItem);
         }
