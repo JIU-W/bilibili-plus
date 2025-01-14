@@ -149,4 +149,9 @@ public interface UserInfoService {
      */
     Integer updateCoinCountInfo(String userId, Integer changeCount);
 
+    /**
+     * 根据加入时间查询用户数量
+     */
+    Integer selectUserCountByJoinTime(UserInfoQuery userInfoQuery);
+
 }

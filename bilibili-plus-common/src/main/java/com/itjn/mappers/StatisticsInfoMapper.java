@@ -66,7 +66,7 @@ public interface StatisticsInfoMapper<T, P> extends BaseMapper<T, P> {
     List<T> selectWeekListTotalInfoByParam(@Param("query") P p);
 
     /**
-     * 按加入时间分组查询新增的用户数量
+     * 按"加入时间分组"查询新增的用户数量
      * @param p
      * @return
      */

@@ -320,8 +320,12 @@
         from statistics_info s
         <include refid="query_condition"/>
         group by data_type, statistics_date
+        <if test="query.orderBy != null">
+            order by ${query.orderBy}
+        </if>
     </select>
 
+    <!-- "按加入时间分组"查询新增的用户数量 -->
     <select id="selectUserCountTotalInfoByParam" resultMap="base_result_map">
         select DATE_FORMAT(join_time,'%Y-%m-%d') statistics_date, count(1) statistics_count
         from user_info

@@ -857,4 +857,10 @@
         where user_id = #{userId} and current_coin_count + #{changeCount} >= 0
     </update>
 
+    <select id="selectUserCountByJoinTime" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM user_info u
+        WHERE DATE(u.join_time) = #{query.joinTime};
+    </select>
+
 </mapper>

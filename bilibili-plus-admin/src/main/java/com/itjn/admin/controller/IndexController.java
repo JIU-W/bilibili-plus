@@ -45,10 +45,18 @@ public class IndexController extends ABaseController {
 
         //1.分组查询"所有用户""前一天"统计数据的总和(根据统计数据类型分组)
         List<StatisticsInfo> preDayData = statisticsInfoService.findPreDayListTotalInfoByParam(param);
-        //查询"用户总数" ---> 替换掉类型为"粉丝的数量"
+
+        //查询"前一天新增的用户数" ---> 替换掉类型为"粉丝的数量"
         //(因为"系统管理员统计数据"时"不会统计粉丝数"，而是"会统计用户总数"，但是查数据时想借用表statistics_info查，
-        //所以就把粉丝的数据替换掉，替换成"用户总数")
-        Integer userCount = userInfoService.findCountByParam(new UserInfoQuery());
+        //所以就把粉丝的数据替换掉，替换成"前一天新增的用户数")
+        UserInfoQuery userInfoQuery = new UserInfoQuery();
+        //Integer userCount = userInfoService.findCountByParam(userInfoQuery);
+        userInfoQuery.setJoinTime(preDate);
+        //因为user_info里的join_time字段是datetime类型的，表里的数据包括了"时分秒"，
+        //而preDate不包含"时分秒"，所以不能直接根据preDate然后用"代码生成器生成的默认的sql查询语句"去查用户数量。
+        //重新写sql语句(借用DATE()方法)
+        Integer userCount = userInfoService.selectUserCountByJoinTime(userInfoQuery);
+
         preDayData.forEach(item -> {
             if (StatisticsTypeEnum.FANS.getType().equals(item.getDataType())) {
                 item.setStatisticsCount(userCount);
@@ -70,6 +78,7 @@ public class IndexController extends ABaseController {
      */
     @RequestMapping("/getWeekStatisticsInfo")
         public ResponseVO getWeekStatisticsInfo(Integer dataType) {
+        //获取一周之内的日期时间集合
         List<String> dateList = DateUtil.getBeforeDates(7);
 
         List<StatisticsInfo> statisticsInfoList = new ArrayList<>();
@@ -85,13 +94,14 @@ public class IndexController extends ABaseController {
         } else {
             //数据类型是"粉丝的数量"，则"按加入时间分组"查询新增的用户数量。
             //(因为"系统管理员统计数据"时"不会统计粉丝数"，而是"会统计用户总数"，但是查数据时想借用表statistics_info查，
-            //所以就把粉丝的数据替换掉，替换成"用户总数")
+            //所以就把粉丝的数据替换掉，替换成"前一周每一天"新增的用户数")
             statisticsInfoList = statisticsInfoService.findUserCountTotalInfoByParam(param);
         }
         Map<String, StatisticsInfo> dataMap = statisticsInfoList.stream().collect
                 (Collectors.toMap(item -> item.getStatisticsDate(), Function.identity(), (data1, data2) -> data2));
 
         List<StatisticsInfo> resultDataList = new ArrayList<>();
+        //遍历一周之内的日期时间集合
         for (String date : dateList) {
             StatisticsInfo dataItem = dataMap.get(date);
             if (dataItem == null) {

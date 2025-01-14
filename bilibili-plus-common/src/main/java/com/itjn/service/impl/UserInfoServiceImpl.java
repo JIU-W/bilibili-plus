@@ -352,4 +352,9 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
 
+    public Integer selectUserCountByJoinTime(UserInfoQuery userInfoQuery) {
+        return userInfoMapper.selectUserCountByJoinTime(userInfoQuery);
+    }
+
+
 }

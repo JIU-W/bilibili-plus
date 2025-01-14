@@ -96,7 +96,7 @@ public interface StatisticsInfoService {
     List<StatisticsInfo> findWeekListTotalInfoByParam(StatisticsInfoQuery param);
 
     /**
-     *
+     * "按加入时间分组"查询新增的用户数量
      */
     List<StatisticsInfo> findUserCountTotalInfoByParam(StatisticsInfoQuery param);
 

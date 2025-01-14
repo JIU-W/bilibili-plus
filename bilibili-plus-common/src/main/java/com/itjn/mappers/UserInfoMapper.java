@@ -68,4 +68,9 @@ public interface UserInfoMapper<T, P> extends BaseMapper<T, P> {
      */
     Integer updateCoinCountInfo(@Param("userId") String userId, @Param("changeCount") Integer changeCount);
 
+    /**
+     * 根据加入时间查询用户数量
+     */
+    Integer selectUserCountByJoinTime(@Param("query") P query);
+
 }
