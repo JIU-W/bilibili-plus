@@ -40,10 +40,11 @@ public class IndexController extends ABaseController {
         String preDate = DateUtil.getBeforeDayDate(1);
 
         StatisticsInfoQuery param = new StatisticsInfoQuery();
-        //???
         param.setStatisticsDate(preDate);
 
-        //分组查询所有用户统计数据的总和(根据数据类型和日期分组)  ????前一天？？？
+        //TODO 分组查询所有用户统计数据的总和(根据数据类型和日期分组)  ????前一天？？？
+
+        //查询所有用户前一天统计数据的总和
         List<StatisticsInfo> preDayData = statisticsInfoService.findListTotalInfoByParam(param);
         //查询"用户总数" ---> 替换掉类型为"粉丝的数量"
         Integer userCount = userInfoService.findCountByParam(new UserInfoQuery());
@@ -63,8 +64,12 @@ public class IndexController extends ABaseController {
         return getSuccessResponseVO(result);
     }
 
+    /**
+     * 根据"数据统计类型"获取所有用户一周的统计数据的总和
+     */
     @RequestMapping("/getWeekStatisticsInfo")
     public ResponseVO getWeekStatisticsInfo(Integer dataType) {
+        //
         List<String> dateList = DateUtil.getBeforeDates(7);
 
         List<StatisticsInfo> statisticsInfoList = new ArrayList<>();
@@ -73,15 +78,18 @@ public class IndexController extends ABaseController {
         param.setStatisticsDateStart(dateList.get(0));
         param.setStatisticsDateEnd(dateList.get(dateList.size() - 1));
         param.setOrderBy("statistics_date asc");
-
         if (!StatisticsTypeEnum.FANS.getType().equals(dataType)) {
+            //数据类型不是"粉丝的数量"，则查询所有用户一周的统计数据的总和
             statisticsInfoList = statisticsInfoService.findListTotalInfoByParam(param);
         } else {
+            //数据类型是"粉丝的数量"，则"按加入时间分组"查询新增的用户数量。
+            //(因为"系统管理员统计数据"时"不会统计粉丝数"，而是"会统计用户总数"，但是查数据时想借用表statistics_info查，
+            //所以就把粉丝的数据替换掉，替换成"用户总数")
             statisticsInfoList = statisticsInfoService.findUserCountTotalInfoByParam(param);
         }
+        Map<String, StatisticsInfo> dataMap = statisticsInfoList.stream().collect
+                (Collectors.toMap(item -> item.getStatisticsDate(), Function.identity(), (data1, data2) -> data2));
 
-        Map<String, StatisticsInfo> dataMap = statisticsInfoList.stream().collect(Collectors.toMap(item -> item.getStatisticsDate(), Function.identity(), (data1,
-                                                                                                                                                           data2) -> data2));
         List<StatisticsInfo> resultDataList = new ArrayList<>();
         for (String date : dateList) {
             StatisticsInfo dataItem = dataMap.get(date);

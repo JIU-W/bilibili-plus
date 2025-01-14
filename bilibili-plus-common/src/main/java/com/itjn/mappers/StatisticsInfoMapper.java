@@ -60,6 +60,11 @@ public interface StatisticsInfoMapper<T, P> extends BaseMapper<T, P> {
      */
     List<T> selectListTotalInfoByParam(@Param("query") P p);
 
+    /**
+     * 按加入时间分组查询新增的用户数量
+     * @param p
+     * @return
+     */
     List<T> selectUserCountTotalInfoByParam(@Param("query") P p);
 
 }

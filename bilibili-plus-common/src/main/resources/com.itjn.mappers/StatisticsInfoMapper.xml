@@ -313,10 +313,18 @@
         group by data_type, statistics_date
     </select>
 
+    <!--<select id="selectListTotalInfoByParam" resultMap="base_result_map">
+        select data_type, sum(statistics_count)
+        from statistics_info s
+        <include refid="query_condition"/>
+        group by data_type
+    </select>-->
+
     <select id="selectUserCountTotalInfoByParam" resultMap="base_result_map">
-        select count(1) statistics_count, DATE_FORMAT(join_time,'%Y-%m-%d') statistics_date
+        select DATE_FORMAT(join_time,'%Y-%m-%d') statistics_date, count(1) statistics_count
         from user_info
         group by statistics_date
         order by statistics_date asc
     </select>
+
 </mapper>

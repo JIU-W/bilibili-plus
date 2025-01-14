@@ -88,6 +88,9 @@ public interface StatisticsInfoService {
      */
     List<StatisticsInfo> findListTotalInfoByParam(StatisticsInfoQuery param);
 
+    /**
+     *
+     */
     List<StatisticsInfo> findUserCountTotalInfoByParam(StatisticsInfoQuery param);
 
 }
