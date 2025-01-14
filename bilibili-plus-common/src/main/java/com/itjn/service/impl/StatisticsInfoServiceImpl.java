@@ -246,7 +246,7 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
         return result;
     }
 
-    @Override
+
     public List<StatisticsInfo> findListTotalInfoByParam(StatisticsInfoQuery param) {
         return statisticsInfoMapper.selectListTotalInfoByParam(param);
     }

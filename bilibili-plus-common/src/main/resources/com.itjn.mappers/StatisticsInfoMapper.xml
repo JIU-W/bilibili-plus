@@ -299,14 +299,16 @@
         ifnull(sum(collect_count),0) collectCount
         from video_info
         <where>
-            <if test="userId!=null">
+            <if test="userId != null">
                 and user_id = #{userId}
             </if>
         </where>
     </select>
 
     <select id="selectListTotalInfoByParam" resultMap="base_result_map">
-        select ifnull(sum(statistics_count),0) statistics_count,statistics_date,data_type from statistics_info s group by data_type,statistics_date
+        select data_type, statistics_date, ifnull(sum(statistics_count), 0) statistics_count
+        from statistics_info s
+        group by data_type, statistics_date
     </select>
 
     <select id="selectUserCountTotalInfoByParam" resultMap="base_result_map">

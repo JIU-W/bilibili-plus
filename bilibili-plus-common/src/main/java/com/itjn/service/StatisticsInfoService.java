@@ -76,13 +76,13 @@ public interface StatisticsInfoService {
     void statisticsData();
 
     /**
-     * 获取当前用户所有的数据
+     * 1.userId不为null：获取当前用户所有的数据
+     * 2.userId为null：获取所有用户所有的数据
      */
     Map<String, Integer> getStatisticsInfoActualTime(String userId);
 
     /**
-     * 查询总数
-     *
+     * 查询所有用户前一天的统计数据的总和
      * @param param
      * @return
      */
