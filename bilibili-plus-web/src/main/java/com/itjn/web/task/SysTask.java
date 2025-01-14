@@ -25,11 +25,13 @@ public class SysTask {
     private AppConfig appConfig;
 
     /**
-     * 每天0点执行一次：统计数据(...)  TODO 没统计
+     * 每天0点执行一次：统计数据(...)  TODO 到0点没统计
      */
     @Scheduled(cron = "0 0 0 * * ?")
     public void statisticsData() {
+        log.info("开始统计数据");
         statisticsInfoService.statisticsData();
+        log.info("统计数据结束");
     }
 
     @Scheduled(cron = "0 */1 * * * ?")//0 0 3 * * ?

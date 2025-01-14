@@ -263,15 +263,15 @@
 
     <!-- 统计用户前一天所有视频作品总共新增的评论数量 -->
     <select id="selectStatisticsComment" resultMap="base_result_map">
-        select video_user_id userId , count(1) statisticsCount
+        select video_user_id user_id , count(1) statistics_count
         from video_comment
         where  <![CDATA[  DATE_FORMAT(post_time,'%Y-%m-%d') = #{statisticsDate} ]]>
         group by video_user_id
-    </select>  <!--老罗代码：group by video_id--> <!-- 我的：group by video_user_id-->
+    </select>  <!--原代码有问题：group by video_id--> <!-- 修改后：group by video_user_id-->
 
     <!-- 根据"用户"+"行为类型"分组统计用户的所有视频作品在前一天收到的点赞数总数、收藏数总数、投币数总数-->
     <select id="selectStatisticsInfo" resultMap="base_result_map">
-        select video_user_id userId, action_type data_type, sum(action_count) statistics_count
+        select video_user_id user_id, action_type data_type, sum(action_count) statistics_count
         from user_action
         where  <![CDATA[  DATE_FORMAT(action_time,'%Y-%m-%d') = #{statisticsDate} ]]>
         and action_type in(<foreach collection="actionTypeArray" separator="," item="item">#{item}</foreach>)

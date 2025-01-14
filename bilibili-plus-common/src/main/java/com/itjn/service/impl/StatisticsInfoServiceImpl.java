@@ -195,7 +195,7 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
         }
         statisticsInfoList.addAll(fansDataList);
 
-        //3.统计用户前一天所有视频作品总共新增的评论数量(只统计前一天的数据)  TODO sql被我更改了
+        //3.统计用户前一天所有视频作品总共新增的评论数量(只统计前一天的数据)  TODO SQL被改正了
         List<StatisticsInfo> commentDataList = this.statisticsInfoMapper.selectStatisticsComment(statisticsDate);
         for (StatisticsInfo statisticsInfo : commentDataList) {
             statisticsInfo.setStatisticsDate(statisticsDate);
@@ -222,7 +222,7 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
             }
         }
         statisticsInfoList.addAll(statisticsInfoOthers);
-        //正常情况下用insert就行，因为定时任务只会执行一次，但是为了保险起见，还是使用insertOrUpdate。
+        //正常情况下用insert就行，因为定时任务只会执行一次。但是为了方便我们"测试"时对数据的多次执行，还是使用insertOrUpdate。
         this.statisticsInfoMapper.insertOrUpdateBatch(statisticsInfoList);
     }
 
@@ -231,7 +231,7 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
         //查询出用户所有的统计数据(除了粉丝数)
         Map<String, Integer> result = statisticsInfoMapper.selectTotalCountInfo(userId);
         if (!StringTools.isEmpty(userId)) {
-            //查询用户的粉丝数
+            //查询用户的粉丝数 TODO 前端没有成功展示
             result.put("userCount", userFocusMapper.selectFansCount(userId));
         } else {
             //管理后台的某个接口走这种情况：查询系统所有用户数

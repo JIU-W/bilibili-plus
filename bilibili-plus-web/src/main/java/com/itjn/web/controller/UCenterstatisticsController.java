@@ -98,5 +98,10 @@ public class UCenterstatisticsController extends ABaseController {
         return getSuccessResponseVO(resultDataList);
     }
 
+    @RequestMapping("/testTask")
+    public void testTask(){
+        statisticsInfoService.statisticsData();
+    }
+
 
 }
