@@ -77,11 +77,13 @@ public class UserInfoServiceImpl implements UserInfoService {
 
         //每页记录数(前端传过来的)
         int pageSize = param.getPageSize() == null ? PageSize.SIZE15.getSize() : param.getPageSize();
+
         //当前页码(前端传过来的)
-        int pageNo = param.getPageNo();
+        //前端没有传的话，SimplePage()构造方法里会设置默认的pageNo，设置为1
+        //int pageNo = param.getPageNo();
 
         //获取分页对象(分页对象包含了分页查询的详细信息)
-        SimplePage page = new SimplePage(pageNo, count, pageSize);
+        SimplePage page = new SimplePage(param.getPageNo(), count, pageSize);
 
         //将分页对象设置到param中
         param.setSimplePage(page);
@@ -90,8 +92,8 @@ public class UserInfoServiceImpl implements UserInfoService {
         //(实际上SQL中用到的只有start和pageSize)(end等价于pageSize)
         List<UserInfo> list = this.findListByParam(param);
 
-        PaginationResultVO<UserInfo> result = new PaginationResultVO(count, pageSize, pageNo, page.getPageTotal(), list);
-        return result;                                                                        //总页数
+        PaginationResultVO<UserInfo> result = new PaginationResultVO(count, pageSize, page.getPageNo(), page.getPageTotal(), list);
+        return result;                                                                                  //总页数
     }
 
     /**

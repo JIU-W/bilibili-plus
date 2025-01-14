@@ -26,15 +26,17 @@ public class InteractController extends ABaseController {
 
     /**
      * 加载弹幕列表
-     * @param pageNo
+     * @param pageNo 前端没有传的话，SimplePage()构造方法里会设置默认的pageNo，设置为1
+     * @param pageSize
      * @param videoNameFuzzy
      * @return
      */
     @RequestMapping("/loadDanmu")
-    public ResponseVO loadDanmu(Integer pageNo, String videoNameFuzzy) {
+    public ResponseVO loadDanmu(Integer pageNo, Integer pageSize, String videoNameFuzzy) {
         VideoDanmuQuery danmuQuery = new VideoDanmuQuery();
         danmuQuery.setOrderBy("danmu_id desc");
         danmuQuery.setPageNo(pageNo);
+        danmuQuery.setPageSize(pageSize);
         danmuQuery.setQueryVideoInfo(true);
         //设置模糊查询条件：视频名称模糊查询
         danmuQuery.setVideoNameFuzzy(videoNameFuzzy);
@@ -55,15 +57,17 @@ public class InteractController extends ABaseController {
 
     /**
      * 加载评论列表
-     * @param pageNo
+     * @param pageNo 前端没有传的话，SimplePage()构造方法里会设置默认的pageNo，设置为1
+     * @param pageSize
      * @param videoNameFuzzy
      * @return
      */
     @RequestMapping("/loadComment")
-    public ResponseVO loadComment(Integer pageNo, String videoNameFuzzy) {
+    public ResponseVO loadComment(Integer pageNo, Integer pageSize, String videoNameFuzzy) {
         VideoCommentQuery commentQuery = new VideoCommentQuery();
         commentQuery.setOrderBy("comment_id desc");
         commentQuery.setPageNo(pageNo);
+        commentQuery.setPageSize(pageSize);
         commentQuery.setQueryVideoInfo(true);
         commentQuery.setVideoNameFuzzy(videoNameFuzzy);
         PaginationResultVO resultVO = videoCommentService.findListByPage(commentQuery);

@@ -51,7 +51,7 @@ public class UCenterInteractController extends ABaseController {
 
     /**
      * 查询当前用户发布的视频下的所有评论(查询出的评论不用层级展示，线形展示就可以了)
-     * @param pageNo
+     * @param pageNo 前端没有传的话，SimplePage()构造方法里会设置默认的pageNo，设置为1。
      * @param pageSize
      * @param videoId 可传可不传：前端在搜索框选择了视频就传，否则不传。
      * @return
@@ -89,7 +89,7 @@ public class UCenterInteractController extends ABaseController {
 
     /**
      * 查询当前用户发布的视频下的所有弹幕
-     * @param pageNo
+     * @param pageNo 前端没有传的话，SimplePage()构造方法里会设置默认的pageNo，设置为1。
      * @param pageSize
      * @param videoId 可传可不传：前端在搜索框选择了视频就传，否则不传。
      * @return

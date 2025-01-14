@@ -35,7 +35,8 @@ public class SimplePage {
 		this.pageNo = pageNo;//当前页码
 		this.countTotal = countTotal;//总记录数
 		this.pageSize = pageSize;//
-		//根据当前页码、总记录数、每页记录数计算出了start和end和pageTotal
+		//根据当前页码、总记录数、每页记录数计算出了start和end和pageTotal。
+		//还设置了默认的pageNo，当前端没有传pageNo时，设置默认的pageNo为1。
 		//start和end:(这两者用于数据库分页时的SQL语句)
 		action();
 	}
@@ -47,6 +48,7 @@ public class SimplePage {
 
 	/**
 	 * 根据当前页码、总记录数、每页记录数计算出了start和end和pageTotal
+	 * 还设置了默认的pageNo，当前端没有传pageNo时，设置默认的pageNo为1
 	 * start和end:(这两者用于数据库分页时的SQL语句)
 	 */
 	public void action() {
