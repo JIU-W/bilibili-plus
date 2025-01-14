@@ -298,6 +298,7 @@
         ifnull(sum(coin_count),0) coinCount,
         ifnull(sum(collect_count),0) collectCount
         from video_info
+        <!-- 传过来的userId为null时(管理端查数据的时候)，不加下面的条件，也就变成了获取所有用户所有的数据 -->
         <where>
             <if test="userId != null">
                 and user_id = #{userId}
@@ -305,6 +306,7 @@
         </where>
     </select>
 
+    <!-- 分组查询所有用户统计数据的总和(根据数据类型和日期分组) -->
     <select id="selectListTotalInfoByParam" resultMap="base_result_map">
         select data_type, statistics_date, ifnull(sum(statistics_count), 0) statistics_count
         from statistics_info s
@@ -312,6 +314,9 @@
     </select>
 
     <select id="selectUserCountTotalInfoByParam" resultMap="base_result_map">
-        select count(1) statistics_count,DATE_FORMAT(join_time,'%Y-%m-%d') statistics_date from user_info group by statistics_date order by statistics_date asc
+        select count(1) statistics_count, DATE_FORMAT(join_time,'%Y-%m-%d') statistics_date
+        from user_info
+        group by statistics_date
+        order by statistics_date asc
     </select>
 </mapper>

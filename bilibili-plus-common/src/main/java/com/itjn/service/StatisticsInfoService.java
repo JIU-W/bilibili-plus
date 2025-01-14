@@ -82,7 +82,7 @@ public interface StatisticsInfoService {
     Map<String, Integer> getStatisticsInfoActualTime(String userId);
 
     /**
-     * 查询所有用户前一天的统计数据的总和
+     * 分组查询所有用户的统计数据的总和
      * @param param
      * @return
      */

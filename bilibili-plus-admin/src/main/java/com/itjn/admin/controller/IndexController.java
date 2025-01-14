@@ -40,19 +40,21 @@ public class IndexController extends ABaseController {
         String preDate = DateUtil.getBeforeDayDate(1);
 
         StatisticsInfoQuery param = new StatisticsInfoQuery();
+        //???
         param.setStatisticsDate(preDate);
-        //查询所有用户前一天的统计数据的总和
-        List<StatisticsInfo> preDayData = statisticsInfoService.findListTotalInfoByParam(param);
 
-        //查询用户总数，替换类型为粉丝的数量
+        //分组查询所有用户统计数据的总和(根据数据类型和日期分组)  ????前一天？？？
+        List<StatisticsInfo> preDayData = statisticsInfoService.findListTotalInfoByParam(param);
+        //查询"用户总数" ---> 替换掉类型为"粉丝的数量"
         Integer userCount = userInfoService.findCountByParam(new UserInfoQuery());
         preDayData.forEach(item -> {
             if (StatisticsTypeEnum.FANS.getType().equals(item.getDataType())) {
                 item.setStatisticsCount(userCount);
             }
         });
-        //获取用户总数
-        Map<Integer, Integer> preDayDataMap = preDayData.stream().collect(Collectors.toMap(StatisticsInfo::getDataType, StatisticsInfo::getStatisticsCount, (item1, item2) -> item2));
+        Map<Integer, Integer> preDayDataMap = preDayData.stream().collect(Collectors.toMap(
+                StatisticsInfo::getDataType, StatisticsInfo::getStatisticsCount, (item1, item2) -> item2));
+
         //获取所有用户所有的数据信息
         Map<String, Integer> totalCountInfo = statisticsInfoService.getStatisticsInfoActualTime(null);
         Map<String, Object> result = new HashMap<>();
