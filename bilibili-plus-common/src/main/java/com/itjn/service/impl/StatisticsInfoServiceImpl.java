@@ -205,7 +205,6 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
 
         //TODO  弹幕数据还没统计
 
-
         //4.统计用户前一天所有视频作品总共收到的 "视频点赞数量"、"视频收藏数量"、"投币数量"(只统计前一天的数据)
         List<StatisticsInfo> statisticsInfoOthers = this.statisticsInfoMapper.selectStatisticsInfo(statisticsDate,
                 new Integer[]{UserActionTypeEnum.VIDEO_LIKE.getType(), UserActionTypeEnum.VIDEO_COIN.getType(),
@@ -231,8 +230,8 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
         //查询出用户所有的统计数据(除了粉丝数)
         Map<String, Integer> result = statisticsInfoMapper.selectTotalCountInfo(userId);
         if (!StringTools.isEmpty(userId)) {
-            //查询用户的粉丝数 TODO 前端没有成功展示
-            result.put("userCount", userFocusMapper.selectFansCount(userId));
+            //查询用户的粉丝数
+            result.put("fansCount", userFocusMapper.selectFansCount(userId));
         } else {
             //管理后台的某个接口走这种情况：查询系统所有用户数
             result.put("userCount", userInfoMapper.selectCount(new UserInfoQuery()));

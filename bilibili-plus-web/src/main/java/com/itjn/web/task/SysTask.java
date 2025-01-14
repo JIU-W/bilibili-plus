@@ -25,7 +25,7 @@ public class SysTask {
     private AppConfig appConfig;
 
     /**
-     * 每天0点执行一次：统计数据(...)  TODO 到0点没统计
+     * 每天0点执行一次：统计数据(...)  TODO 有点小问题，到凌晨0点这个方法没有执行，数据没有统计
      */
     @Scheduled(cron = "0 0 0 * * ?")
     public void statisticsData() {

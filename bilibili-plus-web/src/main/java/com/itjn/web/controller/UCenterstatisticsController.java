@@ -98,6 +98,9 @@ public class UCenterstatisticsController extends ABaseController {
         return getSuccessResponseVO(resultDataList);
     }
 
+    /**
+     * 测试时使用：用于测试定时任务的业务逻辑
+     */
     @RequestMapping("/testTask")
     public void testTask(){
         statisticsInfoService.statisticsData();
