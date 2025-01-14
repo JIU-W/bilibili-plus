@@ -82,11 +82,18 @@ public interface StatisticsInfoService {
     Map<String, Integer> getStatisticsInfoActualTime(String userId);
 
     /**
-     * 分组查询所有用户的统计数据的总和
+     * 分组查询"所有用户""前一天"统计数据的总和(根据统计数据类型分组)
      * @param param
      * @return
      */
-    List<StatisticsInfo> findListTotalInfoByParam(StatisticsInfoQuery param);
+    List<StatisticsInfo> findPreDayListTotalInfoByParam(StatisticsInfoQuery param);
+
+    /**
+     * 分组查询"所有用户""前一周每一天"统计数据的总和(根据统计数据类型和日期分组)(指定了条件：统计数据类型)
+     * @param param
+     * @return
+     */
+    List<StatisticsInfo> findWeekListTotalInfoByParam(StatisticsInfoQuery param);
 
     /**
      *

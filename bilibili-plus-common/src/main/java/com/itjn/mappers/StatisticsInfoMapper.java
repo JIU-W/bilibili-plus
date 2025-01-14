@@ -56,9 +56,14 @@ public interface StatisticsInfoMapper<T, P> extends BaseMapper<T, P> {
     Map<String, Integer> selectTotalCountInfo(@Param("userId") String userId);
 
     /**
-     * 分组查询所有用户的统计数据的总和
+     * 分组查询"所有用户""前一天"统计数据的总和(根据统计数据类型分组)
      */
-    List<T> selectListTotalInfoByParam(@Param("query") P p);
+    List<T> selectPreDayListTotalInfoByParam(@Param("query") P p);
+
+    /**
+     * 分组查询"所有用户""前一周每一天"统计数据的总和(根据统计数据类型和日期分组)(指定了条件：统计数据类型)
+     */
+    List<T> selectWeekListTotalInfoByParam(@Param("query") P p);
 
     /**
      * 按加入时间分组查询新增的用户数量

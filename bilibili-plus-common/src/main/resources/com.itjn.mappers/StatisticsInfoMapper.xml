@@ -306,19 +306,21 @@
         </where>
     </select>
 
-    <!-- 分组查询所有用户统计数据的总和(根据数据类型和日期分组) -->
-    <select id="selectListTotalInfoByParam" resultMap="base_result_map">
-        select data_type, statistics_date, ifnull(sum(statistics_count), 0) statistics_count
-        from statistics_info s
-        group by data_type, statistics_date
-    </select>
-
-    <!--<select id="selectListTotalInfoByParam" resultMap="base_result_map">
-        select data_type, sum(statistics_count)
+    <!-- 分组查询"所有用户""前一天"统计数据的总和(根据统计数据类型分组) -->
+    <select id="selectPreDayListTotalInfoByParam" resultMap="base_result_map">
+        select data_type, ifnull(sum(statistics_count), 0) statistics_count
         from statistics_info s
         <include refid="query_condition"/>
         group by data_type
-    </select>-->
+    </select>
+
+    <!-- 分组查询"所有用户""前一周每一天"统计数据的总和(根据统计数据类型和日期分组)(指定了条件：统计数据类型) -->
+    <select id="selectWeekListTotalInfoByParam" resultMap="base_result_map">
+        select data_type, statistics_date, ifnull(sum(statistics_count), 0) statistics_count
+        from statistics_info s
+        <include refid="query_condition"/>
+        group by data_type, statistics_date
+    </select>
 
     <select id="selectUserCountTotalInfoByParam" resultMap="base_result_map">
         select DATE_FORMAT(join_time,'%Y-%m-%d') statistics_date, count(1) statistics_count

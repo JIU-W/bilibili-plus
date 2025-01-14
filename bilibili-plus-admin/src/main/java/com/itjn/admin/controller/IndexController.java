@@ -31,7 +31,7 @@ public class IndexController extends ABaseController {
     private UserInfoService userInfoService;
 
     /**
-     * 获取所有用户前一天的统计数据的总和 以及 获取所有用户所有的数据信息
+     * 1.获取所有用户前一天的统计数据的总和  2.获取所有用户所有的数据信息
      * @return
      */
     @RequestMapping("/getActualTimeStatisticsInfo")
@@ -40,13 +40,14 @@ public class IndexController extends ABaseController {
         String preDate = DateUtil.getBeforeDayDate(1);
 
         StatisticsInfoQuery param = new StatisticsInfoQuery();
+        //设置查询条件为前一天
         param.setStatisticsDate(preDate);
 
-        //TODO 分组查询所有用户统计数据的总和(根据数据类型和日期分组)  ????前一天？？？
-
-        //查询所有用户前一天统计数据的总和
-        List<StatisticsInfo> preDayData = statisticsInfoService.findListTotalInfoByParam(param);
+        //1.分组查询"所有用户""前一天"统计数据的总和(根据统计数据类型分组)
+        List<StatisticsInfo> preDayData = statisticsInfoService.findPreDayListTotalInfoByParam(param);
         //查询"用户总数" ---> 替换掉类型为"粉丝的数量"
+        //(因为"系统管理员统计数据"时"不会统计粉丝数"，而是"会统计用户总数"，但是查数据时想借用表statistics_info查，
+        //所以就把粉丝的数据替换掉，替换成"用户总数")
         Integer userCount = userInfoService.findCountByParam(new UserInfoQuery());
         preDayData.forEach(item -> {
             if (StatisticsTypeEnum.FANS.getType().equals(item.getDataType())) {
@@ -56,7 +57,7 @@ public class IndexController extends ABaseController {
         Map<Integer, Integer> preDayDataMap = preDayData.stream().collect(Collectors.toMap(
                 StatisticsInfo::getDataType, StatisticsInfo::getStatisticsCount, (item1, item2) -> item2));
 
-        //获取所有用户所有的数据信息
+        //2.获取所有用户所有的数据信息
         Map<String, Integer> totalCountInfo = statisticsInfoService.getStatisticsInfoActualTime(null);
         Map<String, Object> result = new HashMap<>();
         result.put("preDayData", preDayDataMap);
@@ -68,8 +69,7 @@ public class IndexController extends ABaseController {
      * 根据"数据统计类型"获取所有用户一周的统计数据的总和
      */
     @RequestMapping("/getWeekStatisticsInfo")
-    public ResponseVO getWeekStatisticsInfo(Integer dataType) {
-        //
+        public ResponseVO getWeekStatisticsInfo(Integer dataType) {
         List<String> dateList = DateUtil.getBeforeDates(7);
 
         List<StatisticsInfo> statisticsInfoList = new ArrayList<>();
@@ -79,8 +79,9 @@ public class IndexController extends ABaseController {
         param.setStatisticsDateEnd(dateList.get(dateList.size() - 1));
         param.setOrderBy("statistics_date asc");
         if (!StatisticsTypeEnum.FANS.getType().equals(dataType)) {
-            //数据类型不是"粉丝的数量"，则查询所有用户一周的统计数据的总和
-            statisticsInfoList = statisticsInfoService.findListTotalInfoByParam(param);
+            //数据类型不是"粉丝的数量"，
+            //分组查询"所有用户""前一周每一天"统计数据的总和(根据统计数据类型和日期分组)(指定了条件：统计数据类型)
+            statisticsInfoList = statisticsInfoService.findWeekListTotalInfoByParam(param);
         } else {
             //数据类型是"粉丝的数量"，则"按加入时间分组"查询新增的用户数量。
             //(因为"系统管理员统计数据"时"不会统计粉丝数"，而是"会统计用户总数"，但是查数据时想借用表statistics_info查，

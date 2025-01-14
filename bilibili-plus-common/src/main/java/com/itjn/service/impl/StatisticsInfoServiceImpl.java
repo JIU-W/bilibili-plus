@@ -247,10 +247,13 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
     }
 
 
-    public List<StatisticsInfo> findListTotalInfoByParam(StatisticsInfoQuery param) {
-        return statisticsInfoMapper.selectListTotalInfoByParam(param);
+    public List<StatisticsInfo> findPreDayListTotalInfoByParam(StatisticsInfoQuery param) {
+        return statisticsInfoMapper.selectPreDayListTotalInfoByParam(param);
     }
 
+    public List<StatisticsInfo> findWeekListTotalInfoByParam(StatisticsInfoQuery param) {
+        return statisticsInfoMapper.selectWeekListTotalInfoByParam(param);
+    }
 
     public List<StatisticsInfo> findUserCountTotalInfoByParam(StatisticsInfoQuery param) {
         return statisticsInfoMapper.selectUserCountTotalInfoByParam(param);
