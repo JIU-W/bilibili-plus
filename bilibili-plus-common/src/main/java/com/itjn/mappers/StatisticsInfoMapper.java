@@ -46,6 +46,11 @@ public interface StatisticsInfoMapper<T, P> extends BaseMapper<T, P> {
                                  @Param("actionTypeArray") Integer[] actionTypeArray);
 
     /**
+     * 获取弹幕统计信息
+     */
+    List<T> selectStatisticsDanmu(@Param("statisticsDate") String statisticsDate);
+
+    /**
      * 获取当前用户所有的数据(除了粉丝数)
      */
     Map<String, Integer> selectTotalCountInfo(@Param("userId") String userId);
@@ -53,4 +58,5 @@ public interface StatisticsInfoMapper<T, P> extends BaseMapper<T, P> {
     List<T> selectListTotalInfoByParam(@Param("query") P p);
 
     List<T> selectUserCountTotalInfoByParam(@Param("query") P p);
+
 }

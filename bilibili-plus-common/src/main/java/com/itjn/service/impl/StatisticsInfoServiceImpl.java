@@ -203,8 +203,6 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
         }
         statisticsInfoList.addAll(commentDataList);
 
-        //TODO  弹幕数据还没统计
-
         //4.统计用户前一天所有视频作品总共收到的 "视频点赞数量"、"视频收藏数量"、"投币数量"(只统计前一天的数据)
         List<StatisticsInfo> statisticsInfoOthers = this.statisticsInfoMapper.selectStatisticsInfo(statisticsDate,
                 new Integer[]{UserActionTypeEnum.VIDEO_LIKE.getType(), UserActionTypeEnum.VIDEO_COIN.getType(),
@@ -221,6 +219,15 @@ public class StatisticsInfoServiceImpl implements StatisticsInfoService {
             }
         }
         statisticsInfoList.addAll(statisticsInfoOthers);
+
+        //5.统计用户前一天所有视频作品总共新增的弹幕数量(只统计前一天的数据)
+        List<StatisticsInfo> danmuDataList = this.statisticsInfoMapper.selectStatisticsDanmu(statisticsDate);
+        for (StatisticsInfo statisticsInfo : danmuDataList) {
+            statisticsInfo.setStatisticsDate(statisticsDate);
+            statisticsInfo.setDataType(StatisticsTypeEnum.DANMU.getType());
+        }
+        statisticsInfoList.addAll(danmuDataList);
+
         //正常情况下用insert就行，因为定时任务只会执行一次。但是为了方便我们"测试"时对数据的多次执行，还是使用insertOrUpdate。
         this.statisticsInfoMapper.insertOrUpdateBatch(statisticsInfoList);
     }

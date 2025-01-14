@@ -279,6 +279,16 @@
         group by video_user_id, action_type
     </select>
 
+    <!-- 统计用户前一天所有视频作品总共新增的弹幕数量(因为弹幕表没有冗余字段video_user_id,所以要连表查询) -->
+    <select id="selectStatisticsDanmu" resultMap="base_result_map">
+        SELECT  vi.user_id user_id, count(1) statistics_count
+        FROM  video_danmu vd
+        JOIN  video_info vi ON vd.video_id = vi.video_id
+                                   AND <![CDATA[  DATE_FORMAT(post_time,'%Y-%m-%d') = #{statisticsDate} ]]>
+        GROUP BY  vi.user_id;
+    </select>
+
+
     <select id="selectTotalCountInfo" resultType="java.util.Map">
         select
         ifnull(sum(play_count),0) playCount,
