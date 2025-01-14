@@ -97,7 +97,7 @@
             <if test="query.videoUserId != null and query.videoUserId != ''">
                 and vd.user_id = #{query.videoUserId}
             </if>
-
+            <!-- 根据视频名称模糊查询 -->
             <if test="query.videoNameFuzzy!=null and query.videoNameFuzzy!=''">
                 and vd.video_name like concat('%', #{query.videoNameFuzzy}, '%')
             </if>
