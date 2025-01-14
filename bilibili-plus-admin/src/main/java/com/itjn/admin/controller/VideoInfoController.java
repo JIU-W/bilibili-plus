@@ -84,17 +84,21 @@ public class VideoInfoController extends ABaseController {
         return getSuccessResponseVO(null);
     }
 
-    /*
-
-
+    /**
+     * 加载投稿视频分p列表
+     * @param videoId
+     * @return
+     */
     @RequestMapping("/loadVideoPList")
     public ResponseVO loadVideoPList(@NotEmpty String videoId) {
         VideoInfoFilePostQuery postQuery = new VideoInfoFilePostQuery();
         postQuery.setOrderBy("file_index asc");
         postQuery.setVideoId(videoId);
+        //查询分p列表
         List<VideoInfoFilePost> videoInfoFilePostsList = videoInfoFilePostService.findListByParam(postQuery);
         return getSuccessResponseVO(videoInfoFilePostsList);
-    }*/
+    }
+
 
 
 }
