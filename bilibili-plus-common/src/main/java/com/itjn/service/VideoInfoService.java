@@ -87,4 +87,10 @@ public interface VideoInfoService {
      */
     void deleteVideo(String videoId, String userId);
 
+    /**
+     * 推荐、取消推荐视频
+     * @param videoId
+     */
+    void recommendVideo(String videoId);
+
 }

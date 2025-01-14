@@ -62,19 +62,30 @@ public class VideoInfoController extends ABaseController {
         return getSuccessResponseVO(null);
     }
 
-    /*@RequestMapping("/recommendVideo")
+    /**
+     * 推荐、取消推荐视频
+     * @param videoId
+     * @return
+     */
+    @RequestMapping("/recommendVideo")
     public ResponseVO recommendVideo(@NotEmpty String videoId) {
-        videoInfoPostService.recommendVideo(videoId);
+        videoInfoService.recommendVideo(videoId);
         return getSuccessResponseVO(null);
     }
 
-
-
+    /**
+     * 删除投稿视频
+     * @param videoId
+     * @return
+     */
     @RequestMapping("/deleteVideo")
     public ResponseVO deleteVideo(@NotEmpty String videoId) {
         videoInfoService.deleteVideo(videoId, null);
         return getSuccessResponseVO(null);
     }
+
+    /*
+
 
     @RequestMapping("/loadVideoPList")
     public ResponseVO loadVideoPList(@NotEmpty String videoId) {

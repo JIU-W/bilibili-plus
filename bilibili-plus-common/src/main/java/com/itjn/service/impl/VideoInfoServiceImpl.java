@@ -7,6 +7,7 @@ import com.itjn.entity.dto.SysSettingDto;
 import com.itjn.entity.enums.PageSize;
 import com.itjn.entity.enums.ResponseCodeEnum;
 import com.itjn.entity.enums.UserActionTypeEnum;
+import com.itjn.entity.enums.VideoRecommendTypeEnum;
 import com.itjn.entity.po.*;
 import com.itjn.entity.query.*;
 import com.itjn.entity.vo.PaginationResultVO;
@@ -253,4 +254,22 @@ public class VideoInfoServiceImpl implements VideoInfoService {
         });
 
     }
+
+    public void recommendVideo(String videoId) {
+        VideoInfo videoInfo = videoInfoMapper.selectByVideoId(videoId);
+        if (videoInfo == null) {
+            throw new BusinessException(ResponseCodeEnum.CODE_600);
+        }
+        Integer recommendType = null;
+        if (VideoRecommendTypeEnum.RECOMMEND.getType().equals(videoInfo.getRecommendType())) {
+            recommendType = VideoRecommendTypeEnum.NO_RECOMMEND.getType();
+        } else {
+            recommendType = VideoRecommendTypeEnum.RECOMMEND.getType();
+        }
+        VideoInfo updateInfo = new VideoInfo();
+        updateInfo.setRecommendType(recommendType);
+        videoInfoMapper.updateByVideoId(updateInfo, videoId);
+    }
+
+
 }

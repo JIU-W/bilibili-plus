@@ -90,5 +90,4 @@ public interface VideoInfoPostService {
      */
     void auditVideo(String videoId, Integer status, String reason);
 
-    void recommendVideo(String videoId);
 }
